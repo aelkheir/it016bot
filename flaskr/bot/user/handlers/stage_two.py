@@ -40,7 +40,7 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
         ])
 
     if len(lecture.documents) + len(lecture.videos) + len(lecture.youtube_links) > 1:
-        keyboard.append([InlineKeyboardButton(f'تحميل كل الملفات', callback_data=f'{LECTURE} {lecture.id}')])
+        keyboard.append([InlineKeyboardButton(f'تحميل جميع الملفات', callback_data=f'{LECTURE} {lecture.id}')])
 
     keyboard.append([InlineKeyboardButton(f'{course.name} {back_icon}', callback_data=f'{COURSE} {course.id}')])
     keyboard.append([InlineKeyboardButton(f'قائمة المواد {back_icon}', callback_data=SUBJECT_LIST)])
