@@ -1,0 +1,11 @@
+Flask
+
+gunicorn
+
+Flask-SQLAlchemy
+
+postgres
+
+python-telegram-bot
+
+requests
