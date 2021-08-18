@@ -33,7 +33,7 @@ bot = Bot(token=BOT_TOKEN)
 
 persistence = PicklePersistence(filename='pickle')
 
-dispatcher = Dispatcher(bot=bot, persistence=persistence, update_queue=None, workers=1)
+dispatcher = Dispatcher(bot=bot, persistence=persistence, update_queue=None, workers=0)
 dispatcher.add_handler(user_conv, 1)
 dispatcher.add_handler(admin_conv, 2)
 dispatcher.add_handler(owner_conv, 3)
