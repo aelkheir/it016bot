@@ -18,7 +18,7 @@ def list_users(update: Update, context: CallbackContext) -> int:
     if 'viewed_user_id' in context.chat_data:
         del context.chat_data['viewed_user_id']
 
-    users = session.query(User).all()
+    users = session.query(User).order_by(User.id).all()
 
     reply_keyboard = []
 
@@ -51,7 +51,7 @@ def list_admins(update: Update, context: CallbackContext) -> int:
     if 'viewed_user_id' in context.chat_data:
         del context.chat_data['viewed_user_id']
 
-    admins = session.query(User).filter(User.is_admin==True).all()
+    admins = session.query(User).filter(User.is_admin==True).order_by(User.id).all()
 
     reply_keyboard = []
 

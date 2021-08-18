@@ -8,7 +8,7 @@ def is_admin(update: Update, context: CallbackContext, session) -> int:
     user = user_required(update, context, session)
 
     if not user.is_admin:
-        update.message.reply_text('عذرا، ليست لديك صلاحيات ال admin', reply_markup=ReplyKeyboardRemove())
+        update.message.reply_text('لا :(', reply_markup=ReplyKeyboardRemove())
         return False
 
     else: 
