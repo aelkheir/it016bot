@@ -19,7 +19,7 @@ def start_over(update: Update, context: CallbackContext) -> int:
 
     user_required(update, context, session)
 
-    courses =  session.query(Course)
+    courses =  session.query(Course).order_by(Course.id).all()
 
     keyboard = []
 

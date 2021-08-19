@@ -23,7 +23,7 @@ def start(update: Update, context: CallbackContext) -> int:
 
     user.start_count += 1
 
-    courses =  session.query(Course).all()
+    courses =  session.query(Course).order_by(Course.id).all()
 
     keyboard = []
 

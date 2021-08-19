@@ -25,7 +25,7 @@ def admin_handler(update: Update, context: CallbackContext) -> int:
     if 'course_id' in context.chat_data:
         del context.chat_data['course_id']
     
-    courses = session.query(Course)
+    courses =  session.query(Course).order_by(Course.id).all()
 
     reply_keyboard = []
 
