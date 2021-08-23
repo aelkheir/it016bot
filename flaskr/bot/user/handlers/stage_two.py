@@ -25,18 +25,18 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
 
     for document in lecture.documents:
         keyboard.append([
-            InlineKeyboardButton(f'{document.file_name}', callback_data=f'{FILE} {document.file_unique_id}')
+            InlineKeyboardButton(f'{document.file_name}', callback_data=f'{FILE} {document.id}')
         ])
 
     for video in lecture.videos:
         keyboard.append([
-            InlineKeyboardButton(f'{video.file_name}', callback_data=f'{FILE} {video.file_unique_id}')
+            InlineKeyboardButton(f'{video.file_name}', callback_data=f'{FILE} {video.id}')
         ])
 
     for youtube_link in lecture.youtube_links:
         keyboard.append([
             InlineKeyboardButton(f'{youtube_link.video_title}',
-            callback_data=f'{FILE} {youtube_link.youtube_id}')
+            callback_data=f'{FILE} {youtube_link.id}')
         ])
 
     if len(lecture.documents) + len(lecture.videos) + len(lecture.youtube_links) > 1:

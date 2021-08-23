@@ -1,8 +1,6 @@
 from flaskr.bot.utils.user_required import user_required
-import telegram
-from flaskr.bot.utils.register_new_user import register_new_user
 import logging
-from flaskr.models import Course, User
+from flaskr.models import Course
 from flaskr import db
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update

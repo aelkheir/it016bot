@@ -2,7 +2,7 @@ from flaskr.bot.utils.is_admin import is_admin
 from flaskr import db
 from flaskr.bot.admin.admin_constants import  EXAM_OPTIONS, RECIEVE_COURSE_EXAM, RECIEVE_COURSE_REF, REFFERENCE_OPTIONS
 from telegram.ext import CallbackContext, CallbackContext
-from telegram import Update, ReplyKeyboardRemove
+from telegram import Update 
 from telegram.replykeyboardmarkup import ReplyKeyboardMarkup
 
 

@@ -4,7 +4,7 @@ import re
 from flaskr import db
 from flaskr.models import  Lecture
 from telegram.ext import CallbackContext, CallbackContext
-from telegram import Update, ReplyKeyboardRemove
+from telegram import Update 
 from flaskr.bot.admin.handlers.lectures_list import list_files
 
 

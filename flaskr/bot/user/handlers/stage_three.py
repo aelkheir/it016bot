@@ -14,11 +14,11 @@ def send_lecture_file(update: Update, context: CallbackContext) -> int:
 
     user = user_required(update, context, session)
 
-    _, unique_id = query.data.split(' ')
+    _, file_id = query.data.split(' ')
 
-    doc = session.query(Document).filter(Document.file_unique_id==unique_id).one_or_none()
-    vid = session.query(Video).filter(Video.file_unique_id==unique_id).one_or_none()
-    link = session.query(YoutubeLink).filter(YoutubeLink.youtube_id==unique_id).one_or_none()
+    doc = session.query(Document).filter(Document.id==file_id).one_or_none()
+    vid = session.query(Video).filter(Video.id==file_id).one_or_none()
+    link = session.query(YoutubeLink).filter(YoutubeLink.id==file_id).one_or_none()
 
     if doc:
         query.bot.sendDocument(query.message.chat.id, document=doc.file_id)

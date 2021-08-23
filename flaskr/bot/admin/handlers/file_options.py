@@ -4,7 +4,7 @@ from flaskr.bot.admin.handlers.lectures_list import list_files
 from flaskr import db
 from flaskr.models import  Document, Lecture, Video, YoutubeLink
 from telegram.ext import CallbackContext, CallbackContext
-from telegram import Update, ReplyKeyboardRemove
+from telegram import Update 
 
 
 def fetch_file(lecture_id, file_name, session):
