@@ -1,4 +1,3 @@
-from os import name
 from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, Filters
 from flaskr.bot.utils.cancel_conversation import cancel_conversation
 import flaskr.bot.admin.handlers.course_overview as course_overview
