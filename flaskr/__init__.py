@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 from flask import Flask, request
 import http
 
@@ -7,17 +6,18 @@ from telegram import Bot, Update
 from telegram.ext import Dispatcher, PicklePersistence, Updater
 from flask_sqlalchemy import SQLAlchemy
 
-load_dotenv()
-
-flask_env = os.getenv('FLASK_ENV')
 
 app = Flask(__name__)
+
+if app.env == 'development':
+    from dotenv import load_dotenv
+    load_dotenv()
 
 PROD_SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
 DEV_SQLALCHEMY_DATABASE_URI = os.getenv('DEV_SQLALCHEMY_DATABASE_URI')
 
 DATABASE_URI = PROD_SQLALCHEMY_DATABASE_URI \
-    if flask_env == 'production'\
+    if app.env == 'production'\
     else DEV_SQLALCHEMY_DATABASE_URI 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
@@ -34,7 +34,7 @@ with app.app_context():
     db.create_all()
 
 
-if flask_env == 'production':
+if app.env == 'production':
 
     BOT_TOKEN = os.getenv('BOT_TOKEN')
     bot = Bot(token=BOT_TOKEN)
@@ -55,7 +55,7 @@ if flask_env == 'production':
         return "", http.HTTPStatus.NO_CONTENT
 
 
-elif flask_env == 'development':
+elif app.env == 'development':
 
     DEV_BOT_TOKEN = os.getenv('DEV_BOT_TOKEN')
 
