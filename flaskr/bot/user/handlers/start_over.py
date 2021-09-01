@@ -18,6 +18,7 @@ def start_over(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user_required(update, context, session)
+    language = context.chat_data['language']['user_conv']
 
     courses =  session.query(Course).order_by(Course.id).all()
 
@@ -31,7 +32,7 @@ def start_over(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    query.edit_message_text("اختر مادة:", reply_markup=reply_markup )
+    query.edit_message_text(f'{language["courses"]}:', reply_markup=reply_markup )
 
     session.close()
     return COURSE_OVERVIEW

@@ -1,4 +1,3 @@
-from telegram.botcommandscope import BotCommandScopeChat
 from flaskr.bot.utils.user_required import user_required
 import logging
 from flaskr.models import Course
