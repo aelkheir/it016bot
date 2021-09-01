@@ -5,3 +5,5 @@ setup:
 build:
   docker:
     web: Dockerfile
+  config:
+    FLASK_APP: flaskr
