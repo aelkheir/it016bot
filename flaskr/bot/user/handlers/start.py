@@ -34,7 +34,10 @@ def start(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    update.message.reply_text(f'{language["courses"]}:', reply_markup=reply_markup)
+    update.message.reply_text(
+        f'{language["courses"]}:'.capitalize(),
+        reply_markup=reply_markup
+    )
 
     session.commit()
     session.close()

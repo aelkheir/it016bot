@@ -32,7 +32,10 @@ def start_over(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    query.edit_message_text(f'{language["courses"]}:', reply_markup=reply_markup )
+    query.edit_message_text(
+        f'{language["courses"]}:'.capitalize(),
+        reply_markup=reply_markup
+    )
 
     session.close()
     return COURSE_OVERVIEW
