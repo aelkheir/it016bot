@@ -17,6 +17,7 @@ def course_overview(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user_required(update, context, session)
+    language = context.chat_data['language']['user_conv']
 
     _, course_id = query.data.split(' ')
 
@@ -36,16 +37,17 @@ def course_overview(update: Update, context: CallbackContext) -> int:
 
         for lecture_index in range(row_start, row_start + row_size):
             lecture = lectures[lecture_index]
-            row.append(
-                InlineKeyboardButton(
-                    f'المحاضرة {lecture.lecture_number}', callback_data=f'{course.id} {lecture.id}'),
+            row.append(InlineKeyboardButton(
+                f"{language['lecture']} {lecture.lecture_number}".capitalize(),
+                callback_data=f'{course.id} {lecture.id}'),
             )
         keyboard.append(row)
     
     if len(lectures) > 1:
         keyboard.append([
-            InlineKeyboardButton(f'تحميل جميع المحاضرات',
-                                 callback_data=f'{LECTURES} {course.id}')
+            InlineKeyboardButton(
+                f"{language['download']} {language['all']} {language['lectures']}".capitalize(),
+                callback_data=f'{LECTURES} {course.id}')
         ])
 
     refference_exam_row = []
@@ -53,33 +55,36 @@ def course_overview(update: Update, context: CallbackContext) -> int:
     if len(course.refferences) > 0:
         refference_exam_row.append(
             InlineKeyboardButton(
-                f'المراجع ({len(course.refferences)})', callback_data=f'{course.id} {REFFERENCES}'),
+                f"{language['references']} ({len(course.refferences)})".capitalize(),
+                callback_data=f'{course.id} {REFFERENCES}'),
         )
 
     if len(course.exams) > 0:
         refference_exam_row.append(
             InlineKeyboardButton(
-                f'الامتحانات ({len(course.exams)})', callback_data=f'{course.id} {EXAMS}'),
+                f"{language['exams']} ({len(course.exams)})".capitalize(),
+                callback_data=f'{course.id} {EXAMS}'),
         )
 
     if len(refference_exam_row) > 0:
         keyboard.append(refference_exam_row)
 
-    keyboard.append([
-        InlineKeyboardButton(
-            f'قائمة المواد {back_icon}', callback_data=SUBJECT_LIST),
+    keyboard.append([InlineKeyboardButton(
+        f"{language['genitive'](language['courses'], language['menu'])}".capitalize(),
+        callback_data=SUBJECT_LIST),
     ])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     if len(course.lectures) == 0 and len(course.refferences) == 0 and len(course.exams) == 0:
         query.edit_message_text(
-            text=f"لا شيء بعد.", reply_markup=reply_markup
+            text=f"{language['nothing_yet']}.".capitalize(), reply_markup=reply_markup
         )
 
     else:
         query.edit_message_text(
-            text=f"{course.name}", reply_markup=reply_markup
+            text=f"{course.name}".capitalize(),
+            reply_markup=reply_markup
         )
 
     session.close()

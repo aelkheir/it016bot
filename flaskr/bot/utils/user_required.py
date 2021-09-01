@@ -3,6 +3,8 @@ from flaskr.models import   User
 from flaskr import db
 from telegram.ext import  CallbackContext
 from telegram import Update
+from flaskr.bot.localization.ar import ar
+from flaskr.bot.localization.en import en
 
 
 def user_required(update: Update, context: CallbackContext, session) -> int:
@@ -39,5 +41,8 @@ def user_required(update: Update, context: CallbackContext, session) -> int:
             )
             # write to context
             context.user_data['user_id'] = user.id
+
+    # write to context
+    context.chat_data['language'] = en
 
     return user

@@ -1,3 +1,4 @@
+from telegram.botcommandscope import BotCommandScopeChat
 from flaskr.bot.utils.user_required import user_required
 import logging
 from flaskr.models import Course
@@ -14,10 +15,11 @@ def start(update: Update, context: CallbackContext) -> int:
     """Send message on `/start`."""
     session = db.session
 
-    user = update.message.from_user
-    logger.info("User %s started the conversation.", user.first_name)
+    from_user = update.message.from_user
+    logger.info("User %s started the conversation.", from_user.first_name)
 
     user = user_required(update, context, session)
+    language = context.chat_data['language']['user_conv']
 
     user.start_count += 1
 
@@ -33,7 +35,7 @@ def start(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    update.message.reply_text("اختر مادة:", reply_markup=reply_markup)
+    update.message.reply_text(f'{language["courses"]}:', reply_markup=reply_markup)
 
     session.commit()
     session.close()

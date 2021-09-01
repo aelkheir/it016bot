@@ -43,12 +43,15 @@ def send_all_lecture_files(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
+    language = context.chat_data['language']['user_conv']
 
     _, lecture_id = query.data.split(' ')
 
     lecture = session.query(Lecture).filter(Lecture.id==lecture_id).one()
 
-    query.message.reply_text(f'----{lecture.course.name} المحاضرة {lecture.lecture_number}----')
+    query.message.reply_text(
+        f"---- {lecture.course.name} - {language['lecture']} {lecture.lecture_number} ----".capitalize()
+    )
 
     for doc in lecture.documents:
         query.bot.sendDocument(query.message.chat.id, document=doc.file_id)
@@ -93,13 +96,16 @@ def send_all_course_refferences(update: Update, context: CallbackContext) -> int
     query.answer()
 
     user = user_required(update, context, session)
+    language = context.chat_data['language']['user_conv']
 
     _, course_id = query.data.split(' ')
 
     course = session.query(Course).filter(Course.id==course_id).one()
 
     if len(course.refferences) > 0:
-        query.message.reply_text(f'----مراجع {course.name}----')
+        query.message.reply_text(
+        f"{language['genitive'](course.name, language['indifinite_references'])}".capitalize(),
+        )
         for refference in course.refferences:
             query.bot.sendDocument(query.message.chat.id, document=refference.file_id)
             user.download_count += 1
@@ -140,13 +146,18 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
+    language = context.chat_data['language']['user_conv']
 
     _, course_id = query.data.split(' ')
 
     course = session.query(Course).filter(Course.id==course_id).one()
 
     if len(course.exams) > 0:
-        query.message.reply_text(f'----امتحانات {course.name}----')
+
+        query.message.reply_text(
+            f"{language['genitive'](course.name, language['indifinite_exams'])}".capitalize(),
+        )
+
         for exam in course.exams:
             if exam.file_type == 'document':
                 query.message.reply_text(f'{exam.file_name}')

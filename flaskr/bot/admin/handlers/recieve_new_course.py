@@ -24,10 +24,10 @@ def recieve_new_course(update: Update, context: CallbackContext) -> int:
         course = Course(name=course_name, course_symbol=course_symbol)
         session.add(course)
 
-        update.message.reply_text(f'تم اضافة {course.name} {course.course_symbol}')
 
         session.commit()
         session.close()
+        update.message.reply_text(f'تم اضافة {course.name} {course.course_symbol}')
         return admin_handler(update, context)
 
     else:

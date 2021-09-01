@@ -14,6 +14,7 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user_required(update, context, session)
+    language = context.chat_data['language']['user_conv']
 
     course_id, lecture_id = query.data.split(' ')
 
@@ -40,11 +41,16 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
         ])
 
     if len(lecture.documents) + len(lecture.videos) + len(lecture.youtube_links) > 1:
-        keyboard.append([InlineKeyboardButton(f'تحميل جميع الملفات', callback_data=f'{LECTURE} {lecture.id}')])
+        keyboard.append([InlineKeyboardButton(
+            f"{language['download']} {language['all']} {language['files']}".capitalize(),
+            callback_data=f'{LECTURE} {lecture.id}')
+        ])
 
     keyboard.append([
         InlineKeyboardButton(f'{course.name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
-        InlineKeyboardButton(f'قائمة المواد {back_icon}', callback_data=SUBJECT_LIST)
+        InlineKeyboardButton(
+        f"{language['genitive'](language['courses'], language['menu'])}".capitalize(),
+         callback_data=SUBJECT_LIST)
     ])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -63,6 +69,7 @@ def send_all_lectures(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user_required(update, context, session)
+    language = context.chat_data['language']['user_conv']
 
     _, course_id = query.data.split(' ')
 
@@ -73,7 +80,9 @@ def send_all_lectures(update: Update, context: CallbackContext) -> int:
     user = session.query(User).filter(User.id==user_id).one()
 
     for lecture in course.lectures:
-        query.message.reply_text(f'----{course.name} المحاضرة {lecture.lecture_number}----')
+        query.message.reply_text(
+            f"---- {course.name} - {language['lecture']} {lecture.lecture_number} ----".capitalize()
+        )
 
         for doc in lecture.documents:
             query.bot.sendDocument(query.message.chat.id, document=doc.file_id)
@@ -99,6 +108,7 @@ def list_lecture_refferences(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user_required(update, context, session)
+    language = context.chat_data['language']['user_conv']
 
     course_id, _ = query.data.split(' ')
 
@@ -112,17 +122,22 @@ def list_lecture_refferences(update: Update, context: CallbackContext) -> int:
         ])
 
     if len(course.refferences) > 1:
-        keyboard.append([
-            InlineKeyboardButton(f'تحميل جميع المراجع', callback_data=f'{REFFERENCES} {course.id}'),
+        keyboard.append([InlineKeyboardButton(
+            f"{language['download']} {language['all']} {language['references']}".capitalize(),
+            callback_data=f'{REFFERENCES} {course.id}'),
         ])
 
     keyboard.append([
         InlineKeyboardButton(f'{course.name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
-        InlineKeyboardButton(f'قائمة المواد {back_icon}', callback_data=SUBJECT_LIST),
+        InlineKeyboardButton(
+            f"{language['genitive'](language['courses'], language['menu'])}".capitalize(),
+            callback_data=SUBJECT_LIST),
     ])
+
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"مراجع {course.name}", reply_markup=reply_markup
+        text=f"{language['genitive'](course.name, language['indifinite_references'])}",
+        reply_markup=reply_markup
     )
     return STAGE_THREE
 
@@ -133,6 +148,7 @@ def list_lecture_exams(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user_required(update, context, session)
+    language = context.chat_data['language']['user_conv']
 
     course_id, _ = query.data.split(' ')
 
@@ -146,16 +162,22 @@ def list_lecture_exams(update: Update, context: CallbackContext) -> int:
         ])
 
     if len(course.exams) > 1:
-        keyboard.append([
-            InlineKeyboardButton(f'تحميل جميع الامتحانات', callback_data=f'{EXAMS} {course.id}'),
+        keyboard.append([InlineKeyboardButton(
+            f"{language['download']} {language['all']} {language['exams']}".capitalize(),
+            callback_data=f'{EXAMS} {course.id}'),
         ])
 
     keyboard.append([
         InlineKeyboardButton(f'{course.name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
-        InlineKeyboardButton(f'قائمة المواد {back_icon}', callback_data=SUBJECT_LIST),
+        InlineKeyboardButton(
+            f"{language['genitive'](language['courses'], language['menu'])}".capitalize(),
+            callback_data=SUBJECT_LIST),
     ])
+
     reply_markup = InlineKeyboardMarkup(keyboard)
+
     query.edit_message_text(
-        text=f"مراجع {course.name}", reply_markup=reply_markup
+        text=f"{language['genitive'](course.name, language['indifinite_exams'])}",
+        reply_markup=reply_markup
     )
     return STAGE_THREE

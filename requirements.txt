@@ -4,6 +4,8 @@ gunicorn
 
 Flask-SQLAlchemy
 
+Flask-Migrate
+
 postgres
 
 python-telegram-bot
