@@ -2,27 +2,35 @@ def genitive(subject, genitive):
     return genitive + ' ' + subject
 
 ar = {
-    'user_conv': {
 
-        'lectures': 'المحاضرات',
-        'courses': 'المواد',
-        'references': 'المراجع',
-        'exams': 'الامتحانات',
-        'files': 'الملفات',
+    'lectures': 'المحاضرات',
+    'courses': 'المواد',
+    'references': 'المراجع',
+    'exams': 'الامتحانات',
+    'files': 'الملفات',
 
-        'indifinite_references': 'مراجع',
-        'indifinite_exams': 'امتحانات',
+    'indifinite_references': 'مراجع',
+    'indifinite_exams': 'امتحانات',
 
-        'menu': 'قائمة',
+    'menu': 'قائمة',
+    'admin': 'الإدارة',
+    'owner': 'الإشراف',
 
-        'lecture': 'المحاضرة',
+    'lecture': 'المحاضرة',
 
-        'download': 'تحميل',
-        'all': 'جميع',
-
-        'genitive': genitive,
+    'download': 'تحميل',
+    'all': 'جميع',
 
 
-        'nothing_yet': "لا شيء بعد",
-    }
+    'back_to_courses': 'رجوع للمواد',
+    'choose_bot_language': 'اختر لغة البوت',
+    'language_set_to': 'تم وضع اللغة للعربية',
+
+
+    'language_settings': 'اعدادات اللغة',
+
+    'genitive': genitive,
+
+
+    'nothing_yet': "لا شيء بعد",
 }

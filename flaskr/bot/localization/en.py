@@ -4,27 +4,33 @@ def genitive(subject, genitive):
 
 
 en = {
-    'user_conv': {
 
-        'courses': 'courses',
-        'lectures': 'lectures',
-        'references': 'references',
-        'exams': 'exams',
-        'files': 'files',
+    'courses': 'courses',
+    'lectures': 'lectures',
+    'references': 'references',
+    'exams': 'exams',
+    'files': 'files',
 
-        'indifinite_references': 'references',
-        'indifinite_exams': 'exams',
+    'indifinite_references': 'references',
+    'indifinite_exams': 'exams',
 
-        'menu': 'menu',
+    'menu': 'menu',
+    'admin': 'admin',
+    'owner': 'owner',
 
-        'lecture': 'lecture',
+    'lecture': 'lecture',
 
-        'download': 'download',
-        'all': 'all',
+    'download': 'download',
+    'all': 'all',
 
-        'genitive': genitive,
+    'back_to_courses': 'back to courses',
+    'choose_bot_language': 'choose bot language',
+    'language_set_to': 'Language set to English',
+
+    'language_settings': 'language settings',
+
+    'genitive': genitive,
 
 
-        'nothing_yet': "nothing yet",
-    }
+    'nothing_yet': "nothing yet",
 }

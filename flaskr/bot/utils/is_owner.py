@@ -1,3 +1,4 @@
+from telegram.botcommandscope import BotCommandScopeChat
 from flaskr.bot.utils.user_required import user_required
 from telegram.ext import  CallbackContext
 from telegram import Update, ReplyKeyboardRemove
@@ -11,5 +12,5 @@ def is_owner(update: Update, context: CallbackContext, session) -> int:
         update.message.reply_text('عذرا، ليست لديك صلاحيات ال admin', reply_markup=ReplyKeyboardRemove())
         return False
 
-    else: 
-        return  True
+
+    return  True

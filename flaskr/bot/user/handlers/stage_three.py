@@ -43,7 +43,7 @@ def send_all_lecture_files(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']['user_conv']
+    language = context.chat_data['language']
 
     _, lecture_id = query.data.split(' ')
 
@@ -96,7 +96,7 @@ def send_all_course_refferences(update: Update, context: CallbackContext) -> int
     query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']['user_conv']
+    language = context.chat_data['language']
 
     _, course_id = query.data.split(' ')
 
@@ -146,7 +146,7 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']['user_conv']
+    language = context.chat_data['language']
 
     _, course_id = query.data.split(' ')
 

@@ -17,8 +17,9 @@ def start(update: Update, context: CallbackContext) -> int:
     from_user = update.message.from_user
     logger.info("User %s started the conversation.", from_user.first_name)
 
+
     user = user_required(update, context, session)
-    language = context.chat_data['language']['user_conv']
+    language = context.chat_data['language']
 
     user.start_count += 1
 

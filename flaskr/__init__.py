@@ -16,7 +16,7 @@ if app.env == 'development':
     load_dotenv()
 
 PROD_SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
-DEV_SQLALCHEMY_DATABASE_URI = os.getenv('DEV_SQLALCHEMY_DATABASE_URI')
+DEV_SQLALCHEMY_DATABASE_URI = 'sqlite:///dev.db'
 
 DATABASE_URI = PROD_SQLALCHEMY_DATABASE_URI \
     if app.env == 'production'\
@@ -37,6 +37,7 @@ migrate = Migrate(app, db)
 from flaskr.bot.admin.admin_conv import admin_conv
 from flaskr.bot.user.user_conv import user_conv
 from flaskr.bot.owner.owner_conv import owner_conv
+from flaskr.bot.setlanguage import language_conv
 
 if app.env == 'production':
 
@@ -46,9 +47,11 @@ if app.env == 'production':
     persistence = PicklePersistence(filename='pickle')
 
     dispatcher = Dispatcher(bot=bot, persistence=persistence, update_queue=None, workers=0)
+
     dispatcher.add_handler(user_conv, 1)
     dispatcher.add_handler(admin_conv, 2)
     dispatcher.add_handler(owner_conv, 3)
+    dispatcher.add_handler(language_conv, 4)
 
 
     @app.route("/", methods=["POST", "GET"])
@@ -72,6 +75,7 @@ elif app.env == 'development':
     dispatcher.add_handler(user_conv, 1)
     dispatcher.add_handler(admin_conv, 2)
     dispatcher.add_handler(owner_conv, 3)
+    dispatcher.add_handler(language_conv, 4)
 
     @app.route("/dev")
     def dev():

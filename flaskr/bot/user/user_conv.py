@@ -10,7 +10,7 @@ from flaskr.bot.utils.cancel_conversation import cancel_conversation
 
 
 user_conv = ConversationHandler(
-    entry_points=[CommandHandler('start', start)],
+    entry_points=[CommandHandler('start', start), CommandHandler('courses', start)],
     states={
         constants.COURSE_OVERVIEW: [
             CallbackQueryHandler(course_overview, pattern='^' + f'{constants.COURSE} \d+' + '$'),

@@ -18,7 +18,7 @@ def start_over(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user_required(update, context, session)
-    language = context.chat_data['language']['user_conv']
+    language = context.chat_data['language']
 
     courses =  session.query(Course).order_by(Course.id).all()
 

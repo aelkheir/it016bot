@@ -17,7 +17,7 @@ def course_overview(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user_required(update, context, session)
-    language = context.chat_data['language']['user_conv']
+    language = context.chat_data['language']
 
     _, course_id = query.data.split(' ')
 
@@ -70,7 +70,7 @@ def course_overview(update: Update, context: CallbackContext) -> int:
         keyboard.append(refference_exam_row)
 
     keyboard.append([InlineKeyboardButton(
-        f"{language['genitive'](language['courses'], language['menu'])}".capitalize(),
+        f"{language['back_to_courses']}".capitalize(),
         callback_data=SUBJECT_LIST),
     ])
 

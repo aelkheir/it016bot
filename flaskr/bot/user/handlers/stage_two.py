@@ -14,7 +14,7 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user_required(update, context, session)
-    language = context.chat_data['language']['user_conv']
+    language = context.chat_data['language']
 
     course_id, lecture_id = query.data.split(' ')
 
@@ -49,13 +49,13 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
     keyboard.append([
         InlineKeyboardButton(f'{course.name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
         InlineKeyboardButton(
-        f"{language['genitive'](language['courses'], language['menu'])}".capitalize(),
+        f"{language['back_to_courses']}".capitalize(),
          callback_data=SUBJECT_LIST)
     ])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{course.name} ({lecture.lecture_number})", reply_markup=reply_markup
+        text=f"{course.name} - {language['lecture']} {lecture.lecture_number}".capitalize(), reply_markup=reply_markup
     )
 
     session.close()
@@ -69,7 +69,7 @@ def send_all_lectures(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user_required(update, context, session)
-    language = context.chat_data['language']['user_conv']
+    language = context.chat_data['language']
 
     _, course_id = query.data.split(' ')
 
@@ -108,7 +108,7 @@ def list_lecture_refferences(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user_required(update, context, session)
-    language = context.chat_data['language']['user_conv']
+    language = context.chat_data['language']
 
     course_id, _ = query.data.split(' ')
 
@@ -130,13 +130,13 @@ def list_lecture_refferences(update: Update, context: CallbackContext) -> int:
     keyboard.append([
         InlineKeyboardButton(f'{course.name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
         InlineKeyboardButton(
-            f"{language['genitive'](language['courses'], language['menu'])}".capitalize(),
+            f"{language['back_to_courses']}".capitalize(),
             callback_data=SUBJECT_LIST),
     ])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{language['genitive'](course.name, language['indifinite_references'])}",
+        text=f"{language['genitive'](course.name, language['indifinite_references'])}".capitalize(),
         reply_markup=reply_markup
     )
     return STAGE_THREE
@@ -148,7 +148,7 @@ def list_lecture_exams(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user_required(update, context, session)
-    language = context.chat_data['language']['user_conv']
+    language = context.chat_data['language']
 
     course_id, _ = query.data.split(' ')
 
@@ -170,14 +170,14 @@ def list_lecture_exams(update: Update, context: CallbackContext) -> int:
     keyboard.append([
         InlineKeyboardButton(f'{course.name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
         InlineKeyboardButton(
-            f"{language['genitive'](language['courses'], language['menu'])}".capitalize(),
+            f"{language['back_to_courses']}".capitalize(),
             callback_data=SUBJECT_LIST),
     ])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     query.edit_message_text(
-        text=f"{language['genitive'](course.name, language['indifinite_exams'])}",
+        text=f"{language['genitive'](course.name, language['indifinite_exams'])}".capitalize(),
         reply_markup=reply_markup
     )
     return STAGE_THREE

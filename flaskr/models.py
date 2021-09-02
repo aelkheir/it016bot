@@ -7,6 +7,7 @@ class User(db.Model):
     telegram_id = db.Column(db.Integer, unique=True)
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
+    language = db.Column(db.String(5), default='ar', nullable=False)
 
     start_count = db.Column(db.Integer, default=0)
     download_count = db.Column(db.Integer, default=0)

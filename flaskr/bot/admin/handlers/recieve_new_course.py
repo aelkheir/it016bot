@@ -5,7 +5,7 @@ from flaskr.models import  Course
 from telegram.ext import CallbackContext, CallbackContext
 from flaskr.bot.admin.admin_constants import RECIEVE_NEW_COURSE
 from flaskr.bot.admin.handlers.admin_handler import admin_handler
-from telegram import Update, ReplyKeyboardRemove
+from telegram import Update
 
 
 new_coures_regex = re.compile(f'الاسم:\s(.*)\nالرمز:\s(...\d\d\d)')
@@ -16,6 +16,7 @@ def recieve_new_course(update: Update, context: CallbackContext) -> int:
     if not is_admin(update, context, session):
         return
 
+
     new_coures_match = new_coures_regex.search(update.message.text)
 
     if new_coures_match:
@@ -24,10 +25,12 @@ def recieve_new_course(update: Update, context: CallbackContext) -> int:
         course = Course(name=course_name, course_symbol=course_symbol)
         session.add(course)
 
+        update.message.reply_text(f'تم اضافة {course.name} {course.course_symbol}')
+
 
         session.commit()
         session.close()
-        update.message.reply_text(f'تم اضافة {course.name} {course.course_symbol}')
+
         return admin_handler(update, context)
 
     else:
