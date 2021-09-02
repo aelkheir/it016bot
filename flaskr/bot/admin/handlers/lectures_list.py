@@ -52,7 +52,7 @@ def list_files(update: Update, context: CallbackContext, lecture_id=None) -> int
     reply_keyboard.append(['رجوع'])
 
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
-    update.message.reply_text(f'{lecture.course.name} {lecture.lecture_number}',
+    update.message.reply_text(f'{lecture.course.ar_name} {lecture.lecture_number}',
             reply_markup=markup,
     )
 

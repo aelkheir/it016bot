@@ -83,7 +83,7 @@ def course_overview(update: Update, context: CallbackContext) -> int:
 
     else:
         query.edit_message_text(
-            text=f"{course.name}".capitalize(),
+            text=f"{course.ar_name}".capitalize(),
             reply_markup=reply_markup
         )
 

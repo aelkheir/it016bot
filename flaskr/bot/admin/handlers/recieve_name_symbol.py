@@ -24,7 +24,7 @@ def recieve_name_symbol(update: Update, context: CallbackContext) -> int:
 
     if name_match:
         course_name = name_match.groups()[0]
-        course.name = course_name
+        course.ar_name = course_name
 
     elif symbol_match:
         course_symbol = symbol_match.groups()[0]
@@ -32,7 +32,7 @@ def recieve_name_symbol(update: Update, context: CallbackContext) -> int:
     
     if symbol_match or name_match:
         session.commit()
-        course_name = course.name
+        course_name = course.ar_name
         session.close()
         update.message.reply_text(f'تم التعديل بنجاح')
         return course_overview(update, context, course_name=course_name)

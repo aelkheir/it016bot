@@ -44,7 +44,7 @@ def list_lectures(update: Update, context: CallbackContext) -> int:
 
     reply_keyboard.append(['رجوع', 'اضافة محاضرة'])
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
-    update.message.reply_text(f'{course.name}',
+    update.message.reply_text(f'{course.ar_name}',
             reply_markup=markup,
     )
 
@@ -71,7 +71,7 @@ def list_refferences(update: Update, context: CallbackContext) -> int:
 
     reply_keyboard.append(['رجوع', 'اضافة مرجع'])
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
-    update.message.reply_text(f'مراجع {course.name}',
+    update.message.reply_text(f'مراجع {course.ar_name}',
             reply_markup=markup,
     )
 
@@ -98,7 +98,7 @@ def list_exams(update: Update, context: CallbackContext) -> int:
 
     reply_keyboard.append(['رجوع', 'اضافة امتحان'])
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
-    update.message.reply_text(f'امتحانات {course.name}',
+    update.message.reply_text(f'امتحانات {course.ar_name}',
             reply_markup=markup,
     )
 

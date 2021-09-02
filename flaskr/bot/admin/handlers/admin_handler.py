@@ -31,7 +31,7 @@ def admin_handler(update: Update, context: CallbackContext) -> int:
 
     for course in courses:
         reply_keyboard.append([
-            course.name
+            course.ar_name
         ])
     reply_keyboard.append(['اضافة مادة'])
 

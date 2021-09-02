@@ -26,7 +26,7 @@ def start_over(update: Update, context: CallbackContext) -> int:
 
     for course in courses:
         keyboard.append([
-            InlineKeyboardButton(f'{course.name} ({len(course.lectures)})',
+            InlineKeyboardButton(f'{course.ar_name} ({len(course.lectures)})',
             callback_data=f'{COURSE} {course.id}'),
         ])
 

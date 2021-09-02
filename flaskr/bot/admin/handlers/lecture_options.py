@@ -20,7 +20,7 @@ def delete_lecture(update: Update, context: CallbackContext) -> int:
     lecture = session.query(Lecture).filter(Lecture.id==lecture_id).one()
     session.delete(lecture)
 
-    update.message.reply_text(f'تم حذف {lecture.course.name} {lecture.lecture_number}')
+    update.message.reply_text(f'تم حذف {lecture.course.ar_name} {lecture.lecture_number}')
 
     session.commit()
     session.close()

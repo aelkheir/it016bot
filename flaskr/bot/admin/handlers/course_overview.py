@@ -15,7 +15,7 @@ def course_overview(update: Update, context: CallbackContext, course_name=None) 
 
     course_name = course_name if course_name else update.message.text
 
-    course = session.query(Course).filter(Course.name==course_name).one()
+    course = session.query(Course).filter(Course.ar_name==course_name).one()
 
     # write to chat data
     context.chat_data['course_id'] = course.id
@@ -26,7 +26,7 @@ def course_overview(update: Update, context: CallbackContext, course_name=None) 
     reply_keyboard.append(['حذف المادة'])
     reply_keyboard.append(['رجوع'])
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
-    update.message.reply_text(f'{course.name}',
+    update.message.reply_text(f'{course.ar_name}',
             reply_markup=markup,
     )
 
@@ -45,7 +45,7 @@ def to_course_overview(update: Update, context: CallbackContext) -> int:
     course_id = context.chat_data['course_id']
 
     course = session.query(Course).filter(Course.id==course_id).one()
-    course_name = course.name
+    course_name = course.ar_name
     session.close()
     return course_overview(update, context, course_name=course_name)
 

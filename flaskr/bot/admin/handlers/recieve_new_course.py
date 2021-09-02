@@ -25,7 +25,7 @@ def recieve_new_course(update: Update, context: CallbackContext) -> int:
         course = Course(name=course_name, course_symbol=course_symbol)
         session.add(course)
 
-        update.message.reply_text(f'تم اضافة {course.name} {course.course_symbol}')
+        update.message.reply_text(f'تم اضافة {course.ar_name} {course.course_symbol}')
 
 
         session.commit()

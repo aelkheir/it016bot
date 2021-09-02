@@ -47,7 +47,7 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
         ])
 
     keyboard.append([
-        InlineKeyboardButton(f'{course.name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
+        InlineKeyboardButton(f'{course.ar_name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
         InlineKeyboardButton(
         f"{language['back_to_courses']}".capitalize(),
          callback_data=SUBJECT_LIST)
@@ -55,7 +55,7 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{course.name} - {language['lecture']} {lecture.lecture_number}".capitalize(), reply_markup=reply_markup
+        text=f"{course.ar_name} - {language['lecture']} {lecture.lecture_number}".capitalize(), reply_markup=reply_markup
     )
 
     session.close()
@@ -81,7 +81,7 @@ def send_all_lectures(update: Update, context: CallbackContext) -> int:
 
     for lecture in course.lectures:
         query.message.reply_text(
-            f"---- {course.name} - {language['lecture']} {lecture.lecture_number} ----".capitalize()
+            f"---- {course.ar_name} - {language['lecture']} {lecture.lecture_number} ----".capitalize()
         )
 
         for doc in lecture.documents:
@@ -128,7 +128,7 @@ def list_lecture_refferences(update: Update, context: CallbackContext) -> int:
         ])
 
     keyboard.append([
-        InlineKeyboardButton(f'{course.name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
+        InlineKeyboardButton(f'{course.ar_name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
         InlineKeyboardButton(
             f"{language['back_to_courses']}".capitalize(),
             callback_data=SUBJECT_LIST),
@@ -136,7 +136,7 @@ def list_lecture_refferences(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{language['genitive'](course.name, language['indifinite_references'])}".capitalize(),
+        text=f"{language['genitive'](course.ar_name, language['indifinite_references'])}".capitalize(),
         reply_markup=reply_markup
     )
     return STAGE_THREE
@@ -168,7 +168,7 @@ def list_lecture_exams(update: Update, context: CallbackContext) -> int:
         ])
 
     keyboard.append([
-        InlineKeyboardButton(f'{course.name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
+        InlineKeyboardButton(f'{course.ar_name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
         InlineKeyboardButton(
             f"{language['back_to_courses']}".capitalize(),
             callback_data=SUBJECT_LIST),
@@ -177,7 +177,7 @@ def list_lecture_exams(update: Update, context: CallbackContext) -> int:
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     query.edit_message_text(
-        text=f"{language['genitive'](course.name, language['indifinite_exams'])}".capitalize(),
+        text=f"{language['genitive'](course.ar_name, language['indifinite_exams'])}".capitalize(),
         reply_markup=reply_markup
     )
     return STAGE_THREE

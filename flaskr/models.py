@@ -23,7 +23,7 @@ class Course(db.Model):
 
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
     course_symbol = db.Column(db.String(50), unique=True)
-    name = db.Column(db.String(100))
+    ar_name = db.Column(db.String(100), nullable=False)
 
     lectures = db.relationship("Lecture", back_populates = 'course', cascade="all, delete")
     refferences = db.relationship("Refference", back_populates = 'course', cascade="all, delete")
@@ -60,7 +60,7 @@ class Document(db.Model):
     lecture_id = db.Column(db.Integer, db.ForeignKey('lectures.id'))
     lecture = db.relationship("Lecture", back_populates="documents", cascade="save-update")
     def __repr__(self):
-        return f"<Document(Course='{self.lecture.course.name}', lecture='{self.lecture.lecture_number}')>"
+        return f"<Document(Course='{self.lecture.course.ar_name}', lecture='{self.lecture.lecture_number}')>"
 
 class Video(db.Model):
     __tablename__ = 'videos'
@@ -73,7 +73,7 @@ class Video(db.Model):
     lecture_id = db.Column(db.Integer, db.ForeignKey('lectures.id'))
     lecture = db.relationship("Lecture", back_populates="videos", cascade="save-update")
     def __repr__(self):
-        return f"<Video(Course='{self.lecture.course.name}', lecture='{self.lecture.lecture_number}')>"
+        return f"<Video(Course='{self.lecture.course.ar_name}', lecture='{self.lecture.lecture_number}')>"
 
 class YoutubeLink(db.Model):
     __tablename__ = 'youtube_links'
@@ -86,7 +86,7 @@ class YoutubeLink(db.Model):
     lecture_id = db.Column(db.Integer, db.ForeignKey('lectures.id'))
     lecture = db.relationship("Lecture", back_populates="youtube_links", cascade="save-update")
     def __repr__(self):
-        return f"<YoutubeLink(Course='{self.lecture.course.name}', lecture='{self.lecture.lecture_number}')>"
+        return f"<YoutubeLink(Course='{self.lecture.course.ar_name}', lecture='{self.lecture.lecture_number}')>"
 
 class Refference(db.Model):
     __tablename__ = 'refferences'
@@ -99,7 +99,7 @@ class Refference(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
     course = db.relationship("Course", back_populates="refferences", cascade="save-update")
     def __repr__(self):
-        return f"<Refference(course='{self.course.name}', name='{self.name}')>"
+        return f"<Refference(course='{self.course.ar_name}', name='{self.name}')>"
 
 class Exam(db.Model):
     __tablename__ = 'exams'
@@ -113,5 +113,5 @@ class Exam(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
     course = db.relationship("Course", back_populates="exams", cascade="save-update")
     def __repr__(self):
-        return f"<Exam(course='{self.course.name}', name='{self.name}')>"
+        return f"<Exam(course='{self.course.ar_name}', name='{self.name}')>"
 

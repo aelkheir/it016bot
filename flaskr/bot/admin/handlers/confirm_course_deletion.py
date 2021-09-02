@@ -23,7 +23,7 @@ def apply_delete_course(update: Update, context: CallbackContext) -> int:
 
     if confirmation_match:
         course = session.query(Course).filter(Course.id == course_id).one()
-        course_name = course.name
+        course_name = course.ar_name
         session.delete(course)
         session.commit()
         session.close()
