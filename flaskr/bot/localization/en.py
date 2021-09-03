@@ -23,11 +23,12 @@ en = {
     'download': 'download',
     'all': 'all',
 
-    'back_to_courses': 'back to courses',
     'choose_bot_language': 'choose bot language',
     'language_set_to': 'Language set to English',
 
     'language_settings': 'language settings',
+    
+    'back_to': 'back to',
 
     'genitive': genitive,
 

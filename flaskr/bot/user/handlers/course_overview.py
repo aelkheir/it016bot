@@ -1,9 +1,10 @@
+from flaskr.bot.utils.buttons import back_to_courses_button
 from flaskr.bot.utils.user_required import user_required
 import math
 from flaskr.models import Course, Lecture
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import ALL, EXAMS, LECTURES, REFFERENCES, STAGE_TWO, SUBJECT_LIST
+from flaskr.bot.user.user_constants import ALL, EXAMS, LECTURES, REFFERENCES, STAGE_TWO
 from flaskr import db
 
 
@@ -16,7 +17,7 @@ def course_overview(update: Update, context: CallbackContext) -> int:
     query = update.callback_query
     query.answer()
 
-    user_required(update, context, session)
+    user = user_required(update, context, session)
     language = context.chat_data['language']
 
     _, course_id = query.data.split(' ')
@@ -46,7 +47,7 @@ def course_overview(update: Update, context: CallbackContext) -> int:
     if len(lectures) > 1:
         keyboard.append([
             InlineKeyboardButton(
-                f"{language['download']} {language['all']} {language['lectures']}".capitalize(),
+                f"{language['download']} {language['all']} {language['lectures']}".title(),
                 callback_data=f'{LECTURES} {course.id}')
         ])
 
@@ -69,10 +70,7 @@ def course_overview(update: Update, context: CallbackContext) -> int:
     if len(refference_exam_row) > 0:
         keyboard.append(refference_exam_row)
 
-    keyboard.append([InlineKeyboardButton(
-        f"{language['back_to_courses']}".capitalize(),
-        callback_data=SUBJECT_LIST),
-    ])
+    keyboard.append([back_to_courses_button(language, user.language)])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -82,8 +80,13 @@ def course_overview(update: Update, context: CallbackContext) -> int:
         )
 
     else:
+        course_name = course.ar_name \
+            if user.language == 'ar' \
+            else course.en_name
+        course_name = course_name if course_name else course.ar_name
+
         query.edit_message_text(
-            text=f"{course.ar_name}".capitalize(),
+            text=f"{course_name}:".title(),
             reply_markup=reply_markup
         )
 

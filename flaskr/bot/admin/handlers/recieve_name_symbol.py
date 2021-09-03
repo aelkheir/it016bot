@@ -8,6 +8,10 @@ from flaskr.bot.admin.handlers.course_overview import course_overview
 from telegram import Update, ReplyKeyboardRemove
 
 
+name_regex = re.compile('الاسم: (\w+(\s\w+)*)( - ((\w+)(\s\w+)*))?', re.UNICODE)
+
+symbol_regex = re.compile('الرمز:\s(.+)', re.UNICODE)
+
 def recieve_name_symbol(update: Update, context: CallbackContext) -> int:
     session = db.session
 
@@ -16,15 +20,20 @@ def recieve_name_symbol(update: Update, context: CallbackContext) -> int:
 
     course_id = context.chat_data['course_id']
 
-    name_regex = re.compile('الاسم:\s(.+)')
     name_match = name_regex.search(update.message.text)
-    symbol_regex = re.compile('الرمز:\s(.+)')
+
     symbol_match = symbol_regex.search(update.message.text)
+    
     course = session.query(Course).filter(Course.id==course_id).one()
 
     if name_match:
-        course_name = name_match.groups()[0]
-        course.ar_name = course_name
+        ar_name = name_match.groups()[0]
+
+        en_name = name_match.groups()[3]
+        en_name = en_name if en_name else ''
+
+        course.ar_name = ar_name
+        course.en_name = en_name
 
     elif symbol_match:
         course_symbol = symbol_match.groups()[0]

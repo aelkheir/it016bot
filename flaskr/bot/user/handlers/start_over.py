@@ -17,16 +17,22 @@ def start_over(update: Update, context: CallbackContext) -> int:
     query = update.callback_query
     query.answer()
 
-    user_required(update, context, session)
+    user = user_required(update, context, session)
     language = context.chat_data['language']
 
     courses =  session.query(Course).order_by(Course.id).all()
 
     keyboard = []
 
+
     for course in courses:
+        course_name = course.ar_name \
+            if user.language == 'ar' \
+            else course.en_name
+        course_name = course_name if course_name else course.ar_name
+
         keyboard.append([
-            InlineKeyboardButton(f'{course.ar_name} ({len(course.lectures)})',
+            InlineKeyboardButton(f'{course_name} ({len(course.lectures)})'.title(),
             callback_data=f'{COURSE} {course.id}'),
         ])
 

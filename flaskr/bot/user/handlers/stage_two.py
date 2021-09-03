@@ -1,8 +1,9 @@
+from flaskr.bot.utils.buttons import back_to_course_button, back_to_courses_button
 from flaskr.bot.utils.user_required import user_required
 from flaskr.models import Course, Lecture, User
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import COURSE, EXAM, EXAMS, FILE, LECTURE, REFFERENCES, REFFERENCE, STAGE_THREE, SUBJECT_LIST
+from flaskr.bot.user.user_constants import COURSE, EXAM, EXAMS, FILE, LECTURE, REFFERENCES, REFFERENCE, STAGE_THREE
 from flaskr import db
 
 back_icon ='»'
@@ -13,7 +14,7 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
     query = update.callback_query
     query.answer()
 
-    user_required(update, context, session)
+    user = user_required(update, context, session)
     language = context.chat_data['language']
 
     course_id, lecture_id = query.data.split(' ')
@@ -42,20 +43,24 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
 
     if len(lecture.documents) + len(lecture.videos) + len(lecture.youtube_links) > 1:
         keyboard.append([InlineKeyboardButton(
-            f"{language['download']} {language['all']} {language['files']}".capitalize(),
+            f"{language['download']} {language['all']} {language['files']}".title(),
             callback_data=f'{LECTURE} {lecture.id}')
         ])
 
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
+
+
     keyboard.append([
-        InlineKeyboardButton(f'{course.ar_name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
-        InlineKeyboardButton(
-        f"{language['back_to_courses']}".capitalize(),
-         callback_data=SUBJECT_LIST)
+        back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
+        back_to_courses_button(language, user.language)
     ])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{course.ar_name} - {language['lecture']} {lecture.lecture_number}".capitalize(), reply_markup=reply_markup
+        text=f"{course_name}: {language['lecture']} {lecture.lecture_number}".title(), reply_markup=reply_markup
     )
 
     session.close()
@@ -68,7 +73,7 @@ def send_all_lectures(update: Update, context: CallbackContext) -> int:
     query = update.callback_query
     query.answer()
 
-    user_required(update, context, session)
+    user = user_required(update, context, session)
     language = context.chat_data['language']
 
     _, course_id = query.data.split(' ')
@@ -79,9 +84,14 @@ def send_all_lectures(update: Update, context: CallbackContext) -> int:
     user_id = context.user_data['user_id']
     user = session.query(User).filter(User.id==user_id).one()
 
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
+
     for lecture in course.lectures:
         query.message.reply_text(
-            f"---- {course.ar_name} - {language['lecture']} {lecture.lecture_number} ----".capitalize()
+            f"- {course_name.title()}: {language['lecture'].capitalize()} {lecture.lecture_number}"
         )
 
         for doc in lecture.documents:
@@ -107,12 +117,17 @@ def list_lecture_refferences(update: Update, context: CallbackContext) -> int:
     query = update.callback_query
     query.answer()
 
-    user_required(update, context, session)
+    user = user_required(update, context, session)
     language = context.chat_data['language']
 
     course_id, _ = query.data.split(' ')
 
     course = session.query(Course).filter(Course.id==course_id).one()
+
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
 
     keyboard = []
 
@@ -123,20 +138,18 @@ def list_lecture_refferences(update: Update, context: CallbackContext) -> int:
 
     if len(course.refferences) > 1:
         keyboard.append([InlineKeyboardButton(
-            f"{language['download']} {language['all']} {language['references']}".capitalize(),
+            f"{language['download']} {language['all']} {language['references']}".title(),
             callback_data=f'{REFFERENCES} {course.id}'),
         ])
 
     keyboard.append([
-        InlineKeyboardButton(f'{course.ar_name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
-        InlineKeyboardButton(
-            f"{language['back_to_courses']}".capitalize(),
-            callback_data=SUBJECT_LIST),
+        back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
+        back_to_courses_button(language, user.language)
     ])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{language['genitive'](course.ar_name, language['indifinite_references'])}".capitalize(),
+        text=f"{course_name.title()}: {language['references'].capitalize()}",
         reply_markup=reply_markup
     )
     return STAGE_THREE
@@ -147,12 +160,17 @@ def list_lecture_exams(update: Update, context: CallbackContext) -> int:
     query = update.callback_query
     query.answer()
 
-    user_required(update, context, session)
+    user = user_required(update, context, session)
     language = context.chat_data['language']
 
     course_id, _ = query.data.split(' ')
 
     course = session.query(Course).filter(Course.id==course_id).one()
+
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
 
     keyboard = []
 
@@ -163,21 +181,19 @@ def list_lecture_exams(update: Update, context: CallbackContext) -> int:
 
     if len(course.exams) > 1:
         keyboard.append([InlineKeyboardButton(
-            f"{language['download']} {language['all']} {language['exams']}".capitalize(),
+            f"{language['download']} {language['all']} {language['exams']}".title(),
             callback_data=f'{EXAMS} {course.id}'),
         ])
 
     keyboard.append([
-        InlineKeyboardButton(f'{course.ar_name} {back_icon}', callback_data=f'{COURSE} {course.id}'),
-        InlineKeyboardButton(
-            f"{language['back_to_courses']}".capitalize(),
-            callback_data=SUBJECT_LIST),
+        back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
+        back_to_courses_button(language, user.language)
     ])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     query.edit_message_text(
-        text=f"{language['genitive'](course.ar_name, language['indifinite_exams'])}".capitalize(),
+        text=f"{course_name.title()}: {language['exams'].capitalize()}",
         reply_markup=reply_markup
     )
     return STAGE_THREE

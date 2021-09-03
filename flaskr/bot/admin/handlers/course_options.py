@@ -118,12 +118,12 @@ def edit_name_symbol(update: Update, context: CallbackContext) -> int:
     option = option_match.groups()[0]
     example = ''
     if option == 'اسم':
-        example = f'''الاسم: اسم المادة
+        example = f'''الاسم: اسم المادة [- الاسم بالنجليزية]
         مثال:
-        الاسم: فيزياء نووية
+        الاسم: فيزياء نووية - Nucliar Physics
         '''
     elif option == 'رمز':
-        example = f'''الرمز: (حرف)(حرف)(حرف)(عدد)(عدد)(عدد)
+        example = f'''الرمز: رمز المادة
     مثال:
     الرمز: فيز102'''
 

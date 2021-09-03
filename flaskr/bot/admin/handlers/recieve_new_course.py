@@ -8,7 +8,11 @@ from flaskr.bot.admin.handlers.admin_handler import admin_handler
 from telegram import Update
 
 
-new_coures_regex = re.compile(f'الاسم:\s(.*)\nالرمز:\s(...\d\d\d)')
+new_coures_regex = re.compile(
+    f'الاسم: (\w+(\s\w+)*)( - ((\w+)(\s\w+)*))?\n'
+    'الرمز:\s(...\d\d\d)',
+    re.UNICODE
+)
 
 def recieve_new_course(update: Update, context: CallbackContext) -> int:
     session = db.session
@@ -20,16 +24,27 @@ def recieve_new_course(update: Update, context: CallbackContext) -> int:
     new_coures_match = new_coures_regex.search(update.message.text)
 
     if new_coures_match:
-        course_name = new_coures_match.groups()[0]
-        course_symbol = new_coures_match.groups()[1]
-        course = Course(name=course_name, course_symbol=course_symbol)
+        ar_name = new_coures_match.groups()[0]
+
+        en_name = new_coures_match.groups()[3]
+        en_name = en_name if en_name else ''
+
+        course_symbol = new_coures_match.groups()[-1]
+
+        course = Course(
+            ar_name=ar_name,
+            en_name=en_name,
+            course_symbol=course_symbol,
+        )
+
         session.add(course)
 
-        update.message.reply_text(f'تم اضافة {course.ar_name} {course.course_symbol}')
 
 
         session.commit()
         session.close()
+
+        update.message.reply_text(f'تم اضافة {ar_name} {course_symbol}')
 
         return admin_handler(update, context)
 

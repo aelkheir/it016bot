@@ -1,5 +1,5 @@
 from flaskr.bot.utils.user_required import user_required
-from flaskr.models import  Course, Document, Exam, Lecture, Refference, User, Video, YoutubeLink
+from flaskr.models import  Course, Document, Exam, Lecture, Refference,  Video, YoutubeLink
 from flaskr import db
 from telegram.ext import  CallbackContext
 from telegram import  Update
@@ -49,8 +49,12 @@ def send_all_lecture_files(update: Update, context: CallbackContext) -> int:
 
     lecture = session.query(Lecture).filter(Lecture.id==lecture_id).one()
 
+    course_name = lecture.course.ar_name \
+        if user.language == 'ar' \
+        else lecture.course.en_name
+
     query.message.reply_text(
-        f"---- {lecture.course.ar_name} - {language['lecture']} {lecture.lecture_number} ----".capitalize()
+        f"- {course_name.title()}: {language['lecture'].capitalize()} {lecture.lecture_number}"
     )
 
     for doc in lecture.documents:
@@ -102,9 +106,14 @@ def send_all_course_refferences(update: Update, context: CallbackContext) -> int
 
     course = session.query(Course).filter(Course.id==course_id).one()
 
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
+
     if len(course.refferences) > 0:
         query.message.reply_text(
-        f"{language['genitive'](course.ar_name, language['indifinite_references'])}".capitalize(),
+        f"{course_name.title()}: {language['references'].capitalize()}",
         )
         for refference in course.refferences:
             query.bot.sendDocument(query.message.chat.id, document=refference.file_id)
@@ -152,10 +161,15 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
 
     course = session.query(Course).filter(Course.id==course_id).one()
 
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
+
     if len(course.exams) > 0:
 
         query.message.reply_text(
-            f"{language['genitive'](course.ar_name, language['indifinite_exams'])}".capitalize(),
+            f"{course_name.title()}: {language['exams'].capitalize()}",
         )
 
         for exam in course.exams:

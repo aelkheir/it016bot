@@ -58,8 +58,8 @@ def add_course(update: Update, context: CallbackContext) -> int:
         return
 
     update.message.reply_text('''ادخل اسم ورمز المادة على الشكل:
-    الاسم: (اسم المادة)
-    الرمز: (حرف)(حرف)(حرف)(عدد)(عدد)(عدد)
+    الاسم: اسم المادة [- الاسم بالنجليزية]
+    الرمز: رمز المادة
     مثال:
     الاسم: فيزياء نووية
     الرمز: فيز101''', reply_markup=ReplyKeyboardRemove())

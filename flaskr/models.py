@@ -24,6 +24,7 @@ class Course(db.Model):
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
     course_symbol = db.Column(db.String(50), unique=True)
     ar_name = db.Column(db.String(100))
+    en_name = db.Column(db.String(100), default='')
 
     lectures = db.relationship("Lecture", back_populates = 'course', cascade="all, delete")
     refferences = db.relationship("Refference", back_populates = 'course', cascade="all, delete")
