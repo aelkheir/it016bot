@@ -1,3 +1,4 @@
+from flaskr.models import User
 from flaskr.bot.utils.set_bot_commands import set_bot_commands
 from telegram.ext.filters import Filters
 from flaskr.bot.utils.user_required import user_required
@@ -17,7 +18,7 @@ RECIEVE_CHOICE = 0
 def language_handler(update: Update, context: CallbackContext):
     session = db.session
 
-    user = user_required(update, context, session)
+    user_required(update, context, session)
     language = context.chat_data['language']
 
     reply_keyboard = [
@@ -38,6 +39,8 @@ def recieve_language_choice(update: Update, context: CallbackContext):
 
     user = user_required(update, context, session)
 
+    user = session.query(User).filter(User.id==user.id).one()
+
     language_choice = update.message.text
 
     success = False
@@ -50,9 +53,10 @@ def recieve_language_choice(update: Update, context: CallbackContext):
         user.language = 'en'
         success = True
     
-    session.commit()
 
     if success:
+
+        session.commit()
 
         # write to context
         context.chat_data['language'] = ar\

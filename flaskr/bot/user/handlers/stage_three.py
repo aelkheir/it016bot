@@ -1,5 +1,5 @@
 from flaskr.bot.utils.user_required import user_required
-from flaskr.models import  Course, Document, Exam, Lecture, Refference,  Video, YoutubeLink
+from flaskr.models import  Course, Document, Exam, Lecture, Refference, User,  Video, YoutubeLink
 from flaskr import db
 from telegram.ext import  CallbackContext
 from telegram import  Update
@@ -13,6 +13,7 @@ def send_lecture_file(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
+    user = session.query(User).filter(User.id==user.id).one()
 
     _, file_id = query.data.split(' ')
 
@@ -43,6 +44,8 @@ def send_all_lecture_files(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
+    user = session.query(User).filter(User.id==user.id).one()
+
     language = context.chat_data['language']
 
     _, lecture_id = query.data.split(' ')
@@ -80,6 +83,7 @@ def send_course_refference(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
+    user = session.query(User).filter(User.id==user.id).one()
 
     _, refference_id = query.data.split(' ')
 
@@ -100,6 +104,8 @@ def send_all_course_refferences(update: Update, context: CallbackContext) -> int
     query.answer()
 
     user = user_required(update, context, session)
+    user = session.query(User).filter(User.id==user.id).one()
+
     language = context.chat_data['language']
 
     _, course_id = query.data.split(' ')
@@ -130,6 +136,7 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
+    user = session.query(User).filter(User.id==user.id).one()
 
     _, exam_id = query.data.split(' ')
 
@@ -155,6 +162,8 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
+    user = session.query(User).filter(User.id==user.id).one()
+    
     language = context.chat_data['language']
 
     _, course_id = query.data.split(' ')

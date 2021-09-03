@@ -1,6 +1,6 @@
 from flaskr.bot.utils.user_required import user_required
 import logging
-from flaskr.models import Course
+from flaskr.models import Course, User
 from flaskr import db
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -20,6 +20,8 @@ def start(update: Update, context: CallbackContext) -> int:
 
     user = user_required(update, context, session)
     language = context.chat_data['language']
+
+    user = session.query(User).filter(User.id==user.id).one()
 
     user.start_count += 1
 
