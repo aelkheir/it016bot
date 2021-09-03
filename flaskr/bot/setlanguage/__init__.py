@@ -33,7 +33,7 @@ def language_handler(update: Update, context: CallbackContext):
 
     return RECIEVE_CHOICE
 
-def language_choice(update: Update, context: CallbackContext):
+def recieve_language_choice(update: Update, context: CallbackContext):
     session = db.session
 
     user = user_required(update, context, session)
@@ -76,7 +76,7 @@ language_conv = ConversationHandler(
     entry_points=[CommandHandler('setlanguage', language_handler)],
     states={
         RECIEVE_CHOICE: {
-            MessageHandler(Filters.text & ~ Filters.command, language_choice)
+            MessageHandler(Filters.text & ~ Filters.command, recieve_language_choice)
         }
     },
     fallbacks=[MessageHandler(Filters.command, cancel_conversation)],

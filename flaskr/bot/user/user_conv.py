@@ -1,5 +1,5 @@
-from telegram.ext import CallbackQueryHandler, CommandHandler, ConversationHandler, MessageHandler
-from telegram.ext.filters import Filters
+from flaskr.bot.user.handlers.course_handler import course_handler
+from telegram.ext import CallbackQueryHandler, CommandHandler, ConversationHandler, MessageHandler, Filters
 import flaskr.bot.user.user_constants as constants
 from flaskr.bot.user.handlers.start import start
 from flaskr.bot.user.handlers.start_over import start_over
@@ -9,8 +9,13 @@ from flaskr.bot.user.handlers.course_overview import course_overview
 from flaskr.bot.utils.cancel_conversation import cancel_conversation
 
 
+
 user_conv = ConversationHandler(
-    entry_points=[CommandHandler('start', start), CommandHandler('courses', start)],
+    entry_points=[
+        CommandHandler('start', start),
+        CommandHandler('courses', start),
+        MessageHandler(Filters.regex(r'^/\w+\d+$'), course_handler)
+    ],
     states={
         constants.COURSE_OVERVIEW: [
             CallbackQueryHandler(course_overview, pattern='^' + f'{constants.COURSE} \d+' + '$'),

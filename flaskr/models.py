@@ -23,6 +23,7 @@ class Course(db.Model):
 
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
     course_symbol = db.Column(db.String(50), unique=True)
+    en_course_symbol = db.Column(db.String(50), default='')
     ar_name = db.Column(db.String(100))
     en_name = db.Column(db.String(100), default='')
 

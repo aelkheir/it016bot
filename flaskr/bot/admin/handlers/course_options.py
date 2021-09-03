@@ -123,7 +123,7 @@ def edit_name_symbol(update: Update, context: CallbackContext) -> int:
         الاسم: فيزياء نووية - Nucliar Physics
         '''
     elif option == 'رمز':
-        example = f'''الرمز: رمز المادة
+        example = f'''الرمز: رمز المادة [- الرمز بالانجليزية]
     مثال:
     الرمز: فيز102'''
 

@@ -11,18 +11,21 @@ from flaskr import db
 back_icon = '»'
 
 
-def course_overview(update: Update, context: CallbackContext) -> int:
+def course_overview(update: Update, context: CallbackContext, course_id=None) -> int:
     session = db.session
 
     query = update.callback_query
-    query.answer()
+    if not course_id:
+        query.answer()
 
     user = user_required(update, context, session)
     language = context.chat_data['language']
 
-    _, course_id = query.data.split(' ')
 
-    course = session.query(Course).filter(Course.id == course_id).one()
+    if not course_id:
+        _, course_id = query.data.split(' ')
+
+    course =  session.query(Course).filter(Course.id == course_id).one()
 
     lectures = session.query(Lecture)\
         .filter(Lecture.course_id == course_id)\
@@ -75,9 +78,14 @@ def course_overview(update: Update, context: CallbackContext) -> int:
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     if len(course.lectures) == 0 and len(course.refferences) == 0 and len(course.exams) == 0:
-        query.edit_message_text(
-            text=f"{language['nothing_yet']}.".capitalize(), reply_markup=reply_markup
-        )
+        if update.callback_query:
+            query.edit_message_text(
+                text=f"{language['nothing_yet']}.".capitalize(), reply_markup=reply_markup
+            )
+        elif update.message:
+            update.message.reply_text(
+                text=f"{language['nothing_yet']}.".capitalize(), reply_markup=reply_markup
+            )
 
     else:
         course_name = course.ar_name \
@@ -85,10 +93,16 @@ def course_overview(update: Update, context: CallbackContext) -> int:
             else course.en_name
         course_name = course_name if course_name else course.ar_name
 
-        query.edit_message_text(
-            text=f"{course_name}:".title(),
-            reply_markup=reply_markup
-        )
+        if update.callback_query:
+            query.edit_message_text(
+                text=f"{course_name}:".title(),
+                reply_markup=reply_markup
+            )
+        elif update.message:
+            update.message.reply_text(
+                f"{course_name}:".title(),
+                reply_markup=reply_markup
+            )
 
     session.close()
     return STAGE_TWO

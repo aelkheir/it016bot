@@ -9,8 +9,8 @@ from telegram import Update
 
 
 new_coures_regex = re.compile(
-    f'الاسم: (\w+(\s\w+)*)( - ((\w+)(\s\w+)*))?\n'
-    'الرمز:\s(...\d\d\d)',
+    r'الاسم: (\w+(\s\w+)*)( - ((\w+)(\s\w+)*))?\n'
+    r'الرمز: (\w{3}\d{3})( - (\w+\d+))?',
     re.UNICODE
 )
 
@@ -29,22 +29,24 @@ def recieve_new_course(update: Update, context: CallbackContext) -> int:
         en_name = new_coures_match.groups()[3]
         en_name = en_name if en_name else ''
 
-        course_symbol = new_coures_match.groups()[-1]
+        ar_course_symbol = new_coures_match.groups()[6]
+
+        en_course_symbol = new_coures_match.groups()[8]
+        en_course_symbol = en_course_symbol if en_course_symbol else ''
 
         course = Course(
             ar_name=ar_name,
             en_name=en_name,
-            course_symbol=course_symbol,
+            course_symbol=ar_course_symbol,
+            en_course_symbol=en_course_symbol,
         )
 
         session.add(course)
 
-
-
         session.commit()
         session.close()
 
-        update.message.reply_text(f'تم اضافة {ar_name} {course_symbol}')
+        update.message.reply_text(f'تم اضافة {ar_name} {ar_course_symbol}')
 
         return admin_handler(update, context)
 
