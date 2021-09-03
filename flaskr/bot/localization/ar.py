@@ -25,7 +25,7 @@ ar = {
     'choose_bot_language': 'اختر لغة البوت',
     'language_set_to': 'تم وضع اللغة للعربية',
 
-    'back_to': 'عُد ل',
+    'back_to': 'العودة ل',
 
     'language_settings': 'اعدادات اللغة',
 
