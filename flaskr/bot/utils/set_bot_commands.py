@@ -12,7 +12,9 @@ def get_settings_commands(language):
 def get_user_commands(language, user_language):
     session = db.session()
 
-    courses = session.query(Course).filter(Course.en_course_symbol!='')
+    courses = session.query(Course)\
+        .filter(Course.en_course_symbol!='')\
+        .order_by(Course.id).all()
 
     courses_commands = []
 
