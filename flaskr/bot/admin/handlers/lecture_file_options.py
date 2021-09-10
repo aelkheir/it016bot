@@ -1,6 +1,5 @@
-from flaskr.bot.admin.handlers.lecture_options import edit_file
 from flaskr.bot.utils.is_admin import is_admin
-from flaskr.bot.admin.handlers.lectures_list import list_files
+from flaskr.bot.admin.handlers.lectures_list import list_lecture_files
 from flaskr import db
 from flaskr.models import  Document, Lecture, Video, YoutubeLink
 from telegram.ext import CallbackContext, CallbackContext
@@ -40,8 +39,6 @@ def delete_file(update: Update, context: CallbackContext) -> int:
     lecture_id = context.chat_data['lecture_id']
     file_name = context.chat_data['file_name']
 
-    lecture = session.query(Lecture).filter(Lecture.id==lecture_id).one()
-
     file = fetch_file(lecture_id, file_name, session)
     
     if file:
@@ -51,14 +48,13 @@ def delete_file(update: Update, context: CallbackContext) -> int:
     if not file:
         update.message.reply_text(f'حدث خطا: لا يوجد {file}')
     
-    lecture_number = lecture.lecture_number
 
     # delete from to context
     del context.chat_data['file_name']
 
     session.commit()
     session.close()
-    return list_files(update, context, lecture_id=lecture_id)
+    return list_lecture_files(update, context, lecture_id=lecture_id)
 
 def send_file(update: Update, context: CallbackContext) -> int:
     session = db.session

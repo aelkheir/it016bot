@@ -28,6 +28,7 @@ class Course(db.Model):
     en_name = db.Column(db.String(100), default='')
 
     lectures = db.relationship("Lecture", back_populates = 'course', cascade="all, delete")
+    labs = db.relationship("Lab", back_populates = 'course', cascade="all, delete")
     refferences = db.relationship("Refference", back_populates = 'course', cascade="all, delete")
     exams = db.relationship("Exam", back_populates = 'course', cascade="all, delete")
 
@@ -50,6 +51,22 @@ class Lecture(db.Model):
     def __repr__(self):
         return f"<Lecture(Course='{self.course.course_symbol}', No='{self.lecture_number}')>"
 
+class Lab(db.Model):
+    __tablename__ = 'labs'
+
+    id = db.Column(db.Integer,  db.Sequence('user_id_seq'), primary_key=True )
+    lab_number = db.Column(db.Integer)
+
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
+    course = db.relationship("Course", back_populates="labs", cascade="save-update")
+
+    documents = db.relationship("Document", back_populates = 'lab', cascade="all, delete")
+    videos = db.relationship("Video", back_populates = 'lab', cascade="all, delete")
+    youtube_links = db.relationship("YoutubeLink", back_populates = 'lab', cascade="all, delete")
+
+    def __repr__(self):
+        return f"<Lab(Course='{self.course.ar_name}', No='{self.lab_number}')>"
+
 
 class Document(db.Model):
     __tablename__ = 'documents'
@@ -61,6 +78,10 @@ class Document(db.Model):
 
     lecture_id = db.Column(db.Integer, db.ForeignKey('lectures.id'))
     lecture = db.relationship("Lecture", back_populates="documents", cascade="save-update")
+
+    lab_id = db.Column(db.Integer, db.ForeignKey('labs.id'))
+    lab = db.relationship("Lab", back_populates="documents", cascade="save-update")
+
     def __repr__(self):
         return f"<Document(Course='{self.lecture.course.ar_name}', lecture='{self.lecture.lecture_number}')>"
 
@@ -74,6 +95,10 @@ class Video(db.Model):
 
     lecture_id = db.Column(db.Integer, db.ForeignKey('lectures.id'))
     lecture = db.relationship("Lecture", back_populates="videos", cascade="save-update")
+
+    lab_id = db.Column(db.Integer, db.ForeignKey('labs.id'))
+    lab = db.relationship("Lab", back_populates="videos", cascade="save-update")
+
     def __repr__(self):
         return f"<Video(Course='{self.lecture.course.ar_name}', lecture='{self.lecture.lecture_number}')>"
 
@@ -87,6 +112,10 @@ class YoutubeLink(db.Model):
 
     lecture_id = db.Column(db.Integer, db.ForeignKey('lectures.id'))
     lecture = db.relationship("Lecture", back_populates="youtube_links", cascade="save-update")
+
+    lab_id = db.Column(db.Integer, db.ForeignKey('labs.id'))
+    lab = db.relationship("Lab", back_populates="youtube_links", cascade="save-update")
+
     def __repr__(self):
         return f"<YoutubeLink(Course='{self.lecture.course.ar_name}', lecture='{self.lecture.lecture_number}')>"
 

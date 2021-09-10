@@ -4,11 +4,10 @@ import math
 from flaskr.models import Course, Lecture
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import ALL, EXAMS, LECTURES, REFFERENCES, STAGE_TWO
+from flaskr.bot.user.user_constants import  EXAMS, LABS, LECTURE, LECTURES, REFFERENCES, STAGE_TWO
 from flaskr import db
 
 
-back_icon = '»'
 
 
 def course_overview(update: Update, context: CallbackContext, course_id=None) -> int:
@@ -43,8 +42,12 @@ def course_overview(update: Update, context: CallbackContext, course_id=None) ->
             lecture = lectures[lecture_index]
             row.append(InlineKeyboardButton(
                 f"{language['lecture']} {lecture.lecture_number}".capitalize(),
-                callback_data=f'{course.id} {lecture.id}'),
+                callback_data=f'{LECTURE} {lecture.id}'),
             )
+
+        if user.language == 'ar':
+            row.reverse()
+
         keyboard.append(row)
     
     if len(lectures) > 1:
@@ -54,24 +57,33 @@ def course_overview(update: Update, context: CallbackContext, course_id=None) ->
                 callback_data=f'{LECTURES} {course.id}')
         ])
 
-    refference_exam_row = []
+
+    refference_lab_row = []
 
     if len(course.refferences) > 0:
-        refference_exam_row.append(
+        refference_lab_row.append(
             InlineKeyboardButton(
                 f"{language['references']} ({len(course.refferences)})".capitalize(),
                 callback_data=f'{course.id} {REFFERENCES}'),
         )
 
+    if len(course.labs) > 0:
+        refference_lab_row.append(
+            InlineKeyboardButton(
+                f"{language['labs']} ({len(course.labs)})".capitalize(),
+                callback_data=f'{course.id} {LABS}'
+        ))
+
+    if len(refference_lab_row) > 0:
+        keyboard.append(refference_lab_row)
+
     if len(course.exams) > 0:
-        refference_exam_row.append(
+        keyboard.append([
             InlineKeyboardButton(
                 f"{language['exams']} ({len(course.exams)})".capitalize(),
-                callback_data=f'{course.id} {EXAMS}'),
-        )
-
-    if len(refference_exam_row) > 0:
-        keyboard.append(refference_exam_row)
+                callback_data=f'{course.id} {EXAMS}'
+            )
+        ])
 
     keyboard.append([back_to_courses_button(language, user.language)])
 

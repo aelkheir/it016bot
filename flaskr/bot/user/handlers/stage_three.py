@@ -1,12 +1,73 @@
+from flaskr.bot.utils.buttons import back_to_labs_button
+from flaskr.bot.user.user_constants import FILE, LAB, STAGE_FOURE
 from flaskr.bot.utils.user_required import user_required
-from flaskr.models import  Course, Document, Exam, Lecture, Refference, User,  Video, YoutubeLink
+from flaskr.models import  Course, Document, Exam, Lab, Lecture, Refference, User,  Video, YoutubeLink
 from flaskr import db
 from telegram.ext import  CallbackContext
-from telegram import  Update
+from telegram import  Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 
+def list_lab_files(update: Update, context: CallbackContext) -> int:
+    session = db.session
 
-def send_lecture_file(update: Update, context: CallbackContext) -> int:
+    query = update.callback_query
+    query.answer()
+
+    user = user_required(update, context, session)
+    language = context.chat_data['language']
+
+    _, lab_id = query.data.split(' ')
+
+    lab = session.query(Lab).filter(Lab.id==lab_id).one()
+    course = lab.course
+
+
+    keyboard = []
+
+    for document in lab.documents:
+        keyboard.append([
+            InlineKeyboardButton(f'{document.file_name}', callback_data=f'{FILE} {document.id}')
+        ])
+
+    for video in lab.videos:
+        keyboard.append([
+            InlineKeyboardButton(f'{video.file_name}', callback_data=f'{FILE} {video.id}')
+        ])
+
+    for youtube_link in lab.youtube_links:
+        keyboard.append([
+            InlineKeyboardButton(f'{youtube_link.video_title}',
+            callback_data=f'{FILE} {youtube_link.id}')
+        ])
+
+    if len(lab.documents) + len(lab.videos) + len(lab.youtube_links) > 1:
+        keyboard.append([InlineKeyboardButton(
+            f"{language['download']} {language['all']} {language['files']}".title(),
+            callback_data=f'{LAB} {lab.id}')
+        ])
+
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
+
+
+    keyboard.append([
+        back_to_labs_button(language, user.language, course.id),
+    ])
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    query.edit_message_text(
+        text=f"{course_name}: {language['lab']} {lab.lab_number}".title(),
+        reply_markup=reply_markup
+    )
+
+    session.close()
+    return STAGE_FOURE
+
+
+def send_file(update: Update, context: CallbackContext) -> int:
     session = db.session
 
     query = update.callback_query

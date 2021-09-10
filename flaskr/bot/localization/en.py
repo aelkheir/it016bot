@@ -8,6 +8,7 @@ en = {
     'courses': 'courses',
     'lectures': 'lectures',
     'references': 'references',
+    'labs': 'labs',
     'exams': 'exams',
     'files': 'files',
 
@@ -19,6 +20,7 @@ en = {
     'owner': 'owner',
 
     'lecture': 'lecture',
+    'lab': 'lab',
 
     'download': 'download',
     'all': 'all',

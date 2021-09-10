@@ -5,7 +5,7 @@ from flaskr import db
 from flaskr.models import  Lecture
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update 
-from flaskr.bot.admin.handlers.lectures_list import list_files
+from flaskr.bot.admin.handlers.lectures_list import list_lecture_files
 
 
 
@@ -26,7 +26,7 @@ def recieve_lecture_number(update: Update, context: CallbackContext) -> int:
         lecture.lecture_number = number_match.group()
         session.commit()
         session.close()
-        return list_files(update, context, lecture_id=lecture_id)
+        return list_lecture_files(update, context, lecture_id=lecture_id)
 
     else:
         update.message.reply_text(f'''الرجاء ادخل رقم المحاضرة مباشرة، مثال:

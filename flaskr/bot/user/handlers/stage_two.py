@@ -1,9 +1,10 @@
-from flaskr.bot.utils.buttons import back_to_course_button, back_to_courses_button
+import math
+from flaskr.bot.utils.buttons import back_to_course_button
 from flaskr.bot.utils.user_required import user_required
 from flaskr.models import Course, Lecture, User
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import COURSE, EXAM, EXAMS, FILE, LECTURE, REFFERENCES, REFFERENCE, STAGE_THREE
+from flaskr.bot.user.user_constants import COURSE, EXAM, EXAMS, FILE, LAB, LABS, LECTURE, REFFERENCES, REFFERENCE, STAGE_THREE
 from flaskr import db
 
 back_icon ='»'
@@ -17,7 +18,7 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
     user = user_required(update, context, session)
     language = context.chat_data['language']
 
-    course_id, lecture_id = query.data.split(' ')
+    _, lecture_id = query.data.split(' ')
 
     lecture = session.query(Lecture).filter(Lecture.id==lecture_id).one()
     course = lecture.course
@@ -55,8 +56,8 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
 
     keyboard.append([
         back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
-        back_to_courses_button(language, user.language)
     ])
+
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
@@ -111,7 +112,7 @@ def send_all_lectures(update: Update, context: CallbackContext) -> int:
     return None
 
 
-def list_lecture_refferences(update: Update, context: CallbackContext) -> int:
+def list_course_refferences(update: Update, context: CallbackContext) -> int:
     session = db.session
 
     query = update.callback_query
@@ -144,7 +145,6 @@ def list_lecture_refferences(update: Update, context: CallbackContext) -> int:
 
     keyboard.append([
         back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
-        back_to_courses_button(language, user.language)
     ])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -154,7 +154,68 @@ def list_lecture_refferences(update: Update, context: CallbackContext) -> int:
     )
     return STAGE_THREE
 
-def list_lecture_exams(update: Update, context: CallbackContext) -> int:
+
+def list_course_labs(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    query = update.callback_query
+    query.answer()
+
+    user = user_required(update, context, session)
+    language = context.chat_data['language']
+
+    course_id, _ = query.data.split(' ')
+
+    course = session.query(Course).filter(Course.id==course_id).one()
+
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
+
+    labs = course.labs
+
+    keyboard = []
+
+    for row_index in range(0, math.ceil(len(labs) / 3)):
+        row = []
+        is_row_full = len(labs) // 3 >= row_index + 1
+        row_size = 3 if is_row_full else len(labs) % 3
+        row_start = row_index * 3
+
+        for lab_index in range(row_start, row_start + row_size):
+            lab = labs[lab_index]
+            row.append(InlineKeyboardButton(
+                f"{language['lab']} {lab.lab_number}".capitalize(),
+                callback_data=f'{LAB} {lab.id}'),
+            )
+
+        if user.language == 'ar':
+            row.reverse()
+
+        keyboard.append(row)
+
+
+    if len(course.labs) > 1:
+        keyboard.append([InlineKeyboardButton(
+            f"{language['download']} {language['all']} {language['labs']}".title(),
+            callback_data=f'{LABS} {course.id}'),
+        ])
+
+    keyboard.append([
+        back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
+    ])
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    query.edit_message_text(
+        text=f"{course_name.title()}: {language['labs'].capitalize()}",
+        reply_markup=reply_markup
+    )
+    return STAGE_THREE
+
+
+def list_course_exams(update: Update, context: CallbackContext) -> int:
     session = db.session
 
     query = update.callback_query
@@ -187,7 +248,6 @@ def list_lecture_exams(update: Update, context: CallbackContext) -> int:
 
     keyboard.append([
         back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
-        back_to_courses_button(language, user.language)
     ])
 
     reply_markup = InlineKeyboardMarkup(keyboard)

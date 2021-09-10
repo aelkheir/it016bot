@@ -21,7 +21,8 @@ def course_overview(update: Update, context: CallbackContext, course_name=None) 
     context.chat_data['course_id'] = course.id
 
     reply_keyboard = []
-    reply_keyboard.append(['المحاضرات', 'المراجع', 'الامتحانات'])
+    reply_keyboard.append(['المحاضرات', 'المراجع', 'اللابات'])
+    reply_keyboard.append(['الامتحانات'])
     reply_keyboard.append(['تعديل الاسم', 'تعديل الرمز'])
     reply_keyboard.append(['حذف المادة'])
     reply_keyboard.append(['رجوع'])

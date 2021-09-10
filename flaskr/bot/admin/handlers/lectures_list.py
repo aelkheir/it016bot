@@ -9,7 +9,7 @@ from telegram.replykeyboardmarkup import ReplyKeyboardMarkup
 from flaskr.bot.admin.handlers.course_options import list_lectures
 
 
-def list_files(update: Update, context: CallbackContext, lecture_id=None) -> int:
+def list_lecture_files(update: Update, context: CallbackContext, lecture_id=None) -> int:
 
     if 'file_name' in context.chat_data:
         del context.chat_data['file_name']
@@ -60,7 +60,7 @@ def list_files(update: Update, context: CallbackContext, lecture_id=None) -> int
     return LECTURE_OPTIONS
 
 
-def to_list_files(update: Update, context: CallbackContext) -> int:
+def to_list_lecture_files(update: Update, context: CallbackContext) -> int:
     session = db.session
 
     if not is_admin(update, context, session):
@@ -70,7 +70,7 @@ def to_list_files(update: Update, context: CallbackContext) -> int:
     lecture_id = context.chat_data['lecture_id']
 
     session.close()
-    return list_files(update, context, lecture_id=lecture_id)
+    return list_lecture_files(update, context, lecture_id=lecture_id)
 
 def add_lecture(update: Update, context: CallbackContext) -> int:
     session = db.session

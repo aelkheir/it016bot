@@ -1,9 +1,9 @@
 from flaskr.bot.utils.is_admin import is_admin
 import re
-from flaskr.bot.admin.admin_constants import CONFIRM_COURSE_DELETION, EXAMS_LIST, RECIEVE_NAME_SYMBOL, LECTURES_LIST, REFFERENCES_LIST
+from flaskr.bot.admin.admin_constants import CONFIRM_COURSE_DELETION, EXAMS_LIST, LABS_LIST, RECIEVE_NAME_SYMBOL, LECTURES_LIST, REFFERENCES_LIST
 import math
 from flaskr import db
-from flaskr.models import Course, Lecture
+from flaskr.models import Course, Lab, Lecture
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update, ReplyKeyboardRemove
 from telegram.replykeyboardmarkup import ReplyKeyboardMarkup
@@ -43,13 +43,58 @@ def list_lectures(update: Update, context: CallbackContext) -> int:
         reply_keyboard.append(row)
 
     reply_keyboard.append(['رجوع', 'اضافة محاضرة'])
+
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
-    update.message.reply_text(f'{course.ar_name}',
+    update.message.reply_text(f'{course.ar_name}: المحاضرات',
             reply_markup=markup,
     )
 
     session.close()
     return LECTURES_LIST
+
+def list_labs(update: Update, context: CallbackContext) -> int:
+
+    if 'lab_id' in context.chat_data:
+        del context.chat_data['lab_id']
+
+    session = db.session
+
+    if not is_admin(update, context, session):
+        return
+
+    # reads from context
+    course_id = context.chat_data['course_id']
+
+    course = session.query(Course).filter(Course.id==course_id).one()
+
+    labs = session.query(Lab)\
+        .filter(Lab.course_id==course_id)\
+        .order_by(Lab.lab_number).all()
+    
+    reply_keyboard = []
+
+    for row_index in range(0, math.ceil(len(labs) / 3)):
+        row = []
+        is_row_full =  len(labs) // 3 >= row_index + 1
+        row_size = 3 if is_row_full else len(labs) % 3
+        row_start = row_index * 3
+
+        for lab_index in range(row_start, row_start + row_size):
+            lab = labs[lab_index]
+            row.append( f'لاب رقم: {lab.lab_number}\n(id: {lab.id})')
+
+        reply_keyboard.append(row)
+
+    reply_keyboard.append(['رجوع', 'اضافة لاب'])
+
+    markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
+    update.message.reply_text(f'{course.ar_name}: اللابات',
+            reply_markup=markup,
+    )
+
+    session.close()
+    return LABS_LIST
+
 
 
 def list_refferences(update: Update, context: CallbackContext) -> int:
