@@ -1,7 +1,7 @@
 from flaskr.bot.utils.youtube import get_youtube_video
 import re
 from flaskr.bot.utils.is_admin import is_admin
-from flaskr.bot.admin.admin_constants import  RECIEVIE_LAB_FILE, RECIEVIE_LECTURE_FILE
+from flaskr.bot.admin.admin_constants import  RECIEVIE_LAB_FILE
 from flaskr import db
 from flaskr.models import  Document, Lab, Lecture, Video, YoutubeLink
 from telegram.ext import CallbackContext, CallbackContext
@@ -23,7 +23,7 @@ def recieve_lab_file(update: Update, context: CallbackContext) -> int:
     # reads from context
     lab_id = context.chat_data['lab_id']
 
-    lab = session.query(Lab).filter(Lecture.id==lab_id).one()
+    lab = session.query(Lab).filter(Lab.id==lab_id).one()
 
     file_name = ''
     inserted = False
