@@ -3,7 +3,7 @@ import re
 from flaskr.bot.utils.is_admin import is_admin
 from flaskr.bot.admin.admin_constants import  RECIEVIE_LAB_FILE
 from flaskr import db
-from flaskr.models import  Document, Lab, Lecture, Video, YoutubeLink
+from flaskr.models import  Document, Lab, Video, YoutubeLink
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update, ReplyKeyboardMarkup
 
