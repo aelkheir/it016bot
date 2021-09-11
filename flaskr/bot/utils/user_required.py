@@ -47,9 +47,10 @@ def user_required(update: Update, context: CallbackContext, session) -> int:
             # write to context
             context.user_data['user_id'] = user.id
 
-    user.chat_id = update.effective_chat.id
+    if not user.chat_id:
+        user.chat_id = update.effective_chat.id
 
-    session.commit()
+        session.commit()
 
     # write to context
     context.chat_data['language'] = ar\
