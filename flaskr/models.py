@@ -5,9 +5,11 @@ class User(db.Model):
 
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
     telegram_id = db.Column(db.Integer, unique=True)
+    chat_id = db.Column(db.Integer, default='')
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     language = db.Column(db.String(5), default='ar', nullable=False)
+    subscribed = db.Column(db.Boolean, default=True)
 
     start_count = db.Column(db.Integer, default=0)
     download_count = db.Column(db.Integer, default=0)

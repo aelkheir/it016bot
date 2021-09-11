@@ -2,7 +2,7 @@ import os
 from flaskr.models import User
 
 
-def register_new_user(session, first_name, last_name, telegram_id):
+def register_new_user(session, first_name, last_name, telegram_id, chat_id):
 
     is_owner, is_admin = False, False
 
@@ -17,8 +17,9 @@ def register_new_user(session, first_name, last_name, telegram_id):
             first_name=first_name,
             last_name=last_name,
             telegram_id=telegram_id,
+            chat_id=chat_id,
             is_admin=is_admin,
-            is_owner=is_owner
+            is_owner=is_owner,
         )
         session.add(user)
         session.commit()

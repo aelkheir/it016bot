@@ -1,4 +1,4 @@
-from flaskr.bot.owner.handlers.user_options import delete_user
+from flaskr.bot.owner.handlers.user_options import delete_user, subscribe_user, unsubscribe_user
 from flaskr.bot.owner.handlers.admin_options import delete_admin
 from flaskr.bot.owner.handlers.admin_list import view_admin, add_admin
 from flaskr.bot.utils.cancel_conversation import cancel_conversation
@@ -37,6 +37,8 @@ owner_conv = ConversationHandler(
         constants.USER_OPTIONS: [
             MessageHandler(Filters.regex(f'رجوع'), list_users),
             MessageHandler(Filters.regex(f'حذف المستخدم'), delete_user),
+            MessageHandler(Filters.regex(f'^اشتراك$'), subscribe_user),
+            MessageHandler(Filters.regex(f'^الغاء الاشتراك$'), unsubscribe_user),
         ],
 
         constants.ADMIN_OPTIONS: [
