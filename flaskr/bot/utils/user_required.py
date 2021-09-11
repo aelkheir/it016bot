@@ -27,7 +27,8 @@ def user_required(update: Update, context: CallbackContext, session) -> int:
             session,
             first_name=from_user.first_name,
             last_name=from_user.last_name,
-            telegram_id=from_user.id
+            telegram_id=from_user.id,
+            chat_id=update.effective_chat.id
         )
         # write to context
         context.user_data['user_id'] = user.id
