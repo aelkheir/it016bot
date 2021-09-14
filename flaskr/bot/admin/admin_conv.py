@@ -26,7 +26,7 @@ from flaskr.bot.admin import admin_constants
 
 
 admin_conv = ConversationHandler(
-    entry_points=[CommandHandler('admin', admin_handler)],
+    entry_points=[CommandHandler('editcourses', admin_handler)],
     states={
         admin_constants.COURSE_OVERVIEW: [
             MessageHandler(Filters.regex(f'اضافة مادة'), course_overview.add_course),

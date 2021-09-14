@@ -12,7 +12,7 @@ from flaskr.bot.owner.handlers.view_user import  view_user
 
 
 owner_conv = ConversationHandler(
-    entry_points=[CommandHandler('owner', owner_handler)],
+    entry_points=[CommandHandler('manageusers', owner_handler)],
     states={
         constants.CHOICE: [
             MessageHandler(Filters.regex(f'المستخدمين'), list_users),

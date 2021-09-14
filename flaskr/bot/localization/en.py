@@ -28,7 +28,9 @@ en = {
     'choose_bot_language': 'choose bot language',
     'language_set_to': 'Language set to English',
 
-    'language_settings': 'language settings',
+    'language_settings': 'choose bot language',
+    'edit_courses': 'edit courses',
+    'manage_users': 'manage users',
     
     'back_to': 'back to',
 

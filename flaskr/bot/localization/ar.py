@@ -29,7 +29,9 @@ ar = {
 
     'back_to': 'العودة ل',
 
-    'language_settings': 'اعدادات اللغة',
+    'language_settings': 'اختر لغة البوت',
+    'edit_courses': 'تعديل المواد',
+    'manage_users': 'ادارة المستخدمين',
 
     'genitive': genitive,
 
