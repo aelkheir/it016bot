@@ -4,7 +4,7 @@ from flaskr.bot.utils.user_required import user_required
 from flaskr.models import Course, Lecture, User
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import COURSE, EXAM, EXAMS, FILE, LAB, LABS, LECTURE, REFFERENCES, REFFERENCE, STAGE_THREE
+from flaskr.bot.user.user_constants import  EXAM, EXAMS, FILE, LAB, LABS, LECTURE, REFFERENCES, REFFERENCE, STAGE_THREE
 from flaskr import db
 
 back_icon ='»'

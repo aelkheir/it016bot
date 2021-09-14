@@ -4,7 +4,7 @@ from telegram.ext import CallbackQueryHandler, CommandHandler, ConversationHandl
 import flaskr.bot.user.user_constants as constants
 from flaskr.bot.user.handlers.start import start
 from flaskr.bot.user.handlers.start_over import start_over
-from flaskr.bot.user.handlers.stage_three import list_lab_files, send_all_course_exams, send_all_course_refferences, send_all_lecture_files, send_course_exam, send_course_refference, send_file
+from flaskr.bot.user.handlers.stage_three import list_lab_files, send_all_course_exams, send_all_course_refferences, send_all_lecture_files, send_course_exam, send_course_refference, send_file, send_all_labs
 from flaskr.bot.user.handlers.stage_two import  list_course_exams, list_course_labs, list_lecture_files, send_all_lectures, list_course_refferences
 from flaskr.bot.user.handlers.course_overview import course_overview
 from flaskr.bot.utils.cancel_conversation import cancel_conversation
@@ -33,6 +33,7 @@ user_conv = ConversationHandler(
 
         constants.STAGE_THREE: [
             CallbackQueryHandler(list_lab_files, pattern='^' + f'{constants.LAB} \d+' + '$'),
+            CallbackQueryHandler(send_all_labs, pattern='^' + f'{constants.LABS} \d+' + '$'),
             CallbackQueryHandler(send_file, pattern='^' + f'{constants.FILE} .+' + '$'),
             CallbackQueryHandler(send_all_lecture_files, pattern='^' + f'{constants.LECTURE} \d+' + '$'),
             CallbackQueryHandler(send_course_refference, pattern='^' + f'{constants.REFFERENCE} \d+' + '$'),

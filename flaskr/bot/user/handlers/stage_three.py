@@ -98,6 +98,49 @@ def send_file(update: Update, context: CallbackContext) -> int:
     session.close()
     return None
 
+def send_all_labs(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    query = update.callback_query
+    query.answer()
+
+    user = user_required(update, context, session)
+    language = context.chat_data['language']
+
+    _, course_id = query.data.split(' ')
+
+    course = session.query(Course).filter(Course.id==course_id).one()
+
+    # read from context
+    user_id = context.user_data['user_id']
+    user = session.query(User).filter(User.id==user_id).one()
+
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
+
+    for lab in course.labs:
+        query.message.reply_text(
+            f"- {course_name.title()}: {language['lab'].capitalize()} {lab.lab_number}"
+        )
+
+        for doc in lab.documents:
+            query.bot.sendDocument(query.message.chat.id, document=doc.file_id)
+            user.download_count += 1
+
+        for vid in lab.videos:
+            query.bot.sendVideo(query.message.chat.id, video=vid.file_id)
+            user.download_count += 1
+
+        for link in lab.youtube_links:
+            query.bot.sendMessage(query.message.chat.id, text=link.url)
+            user.download_count += 1
+        
+    session.commit()
+    session.close()
+    return None
+
 def send_all_lecture_files(update: Update, context: CallbackContext) -> int:
     session = db.session
 
