@@ -45,3 +45,25 @@ def view_user(update: Update, context: CallbackContext, user_id=None) -> int:
     )
 
     return USER_OPTIONS
+
+def view_all_users(update: Update, context: CallbackContext) -> int:
+
+    session = db.session
+    
+    if not is_owner(update, context, session):
+        return
+
+    all_users = ''
+
+    for user in session.query(User).all():
+        all_users = all_users +  \
+            f'- {user.first_name} {user.last_name if user.last_name else ""}\n' \
+            f'start count: {user.start_count}\n' \
+            f'download count: {user.download_count}\n' \
+            f'language: {user.language}\n' \
+            f"subscription: {'subscribed' if user.subscribed else 'not subscribed'}\n\n" \
+
+
+
+    update.message.reply_text(all_users)
+

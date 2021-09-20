@@ -8,7 +8,7 @@ import flaskr.bot.owner.owner_constants as constants
 from flaskr.bot.owner.handlers.choice import list_admins, list_users
 from flaskr.bot.owner.handlers.recieve_new_admin import recieve_new_admin
 from flaskr.bot.owner.handlers.owner_handler import owner_handler
-from flaskr.bot.owner.handlers.view_user import  view_user
+from flaskr.bot.owner.handlers.view_user import  view_all_users, view_user
 
 
 owner_conv = ConversationHandler(
@@ -21,6 +21,7 @@ owner_conv = ConversationHandler(
 
         constants.USER_VIEW: [
             MessageHandler(Filters.regex(f'رجوع'), owner_handler),
+            MessageHandler(Filters.regex(f'عرض الكل: .*'), view_all_users),
             MessageHandler(Filters.text & ~ Filters.command, view_user),
         ],
 

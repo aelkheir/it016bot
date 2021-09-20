@@ -22,7 +22,7 @@ def list_users(update: Update, context: CallbackContext) -> int:
 
     reply_keyboard = []
 
-    reply_keyboard.append([f'العدد الكلي: {len(users)}'])
+    reply_keyboard.append([f'عرض الكل: {len(users)}'])
 
     for row_index in range(0, math.ceil(len(users) / 2)):
         row = []
