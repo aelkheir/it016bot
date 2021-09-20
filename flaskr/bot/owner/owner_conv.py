@@ -5,7 +5,7 @@ from flaskr.bot.utils.cancel_conversation import cancel_conversation
 from telegram.ext import CommandHandler, ConversationHandler, MessageHandler
 from telegram.ext.filters import Filters
 import flaskr.bot.owner.owner_constants as constants
-from flaskr.bot.owner.handlers.choice import list_admins, list_users
+from flaskr.bot.owner.handlers.choice import list_admins, list_users, set_bot_commands
 from flaskr.bot.owner.handlers.recieve_new_admin import recieve_new_admin
 from flaskr.bot.owner.handlers.owner_handler import owner_handler
 from flaskr.bot.owner.handlers.view_user import  view_all_users, view_user
@@ -17,6 +17,7 @@ owner_conv = ConversationHandler(
         constants.CHOICE: [
             MessageHandler(Filters.regex(f'المستخدمين'), list_users),
             MessageHandler(Filters.regex(f'المدراء'), list_admins),
+            MessageHandler(Filters.regex(f'تحديث اوامر البوت'), set_bot_commands),
         ],
 
         constants.USER_VIEW: [

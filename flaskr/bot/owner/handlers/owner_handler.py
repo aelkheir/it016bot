@@ -30,6 +30,7 @@ def owner_handler(update: Update, context: CallbackContext) -> int:
 
     reply_keyboard.append(['المستخدمين'])
     reply_keyboard.append(['المدراء'])
+    reply_keyboard.append(['تحديث اوامر البوت'])
 
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
 

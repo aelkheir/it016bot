@@ -1,9 +1,12 @@
-from flaskr.bot.utils.is_owner import is_owner
 import math
-from flaskr.bot.owner.owner_constants import ADMINS_LIST, USER_VIEW
-from flaskr import db
 from telegram.ext import CallbackContext, CallbackContext
+from telegram.botcommandscope import  BotCommandScopeChat
 from telegram import Update, ReplyKeyboardMarkup
+from flaskr.bot.localization import ar, en
+from flaskr.bot.utils.is_owner import is_owner
+from flaskr.bot.utils.set_bot_commands import get_admin_commands, get_common_commands, get_owner_commands, get_user_commands
+from flaskr.bot.owner.owner_constants import ADMINS_LIST, CHOICE, USER_VIEW
+from flaskr import db
 from flaskr.models import User
 
 
@@ -66,3 +69,42 @@ def list_admins(update: Update, context: CallbackContext) -> int:
     update.message.reply_text('المدراء', reply_markup=markup)
 
     return ADMINS_LIST
+
+def set_bot_commands(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    if not is_owner(update, context, session):
+        return
+    
+    for user in session.query(User).all():
+        if not user.chat_id:
+            continue
+
+        language = ar\
+        if user.language == 'ar'\
+        else en
+
+        if not user.is_admin and not user.is_owner:
+
+            update.effective_chat.bot.set_my_commands(
+                get_user_commands(language, user.language) + get_common_commands(language),
+                scope=BotCommandScopeChat(user.chat_id)
+            )
+
+        elif user.is_admin and not user.is_owner:
+            
+            update.effective_message.bot.set_my_commands(
+                get_admin_commands(language, user.language) + get_common_commands(language),
+                scope=BotCommandScopeChat(user.chat_id)
+            )
+
+        elif user.is_admin and user.is_owner:
+
+            update.effective_message.bot.set_my_commands(
+                get_owner_commands(language, user.language) + get_common_commands(language),
+                scope=BotCommandScopeChat(user.chat_id)
+            )
+
+    update.message.reply_text('تم تحديث اوامر البوت لكل المستخدمين')
+
+    return CHOICE
