@@ -1,3 +1,4 @@
+import time
 import math
 from telegram.ext import CallbackContext, CallbackContext
 from telegram.botcommandscope import  BotCommandScopeChat
@@ -104,6 +105,8 @@ def set_bot_commands(update: Update, context: CallbackContext) -> int:
                 get_owner_commands(language, user.language) + get_common_commands(language),
                 scope=BotCommandScopeChat(user.chat_id)
             )
+        
+        time.sleep(1)
 
     update.message.reply_text('تم تحديث اوامر البوت لكل المستخدمين')
 
