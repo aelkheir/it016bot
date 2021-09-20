@@ -106,7 +106,7 @@ def set_bot_commands(update: Update, context: CallbackContext) -> int:
                 scope=BotCommandScopeChat(user.chat_id)
             )
         
-        time.sleep(1)
+        time.sleep(5)
 
     update.message.reply_text('تم تحديث اوامر البوت لكل المستخدمين')
 
