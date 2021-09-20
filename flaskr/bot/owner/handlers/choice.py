@@ -78,6 +78,10 @@ def set_bot_commands(update: Update, context: CallbackContext) -> int:
         return
     
     for user in session.query(User).all():
+        time.sleep(20)
+
+        user = session.query(User).filter(User.id==user.id).one()
+
         if not user.chat_id:
             continue
 
@@ -106,7 +110,6 @@ def set_bot_commands(update: Update, context: CallbackContext) -> int:
                 scope=BotCommandScopeChat(user.chat_id)
             )
         
-        time.sleep(5)
 
     update.message.reply_text('تم تحديث اوامر البوت لكل المستخدمين')
 
