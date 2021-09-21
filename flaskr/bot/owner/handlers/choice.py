@@ -76,41 +76,75 @@ def set_bot_commands(update: Update, context: CallbackContext) -> int:
 
     if not is_owner(update, context, session):
         return
-    
-    for user in session.query(User).all():
-        time.sleep(30)
 
-        user = session.query(User).filter(User.id==user.id).one()
+    owner_chat_id = str(update.effective_chat.id)
+
+    update.message.bot.send_message(
+        owner_chat_id,
+        text='جاري تحديث اوامر البوت. قد ياخذ هذا بعض الوقت'
+    )
+
+
+    current_jobs = context.job_queue.get_jobs_by_name(owner_chat_id)
+
+    for job in current_jobs:
+        job.schedule_removal()
+
+    users = session.query(User).all()
+    
+    for (index, user) in enumerate(users):
 
         if not user.chat_id:
             continue
 
-        language = ar\
-        if user.language == 'ar'\
-        else en
+        is_last = index == len(users) - 1
 
-        if not user.is_admin and not user.is_owner:
+        when = index * 20
 
-            update.effective_chat.bot.set_my_commands(
-                get_user_commands(language, user.language) + get_common_commands(language),
-                scope=BotCommandScopeChat(user.chat_id)
-            )
-
-        elif user.is_admin and not user.is_owner:
-            
-            update.effective_message.bot.set_my_commands(
-                get_admin_commands(language, user.language) + get_common_commands(language),
-                scope=BotCommandScopeChat(user.chat_id)
-            )
-
-        elif user.is_admin and user.is_owner:
-
-            update.effective_message.bot.set_my_commands(
-                get_owner_commands(language, user.language) + get_common_commands(language),
-                scope=BotCommandScopeChat(user.chat_id)
-            )
-        
-
-    update.message.reply_text('تم تحديث اوامر البوت لكل المستخدمين')
+        context.job_queue.run_once(
+            set_commands_job,
+            when,
+            context=(user, owner_chat_id, is_last),
+            name=owner_chat_id
+        )
 
     return CHOICE
+
+def set_commands_job(context):
+    user = context.job.context[0]
+    owner_chat_id = context.job.context[1]
+    is_last_user =  context.job.context[2]
+
+    language = ar\
+    if user.language == 'ar'\
+    else en
+
+    if not user.is_admin and not user.is_owner:
+        context.bot.set_my_commands(
+            get_user_commands(language, user.language) + get_common_commands(language),
+            scope=BotCommandScopeChat(user.chat_id)
+        )
+
+    elif user.is_admin and not user.is_owner:
+        context.bot.set_my_commands(
+            get_admin_commands(language, user.language) + get_common_commands(language),
+            scope=BotCommandScopeChat(user.chat_id)
+        )
+
+    elif user.is_admin and user.is_owner:
+        context.bot.set_my_commands(
+            get_owner_commands(language, user.language) + get_common_commands(language),
+            scope=BotCommandScopeChat(user.chat_id)
+        )
+
+    context.bot.send_message(
+        owner_chat_id,
+        text=f'تم تحديث اوامر البوت ل {user.first_name}'
+    )
+    
+    if is_last_user:
+        context.bot.send_message(
+            owner_chat_id,
+            text=f'تم تحديث اوامر البوت لكل المستخدمين'
+        )
+
