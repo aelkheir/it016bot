@@ -91,6 +91,8 @@ def set_bot_commands(update: Update, context: CallbackContext) -> int:
         job.schedule_removal()
 
     users = session.query(User).all()
+
+    context.job_queue.start()
     
     for (index, user) in enumerate(users):
 
@@ -147,4 +149,6 @@ def set_commands_job(context):
             owner_chat_id,
             text=f'تم تحديث اوامر البوت لكل المستخدمين'
         )
+
+        context.job_queue.stop()
 
