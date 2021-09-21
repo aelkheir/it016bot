@@ -68,6 +68,8 @@ if app.env == 'production':
         job_queue=job_queue
     )
 
+    job_queue.set_dispatcher(dispatcher)
+
     dispatcher.add_handler(user_conv, 1)
     dispatcher.add_handler(admin_conv, 2)
     dispatcher.add_handler(owner_conv, 3)
