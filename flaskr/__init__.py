@@ -59,8 +59,14 @@ if app.env == 'production':
     persistence = PicklePersistence(filename='pickle')
 
     update_queue = Queue()
+    job_queue = JobQueue()
 
-    dispatcher = Dispatcher(bot=bot, persistence=persistence, update_queue=update_queue)
+    dispatcher = Dispatcher(
+        bot=bot,
+        persistence=persistence,
+        update_queue=update_queue,
+        job_queue=job_queue
+    )
 
     dispatcher.add_handler(user_conv, 1)
     dispatcher.add_handler(admin_conv, 2)
