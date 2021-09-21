@@ -1,4 +1,6 @@
 import os
+from queue import Queue  
+from threading import Thread
 from flask import Flask, request
 from sqlalchemy import MetaData
 from flask_migrate import Migrate
@@ -6,7 +8,7 @@ from flask_migrate import Migrate
 import http
 
 from telegram import Bot, Update
-from telegram.ext import Dispatcher, PicklePersistence, Updater
+from telegram.ext import Dispatcher, PicklePersistence, Updater, JobQueue
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -56,7 +58,9 @@ if app.env == 'production':
 
     persistence = PicklePersistence(filename='pickle')
 
-    dispatcher = Dispatcher(bot=bot, persistence=persistence)
+    update_queue = Queue()
+
+    dispatcher = Dispatcher(bot=bot, persistence=persistence, update_queue=update_queue)
 
     dispatcher.add_handler(user_conv, 1)
     dispatcher.add_handler(admin_conv, 2)
