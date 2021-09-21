@@ -139,16 +139,10 @@ def set_commands_job(context):
             scope=BotCommandScopeChat(user.chat_id)
         )
 
-    context.bot.send_message(
-        owner_chat_id,
-        text=f'تم تحديث اوامر البوت ل {user.first_name}'
-    )
-    
     if is_last_user:
         context.bot.send_message(
             owner_chat_id,
             text=f'تم تحديث اوامر البوت لكل المستخدمين'
         )
 
-        context.job_queue.stop()
 
