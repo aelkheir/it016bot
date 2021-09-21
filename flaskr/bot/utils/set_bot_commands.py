@@ -29,7 +29,7 @@ def get_user_commands(language, user_language):
 
     # session.close()
 
-    return  [("courses", f"{language['courses']}".capitalize())]
+    return  [("courses", f"{language['courses']}".capitalize())] + get_common_commands(language)
 
 def get_admin_commands(language, user_language):
     return get_user_commands(language, user_language) + [
@@ -39,6 +39,7 @@ def get_admin_commands(language, user_language):
 def get_owner_commands(language, user_language):
     return get_admin_commands(language, user_language) + [
         ('manageusers', f"{language['manage_users']}".capitalize()),
+        ('updatecommands', f"{language['update_commands']}".capitalize()),
     ]
     
 

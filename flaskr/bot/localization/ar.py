@@ -32,6 +32,7 @@ ar = {
     'language_settings': 'اختر لغة البوت',
     'edit_courses': 'تعديل المواد',
     'manage_users': 'ادارة المستخدمين',
+    'update_commands': 'تحديث اوامر البوت',
 
     'genitive': genitive,
 

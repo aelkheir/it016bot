@@ -31,6 +31,7 @@ en = {
     'language_settings': 'choose bot language',
     'edit_courses': 'edit courses',
     'manage_users': 'manage users',
+    'update_commands': 'update bot commands',
     
     'back_to': 'back to',
 
