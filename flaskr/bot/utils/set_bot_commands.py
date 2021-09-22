@@ -40,6 +40,7 @@ def get_owner_commands(language, user_language):
     return get_admin_commands(language, user_language) + [
         ('manageusers', f"{language['manage_users']}".capitalize()),
         ('updatecommands', f"{language['update_commands']}".capitalize()),
+        ('sendannouncement', f"{language['send_announcement']}".capitalize()),
     ]
     
 

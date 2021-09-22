@@ -32,6 +32,7 @@ en = {
     'edit_courses': 'edit courses',
     'manage_users': 'manage users',
     'update_commands': 'update bot commands',
+    'send_announcement': 'send announcement to all users',
     
     'back_to': 'back to',
 

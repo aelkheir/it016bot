@@ -1,3 +1,6 @@
+from flaskr.bot.owner.handlers.announcement_options import send_announcement, view_announcement
+from flaskr.bot.owner.handlers.recieve_announcement import recieve_announcement
+from flaskr.bot.owner.handlers.type_announcement import type_announcement
 from flaskr.bot.owner.handlers.user_options import delete_user, subscribe_user, unsubscribe_user
 from flaskr.bot.owner.handlers.admin_options import delete_admin
 from flaskr.bot.owner.handlers.admin_list import view_admin, add_admin
@@ -16,6 +19,7 @@ owner_conv = ConversationHandler(
     entry_points=[
         CommandHandler('manageusers', owner_handler),
         CommandHandler('updatecommands', set_bot_commands),
+        CommandHandler('sendannouncement', type_announcement),
     ],
     states={
         constants.CHOICE: [
@@ -33,6 +37,15 @@ owner_conv = ConversationHandler(
             MessageHandler(Filters.regex(f'اضافة مدير'), add_admin),
             MessageHandler(Filters.regex(f'رجوع'), owner_handler),
             MessageHandler(Filters.text & ~ Filters.command, view_admin),
+        ],
+
+        constants.RECIEVE_ANNOUNCEMENT: [
+            MessageHandler(Filters.text & ~ Filters.command, recieve_announcement),
+        ],
+
+        constants.ANNOUNCEMENT_OPTIONS: [
+            MessageHandler(Filters.regex(f'عرض الاعلان'), view_announcement),
+            MessageHandler(Filters.regex(f'ارسال الاعلان'), send_announcement),
         ],
 
         constants.RECIEVE_NEW_ADMIN: [

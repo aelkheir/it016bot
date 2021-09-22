@@ -23,8 +23,9 @@ def set_bot_commands(update: Update, context: CallbackContext) -> int:
         text='جاري تحديث اوامر البوت. قد ياخذ هذا الامر بعض الوقت'
     )
 
+    JOB_NAME = 'UPDATING_COMMANDS_' + owner_chat_id
 
-    current_jobs = context.job_queue.get_jobs_by_name(owner_chat_id)
+    current_jobs = context.job_queue.get_jobs_by_name(JOB_NAME)
 
     for job in current_jobs:
         job.schedule_removal()
@@ -46,7 +47,7 @@ def set_bot_commands(update: Update, context: CallbackContext) -> int:
             set_commands_job,
             when,
             context=(user, owner_chat_id, is_last),
-            name=owner_chat_id
+            name=JOB_NAME
         )
 
 

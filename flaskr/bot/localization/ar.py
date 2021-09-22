@@ -25,7 +25,7 @@ ar = {
 
 
     'choose_bot_language': 'اختر لغة البوت',
-    'language_set_to': 'تم وضع اللغة للعربية',
+    'language_set_to': 'تم وضع اللغة العربية',
 
     'back_to': 'العودة ل',
 
@@ -33,6 +33,8 @@ ar = {
     'edit_courses': 'تعديل المواد',
     'manage_users': 'ادارة المستخدمين',
     'update_commands': 'تحديث اوامر البوت',
+    'send_announcement': 'ارسل اعلان لكل المستخدمين',
+
 
     'genitive': genitive,
 
