@@ -52,21 +52,21 @@ def set_bot_commands(update: Update, context: CallbackContext, user):
     if not user.is_admin and not user.is_owner:
 
         update.effective_chat.bot.set_my_commands(
-            get_user_commands(language, user.language) + get_common_commands(language),
+            get_user_commands(language, user.language),
             scope=BotCommandScopeChat(update.effective_message.chat_id)
         )
 
     elif user.is_admin and not user.is_owner:
         
         update.effective_message.bot.set_my_commands(
-            get_admin_commands(language, user.language) + get_common_commands(language),
+            get_admin_commands(language, user.language),
             scope=BotCommandScopeChat(update.effective_message.chat_id)
         )
 
     elif user.is_admin and user.is_owner:
 
         update.effective_message.bot.set_my_commands(
-            get_owner_commands(language, user.language) + get_common_commands(language),
+            get_owner_commands(language, user.language),
             scope=BotCommandScopeChat(update.effective_message.chat_id)
         )
 
