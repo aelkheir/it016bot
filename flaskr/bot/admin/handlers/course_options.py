@@ -3,7 +3,7 @@ import re
 from flaskr.bot.admin.admin_constants import CONFIRM_COURSE_DELETION, EXAMS_LIST, LABS_LIST, RECIEVE_NAME_SYMBOL, LECTURES_LIST, REFFERENCES_LIST
 import math
 from flaskr import db
-from flaskr.models import Course, Lab, Lecture
+from flaskr.models import Course, Exam, Lab, Lecture
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update, ReplyKeyboardRemove
 from telegram.replykeyboardmarkup import ReplyKeyboardMarkup
@@ -130,16 +130,22 @@ def list_exams(update: Update, context: CallbackContext) -> int:
     if not is_admin(update, context, session):
         return
 
+    if 'exam_id' in context.chat_data:
+        del context.chat_data['exam_id']
+
     # reads from context
     course_id = context.chat_data['course_id']
 
     course = session.query(Course).filter(Course.id==course_id).one()
+
+    exams = session.query(Exam).filter(Exam.course_id==course_id)\
+        .order_by(Exam.date.desc()).all()
+
     reply_keyboard = []
     
-    exams = course.exams
 
     for exam in exams:
-        reply_keyboard.append([f'{exam.file_name}'])
+        reply_keyboard.append([f'{exam.name}'])
 
     reply_keyboard.append(['رجوع', 'اضافة امتحان'])
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)

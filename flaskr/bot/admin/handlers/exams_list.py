@@ -1,9 +1,11 @@
 from flaskr.bot.utils.is_admin import is_admin
 from flaskr import db
-from flaskr.bot.admin.admin_constants import  EXAM_OPTIONS, RECIEVE_COURSE_EXAM, RECIEVE_COURSE_REF, REFFERENCE_OPTIONS
+from flaskr.bot.admin.admin_constants import  EXAM_OPTIONS, RECIEVE_EXAM_NAME
 from telegram.ext import CallbackContext, CallbackContext
-from telegram import Update 
+from telegram import Update, ReplyKeyboardRemove
 from telegram.replykeyboardmarkup import ReplyKeyboardMarkup
+
+from flaskr.models import Exam
 
 
 def add_exam(update: Update, context: CallbackContext) -> int:
@@ -12,35 +14,58 @@ def add_exam(update: Update, context: CallbackContext) -> int:
     if not is_admin(update, context, session):
         return
 
-    reply_keyboard = []
-    reply_keyboard.append(['رجوع'])
-    markup = ReplyKeyboardMarkup(keyboard=reply_keyboard, resize_keyboard=True)
 
     update.message.reply_text(
-        'ارسل الامتحان، الصيغة المقبولة document (pdf, ...) او photo.\n'
-        'ضع تعليق على الامتحان في شكل: (نوع الامتحان) (العام الدراسي).\n'
-        'مثال: ميدتيرم 2016-2017\n'
-        , reply_markup=markup)
-    return RECIEVE_COURSE_EXAM
+        'ارسل اسم الامتحان على الصورة، الاسم: اسم الامتحان\n'
+        'مثال:\n'
+        'الاسم: ميدتيرم 2016-2017',
+        reply_markup=ReplyKeyboardRemove())
+
+    return RECIEVE_EXAM_NAME
 
 
-def edit_exam(update: Update, context: CallbackContext) -> int:
+def edit_exam(update: Update, context: CallbackContext, exam_id=None) -> int:
     session = db.session
 
     if not is_admin(update, context, session):
         return
 
-    file_name = update.message.text
+    exam = None
 
-    # write to context
-    context.chat_data['file_name'] = file_name
+    if not exam_id and not 'exam_id' in context.chat_data:
+        exam = session.query(Exam).filter(Exam.name==update.message.text).first()
 
-    reply_keyboard = [
-        [ 'عرض' ],
-        [ 'حذف الامتحان' ],
-        [ 'رجوع' ]
-    ]
+        # write to context
+        context.chat_data['exam_id'] = exam.id
+
+    elif exam_id:
+        exam = session.query(Exam).filter(Exam.id==exam_id).one()
+
+        # write to context
+        context.chat_data['exam_id'] = exam.id
+    
+    elif 'exam_id' in context.chat_data:
+        exam_id = context.chat_data['exam_id']
+        exam = session.query(Exam).filter(Exam.id==exam_id).one()
+
+
+    reply_keyboard = []
+
+    for photo in exam.photos:
+        reply_keyboard.append([
+            photo.file_name
+        ])
+
+    for document in exam.documents:
+        reply_keyboard.append([
+            document.file_name
+        ])
+
+    reply_keyboard.append(['اضافة ملف'])
+    reply_keyboard.append(['حذف الامتحان', f'تعديل الاسم'])
+    reply_keyboard.append(['رجوع'])
+
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
 
-    update.message.reply_text(f'{file_name}', reply_markup=markup)
+    update.message.reply_text(f'{exam.name}', reply_markup=markup)
     return EXAM_OPTIONS

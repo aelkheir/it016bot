@@ -1,3 +1,4 @@
+from flaskr.bot.admin.handlers.recieve_exam_name import recieve_exam_name
 from flaskr.bot.admin.handlers.revieve_lab_file import recieve_lab_file
 from flaskr.bot.admin.handlers.recieve_lab_number import recieve_lab_number
 from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, Filters
@@ -15,13 +16,14 @@ import flaskr.bot.admin.handlers.lab_options  as lab_options
 import flaskr.bot.admin.handlers.refference_options as refference_options
 from flaskr.bot.admin.handlers.confirm_course_deletion import apply_delete_course
 from flaskr.bot.admin.handlers.recieve_lecture_number import recieve_lecture_number
-from flaskr.bot.admin.handlers.recieve_course_exam import recieve_course_exam
+from flaskr.bot.admin.handlers.recieve_exam_file import recieve_exam_file
 from flaskr.bot.admin.handlers.recieve_course_ref import recieve_course_ref
 from flaskr.bot.admin.handlers.recieve_lecture_file import recieve_lecture_file
 from flaskr.bot.admin.handlers.recieve_new_course import recieve_new_course
 import flaskr.bot.admin.handlers.refferences_list as refferences_list
 import flaskr.bot.admin.handlers.lecture_file_options as lecture_file_options
 import flaskr.bot.admin.handlers.lab_file_options as lab_file_options
+import flaskr.bot.admin.handlers.exam_file_options as exam_file_options
 from flaskr.bot.admin import admin_constants
 
 
@@ -88,8 +90,10 @@ admin_conv = ConversationHandler(
 
         admin_constants.EXAM_OPTIONS: [
             MessageHandler(Filters.regex(f'حذف الامتحان'), exam_options.delete_exam),
-            MessageHandler(Filters.regex(f'عرض'), exam_options.send_exam),
+            MessageHandler(Filters.regex(f'تعديل الاسم'), exam_options.edit_exam_name),
+            MessageHandler(Filters.regex(f'اضافة ملف'), exam_options.add_file),
             MessageHandler(Filters.regex(f'رجوع'), course_options.list_exams),
+            MessageHandler(Filters.text & ~ Filters.command, exam_options.edit_file),
         ],
 
         admin_constants.LECTURE_FILE_OPTIONS: [
@@ -102,6 +106,12 @@ admin_conv = ConversationHandler(
             MessageHandler(Filters.regex(f'حذف الملف'), lab_file_options.delete_file),
             MessageHandler(Filters.regex(f'عرض'), lab_file_options.send_file),
             MessageHandler(Filters.regex(f'رجوع'), labs_list.list_lab_files),
+        ],
+
+        admin_constants.EXAM_FILE_OPTIONS: [
+            MessageHandler(Filters.regex(f'حذف الملف'), exam_file_options.delete_file),
+            MessageHandler(Filters.regex(f'عرض'), exam_file_options.send_file),
+            MessageHandler(Filters.regex(f'رجوع'), exams_list.edit_exam),
         ],
 
         admin_constants.REFFERENCE_OPTIONS: [
@@ -153,10 +163,16 @@ admin_conv = ConversationHandler(
                            Filters.command, recieve_course_ref),
             MessageHandler(Filters.regex('رجوع'), course_options.list_refferences)
         ],
-        admin_constants.RECIEVE_COURSE_EXAM: [
-            MessageHandler(((Filters.reply | Filters.caption) | (Filters.document | Filters.photo)) & ~ 
-                            Filters.command, recieve_course_exam),
-            MessageHandler(Filters.regex('رجوع'), course_options.list_exams)
+
+        admin_constants.RECIEVE_EXAM_NAME: [
+            MessageHandler(Filters.text & ~(
+                Filters.command), recieve_exam_name),
+        ],
+
+        admin_constants.RECIEVE_EXAM_FILE: [
+            MessageHandler((Filters.document | Filters.photo) & ~ 
+                            Filters.command, recieve_exam_file),
+            MessageHandler(Filters.regex('رجوع'), exams_list.edit_exam)
         ],
     },
     fallbacks=[MessageHandler(Filters.command, cancel_conversation)],

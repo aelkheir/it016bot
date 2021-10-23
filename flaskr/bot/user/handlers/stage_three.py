@@ -1,7 +1,7 @@
 from flaskr.bot.utils.buttons import back_to_labs_button
 from flaskr.bot.user.user_constants import FILE, LAB, STAGE_FOURE
 from flaskr.bot.utils.user_required import user_required
-from flaskr.models import  Course, Document, Exam, Lab, Lecture, Refference, User,  Video, YoutubeLink
+from flaskr.models import  Course, Document, Exam, Lab, Lecture, Photo, Refference, User,  Video, YoutubeLink
 from flaskr import db
 from telegram.ext import  CallbackContext
 from telegram import  Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -246,15 +246,33 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
 
     exam = session.query(Exam).filter(Exam.id==exam_id).one()
 
-    if exam.file_type == 'document':
-        query.bot.sendDocument(query.message.chat.id, document=exam.file_id)
-        user.download_count += 1
+    course = exam.course
 
-    elif exam.file_type == 'photo':
-        query.bot.sendPhoto(query.message.chat.id, photo=exam.file_id)
-        user.download_count += 1
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
 
-        
+    query.message.reply_text(
+        f"{course_name.title()}: {exam.name}",
+    )
+
+    photos = session.query(Photo)\
+        .filter(Photo.exam_id == exam_id)\
+        .order_by(Photo.id).all()
+
+    documents = session.query(Document)\
+        .filter(Document.exam_id == exam_id)\
+        .order_by(Document.id).all()
+
+    for photo in photos:
+        query.bot.sendPhoto(query.message.chat.id, photo=photo.file_id)
+
+    for doc in documents:
+        query.bot.sendDocument(query.message.chat.id, document=doc.file_id)
+
+    user.download_count += 1
+
     session.commit()
     session.close()
     return None
@@ -279,22 +297,26 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
         else course.en_name
     course_name = course_name if course_name else course.ar_name
 
-    if len(course.exams) > 0:
+    for exam in course.exams:
 
-        query.message.reply_text(
-            f"{course_name.title()}: {language['exams'].capitalize()}",
-        )
+        query.message.reply_text(f"{course_name.title()}: {exam.name}")
 
-        for exam in course.exams:
-            if exam.file_type == 'document':
-                query.message.reply_text(f'{exam.file_name}')
-                query.bot.sendDocument(query.message.chat.id, document=exam.file_id)
-                user.download_count += 1
+        photos = session.query(Photo)\
+            .filter(Photo.exam_id == exam.id)\
+            .order_by(Photo.id).all()
 
-            elif exam.file_type == 'photo':
-                query.message.reply_text(f'{exam.file_name}')
-                query.bot.sendPhoto(query.message.chat.id, photo=exam.file_id)
-                user.download_count += 1
+        documents = session.query(Document)\
+            .filter(Document.exam_id == exam.id)\
+            .order_by(Document.id).all()
+
+        for photo in photos:
+            query.bot.sendPhoto(query.message.chat.id, photo=photo.file_id)
+
+        for doc in documents:
+            query.bot.sendDocument(query.message.chat.id, document=doc.file_id)
+
+        user.download_count += 1
+
 
     session.commit()
     session.close()

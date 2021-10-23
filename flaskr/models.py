@@ -84,6 +84,9 @@ class Document(db.Model):
     lab_id = db.Column(db.Integer, db.ForeignKey('labs.id'))
     lab = db.relationship("Lab", back_populates="documents", cascade="save-update")
 
+    exam_id = db.Column(db.Integer, db.ForeignKey('exams.id'))
+    exam = db.relationship("Exam", back_populates="documents", cascade="save-update")
+
     def __repr__(self):
         return f"<Document(Course='{self.lecture.course.ar_name}', lecture='{self.lecture.lecture_number}')>"
 
@@ -138,13 +141,29 @@ class Exam(db.Model):
     __tablename__ = 'exams'
 
     id = db.Column(db.Integer,  db.Sequence('user_id_seq'), primary_key=True )
-    file_name = db.Column(db.String(300), nullable=False)
-    file_id = db.Column(db.String(300))
-    file_unique_id = db.Column(db.String(300))
-    file_type = db.Column(db.String(50))
+    name = db.Column(db.String(300), nullable=False)
+    date = db.Column(db.DateTime(300))
+
+    documents = db.relationship("Document", back_populates = 'exam', cascade="all, delete")
+
+    photos = db.relationship("Photo", back_populates = 'exam', cascade="all, delete")
 
     course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
     course = db.relationship("Course", back_populates="exams", cascade="save-update")
     def __repr__(self):
         return f"<Exam(course='{self.course.ar_name}', name='{self.name}')>"
 
+
+class Photo(db.Model):
+    __tablename__ = 'photos'
+
+    id = db.Column(db.Integer,  db.Sequence('user_id_seq'), primary_key=True )
+    file_name = db.Column(db.String(100))
+    file_id = db.Column(db.String(300))
+    file_unique_id = db.Column(db.String(300))
+
+    exam_id = db.Column(db.Integer, db.ForeignKey('exams.id'))
+    exam = db.relationship("Exam", back_populates="photos", cascade="save-update")
+
+    def __repr__(self):
+        return f"<Photo(id='{self.id}')>"

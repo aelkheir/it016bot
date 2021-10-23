@@ -1,7 +1,7 @@
 import math
 from flaskr.bot.utils.buttons import back_to_course_button
 from flaskr.bot.utils.user_required import user_required
-from flaskr.models import Course, Lecture, User
+from flaskr.models import Course, Exam, Lecture, User
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from flaskr.bot.user.user_constants import  EXAM, EXAMS, FILE, LAB, LABS, LECTURE, REFFERENCES, REFFERENCE, STAGE_THREE
@@ -228,6 +228,9 @@ def list_course_exams(update: Update, context: CallbackContext) -> int:
 
     course = session.query(Course).filter(Course.id==course_id).one()
 
+    exams = session.query(Exam).filter(Exam.course_id==course_id)\
+        .order_by(Exam.date.desc()).all()
+
     course_name = course.ar_name \
         if user.language == 'ar' \
         else course.en_name
@@ -235,9 +238,9 @@ def list_course_exams(update: Update, context: CallbackContext) -> int:
 
     keyboard = []
 
-    for exam in course.exams:
+    for exam in exams:
         keyboard.append([
-            InlineKeyboardButton(f'{exam.file_name}', callback_data=f'{EXAM} {exam.id}')
+            InlineKeyboardButton(f'{exam.name}', callback_data=f'{EXAM} {exam.id}')
         ])
 
     if len(course.exams) > 1:
