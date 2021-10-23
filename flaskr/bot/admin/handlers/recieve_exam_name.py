@@ -12,7 +12,7 @@ from flaskr.bot.admin.handlers.course_overview import course_overview
 from telegram import Update, ReplyKeyboardRemove
 
 
-name_regex = re.compile(r'الاسم: (\w+(\s\w+)*)', re.UNICODE)
+name_regex = re.compile(r'الاسم: (.+)', re.UNICODE)
 
 date_regex = re.compile(r'\d{4}', re.UNICODE)
 
