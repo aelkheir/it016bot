@@ -90,7 +90,11 @@ def send_all_lectures(update: Update, context: CallbackContext) -> int:
         else course.en_name
     course_name = course_name if course_name else course.ar_name
 
-    for lecture in course.lectures:
+    lectures = session.query(Lecture)\
+        .filter(Lecture.course_id == course_id)\
+        .order_by(Lecture.lecture_number).all()
+
+    for lecture in lectures:
         query.message.reply_text(
             f"- {course_name.title()}: {language['lecture'].capitalize()} {lecture.lecture_number}"
         )
