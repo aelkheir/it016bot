@@ -303,7 +303,10 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
         else course.en_name
     course_name = course_name if course_name else course.ar_name
 
-    for exam in course.exams:
+    exams = session.query(Exam).filter(Exam.course_id==course_id)\
+        .order_by(Exam.date.desc()).all()
+
+    for exam in exams:
 
         query.message.reply_text(f"- {course_name.title()}: {exam.name}")
 
