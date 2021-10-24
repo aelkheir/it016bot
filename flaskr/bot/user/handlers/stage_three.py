@@ -266,7 +266,11 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
         .order_by(Document.id).all()
 
     for photo in photos:
-        query.bot.sendPhoto(query.message.chat.id, photo=photo.file_id)
+        query.bot.sendPhoto(
+            query.message.chat.id,
+            photo=photo.file_id,
+            caption=f'{course_name}\n{exam.name}'
+        )
 
     for doc in documents:
         query.bot.sendDocument(query.message.chat.id, document=doc.file_id)
@@ -310,7 +314,11 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
             .order_by(Document.id).all()
 
         for photo in photos:
-            query.bot.sendPhoto(query.message.chat.id, photo=photo.file_id)
+            query.bot.sendPhoto(
+                query.message.chat.id,
+                photo=photo.file_id,
+                caption=f'{course_name}\n{exam.name}'
+            )
 
         for doc in documents:
             query.bot.sendDocument(query.message.chat.id, document=doc.file_id)
