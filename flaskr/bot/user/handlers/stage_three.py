@@ -242,6 +242,8 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
     user = user_required(update, context, session)
     user = session.query(User).filter(User.id==user.id).one()
 
+    language = context.chat_data['language']
+
     _, exam_id = query.data.split(' ')
 
     exam = session.query(Exam).filter(Exam.id==exam_id).one()
@@ -266,7 +268,7 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
         .order_by(Document.id).all()
 
     for (i, photo) in enumerate(photos):
-        page = f'{i + 1} من {len(photos)}'
+        page = f"{i + 1} {language['of']} {len(photos)}"
 
         query.bot.sendPhoto(
             query.message.chat.id,
@@ -319,7 +321,7 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
             .order_by(Document.id).all()
 
         for (i, photo) in enumerate(photos):
-            page = f'{i + 1} من {len(photos)}'
+            page = f"{i + 1} {language['of']} {len(photos)}"
 
             query.bot.sendPhoto(
                 query.message.chat.id,

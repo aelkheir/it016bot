@@ -3,6 +3,8 @@ def genitive(subject, genitive):
 
 ar = {
 
+    'of': 'من',
+
     'lectures': 'المحاضرات',
     'courses': 'المواد',
     'references': 'المراجع',

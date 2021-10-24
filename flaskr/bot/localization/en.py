@@ -5,6 +5,8 @@ def genitive(subject, genitive):
 
 en = {
 
+    'of': 'of',
+
     'courses': 'courses',
     'lectures': 'lectures',
     'references': 'references',
