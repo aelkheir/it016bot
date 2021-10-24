@@ -96,6 +96,10 @@ def edit_file(update: Update, context: CallbackContext) -> int:
 
     file_name = update.message.text
 
+    exam_id = context.chat_data['exam_id']
+
+    exam = session.query(Exam).filter(Exam.id==exam_id).one()
+
     # write to context
     context.chat_data['file_name'] = file_name
 
@@ -106,5 +110,5 @@ def edit_file(update: Update, context: CallbackContext) -> int:
     ]
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
 
-    update.message.reply_text(f'{file_name}', reply_markup=markup)
+    update.message.reply_text(f'{exam.course.ar_name}: {exam.name}: {file_name[:5]}...', reply_markup=markup)
     return EXAM_FILE_OPTIONS

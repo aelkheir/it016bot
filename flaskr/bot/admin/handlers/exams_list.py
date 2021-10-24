@@ -67,5 +67,5 @@ def edit_exam(update: Update, context: CallbackContext, exam_id=None) -> int:
 
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
 
-    update.message.reply_text(f'{exam.name}', reply_markup=markup)
+    update.message.reply_text(f'{exam.course.ar_name}: {exam.name}', reply_markup=markup)
     return EXAM_OPTIONS
