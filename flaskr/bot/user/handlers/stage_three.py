@@ -254,7 +254,7 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
     course_name = course_name if course_name else course.ar_name
 
     query.message.reply_text(
-        f"{course_name.title()}: {exam.name}",
+        f"- {course_name.title()}: {exam.name}",
     )
 
     photos = session.query(Photo)\
@@ -265,11 +265,13 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
         .filter(Document.exam_id == exam_id)\
         .order_by(Document.id).all()
 
-    for photo in photos:
+    for (i, photo) in enumerate(photos):
+        page = f'{i + 1} من {len(photos)}'
+
         query.bot.sendPhoto(
             query.message.chat.id,
             photo=photo.file_id,
-            caption=f'{course_name}\n{exam.name}'
+            caption=f'{course_name}\n{exam.name}\n{page}'
         )
 
     for doc in documents:
@@ -303,7 +305,7 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
 
     for exam in course.exams:
 
-        query.message.reply_text(f"{course_name.title()}: {exam.name}")
+        query.message.reply_text(f"- {course_name.title()}: {exam.name}")
 
         photos = session.query(Photo)\
             .filter(Photo.exam_id == exam.id)\
@@ -313,11 +315,13 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
             .filter(Document.exam_id == exam.id)\
             .order_by(Document.id).all()
 
-        for photo in photos:
+        for (i, photo) in enumerate(photos):
+            page = f'{i + 1} من {len(photos)}'
+
             query.bot.sendPhoto(
                 query.message.chat.id,
                 photo=photo.file_id,
-                caption=f'{course_name}\n{exam.name}'
+                caption=f'{course_name}\n{exam.name}\n{page}'
             )
 
         for doc in documents:
