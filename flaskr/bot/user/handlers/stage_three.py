@@ -273,7 +273,7 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
         query.bot.sendPhoto(
             query.message.chat.id,
             photo=photo.file_id,
-            caption=f'{course_name}\n{exam.name}\n{page}'
+            caption=f'{page}'
         )
 
     for doc in documents:
@@ -326,7 +326,7 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
             query.bot.sendPhoto(
                 query.message.chat.id,
                 photo=photo.file_id,
-                caption=f'{course_name}\n{exam.name}\n{page}'
+                caption=f'{page}'
             )
 
         for doc in documents:

@@ -53,3 +53,4 @@ def recieve_new_course(update: Update, context: CallbackContext) -> int:
     else:
         update.message.reply_text('الرجاء ادخال الاسم والرمز كما في المثال.')
         return RECIEVE_NEW_COURSE
+

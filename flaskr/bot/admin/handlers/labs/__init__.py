@@ -1,12 +1,12 @@
 import re
 from flaskr.bot.utils.is_admin import is_admin
-from flaskr.bot.admin.admin_constants import LAB_OPTIONS, LECTURE_OPTIONS
+from flaskr.bot.admin.admin_constants import LAB_OPTIONS
 from flaskr import db
-from flaskr.models import Course, Lab, Lecture
+from flaskr.models import Course, Lab
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update 
 from telegram.replykeyboardmarkup import ReplyKeyboardMarkup
-from flaskr.bot.admin.handlers.course_options import list_labs
+from flaskr.bot.admin.handlers.courses.course import list_labs
 
 
 def list_lab_files(update: Update, context: CallbackContext, lab_id=None) -> int:

@@ -5,7 +5,7 @@ from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update, ReplyKeyboardMarkup
 import logging
 from telegram.replykeyboardmarkup import ReplyKeyboardMarkup 
-from flaskr.bot.admin.admin_constants import COURSE_OVERVIEW
+from flaskr.bot.admin.admin_constants import COURSE_LIST
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -43,4 +43,4 @@ def admin_handler(update: Update, context: CallbackContext) -> int:
     )
 
     session.close()
-    return COURSE_OVERVIEW
+    return COURSE_LIST

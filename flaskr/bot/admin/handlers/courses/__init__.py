@@ -7,7 +7,7 @@ from telegram.replykeyboardmarkup import ReplyKeyboardMarkup
 from flaskr.bot.admin.admin_constants import COURSE_OPTIONS, RECIEVE_NEW_COURSE
 
 
-def course_overview(update: Update, context: CallbackContext, course_name=None) -> int:
+def edit_course(update: Update, context: CallbackContext, course_name=None) -> int:
     session = db.session
 
     if not is_admin(update, context, session):
@@ -35,7 +35,7 @@ def course_overview(update: Update, context: CallbackContext, course_name=None) 
     return COURSE_OPTIONS
 
 
-def to_course_overview(update: Update, context: CallbackContext) -> int:
+def to_edit_course(update: Update, context: CallbackContext) -> int:
     session = db.session
 
 
@@ -48,7 +48,7 @@ def to_course_overview(update: Update, context: CallbackContext) -> int:
     course = session.query(Course).filter(Course.id==course_id).one()
     course_name = course.ar_name
     session.close()
-    return course_overview(update, context, course_name=course_name)
+    return edit_course(update, context, course_name=course_name)
 
 
 def add_course(update: Update, context: CallbackContext) -> int:

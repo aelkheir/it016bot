@@ -1,12 +1,38 @@
-from flaskr.bot.utils.youtube import get_youtube_video
 import re
-from flaskr.bot.utils.is_admin import is_admin
-from flaskr.bot.admin.admin_constants import  RECIEVIE_LECTURE_FILE
 from flaskr import db
 from flaskr.models import  Document, Lecture, Video, YoutubeLink
-from telegram.ext import CallbackContext, CallbackContext
+from telegram.ext import CallbackContext
 from telegram import Update, ReplyKeyboardMarkup
+from flaskr.bot.admin.handlers.lectures import list_lecture_files
+from flaskr.bot.utils.youtube import get_youtube_video
+from flaskr.bot.utils.is_admin import is_admin
+from flaskr.bot.admin.admin_constants import  RECIEVIE_LECTURE_FILE, RECIEVE_LECTURE_NUMBER
 
+
+
+def recieve_lecture_number(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    if not is_admin(update, context, session):
+        return
+
+    # reads from context
+    lecture_id = context.chat_data['lecture_id']
+
+    number_regex = re.compile(f'\d+')
+    number_match = number_regex.search(update.message.text)
+
+    if number_match:
+        lecture = session.query(Lecture).filter(Lecture.id==lecture_id).one()
+        lecture.lecture_number = number_match.group()
+        session.commit()
+        session.close()
+        return list_lecture_files(update, context, lecture_id=lecture_id)
+
+    else:
+        update.message.reply_text(f'''الرجاء ادخل رقم المحاضرة مباشرة، مثال:
+        3''' )
+        return RECIEVE_LECTURE_NUMBER
 
 def recieve_lecture_file(update: Update, context: CallbackContext) -> int:
     session = db.session
@@ -77,4 +103,5 @@ def recieve_lecture_file(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(f'حدث خطا الرجاء ارسال ملف document', reply_markup=markup)
     
     return RECIEVIE_LECTURE_FILE
+
 

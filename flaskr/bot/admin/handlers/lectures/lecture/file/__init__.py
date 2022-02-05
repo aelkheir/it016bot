@@ -1,5 +1,5 @@
 from flaskr.bot.utils.is_admin import is_admin
-from flaskr.bot.admin.handlers.lectures_list import list_lecture_files
+from flaskr.bot.admin.handlers.lectures import list_lecture_files
 from flaskr import db
 from flaskr.models import  Document, Lecture, Video, YoutubeLink
 from telegram.ext import CallbackContext, CallbackContext

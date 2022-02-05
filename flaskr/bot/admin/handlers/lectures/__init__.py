@@ -6,7 +6,7 @@ from flaskr.models import Course, Lecture
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update 
 from telegram.replykeyboardmarkup import ReplyKeyboardMarkup
-from flaskr.bot.admin.handlers.course_options import list_lectures
+from flaskr.bot.admin.handlers.courses.course import list_lectures
 
 
 def list_lecture_files(update: Update, context: CallbackContext, lecture_id=None) -> int:

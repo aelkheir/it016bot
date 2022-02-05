@@ -1,9 +1,7 @@
-from flaskr.bot.admin.handlers.labs_list import list_lab_files
-import re
+from flaskr.bot.admin.handlers.labs import list_lab_files
 from flaskr.bot.utils.is_admin import is_admin
-from flaskr.bot.admin.handlers.lectures_list import list_lecture_files
 from flaskr import db
-from flaskr.models import  Document, Lab, Lecture, Video, YoutubeLink
+from flaskr.models import  Document, Lab, Video, YoutubeLink
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update 
 

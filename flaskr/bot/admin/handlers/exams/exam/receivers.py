@@ -1,9 +1,6 @@
-from flaskr.bot.admin.handlers.course_options import list_exams
-import re
 from telegram.files.photosize import PhotoSize
 from telegram.files.document import Document
-from flaskr.bot.admin.admin_constants import RECIEVE_COURSE_EXAM, RECIEVE_EXAM_FILE
-from flaskr.bot.admin.handlers.exams_list import edit_exam
+from flaskr.bot.admin.admin_constants import RECIEVE_EXAM_FILE
 from flaskr.bot.utils.is_admin import is_admin
 from flaskr import db
 from flaskr.models import  Exam, Photo, Document as MyDocument

@@ -1,15 +1,12 @@
 from datetime import date
-from flaskr.bot.admin.handlers.course_options import list_exams
-from flaskr.bot.admin.handlers.exam_options import edit_exam_name
-from flaskr.bot.admin.handlers.exams_list import edit_exam
+from flaskr.bot.admin.handlers.exams import edit_exam
 from flaskr.bot.utils.is_admin import is_admin
-from flaskr.bot.admin.admin_constants import RECIEVE_EXAM_NAME, RECIEVE_NAME_SYMBOL
+from flaskr.bot.admin.admin_constants import RECIEVE_EXAM_NAME
 import re
 from flaskr import db
 from flaskr.models import Course, Exam
 from telegram.ext import CallbackContext, CallbackContext
-from flaskr.bot.admin.handlers.course_overview import course_overview
-from telegram import Update, ReplyKeyboardRemove
+from telegram import Update
 
 
 name_regex = re.compile(r'الاسم: (.+)', re.UNICODE)

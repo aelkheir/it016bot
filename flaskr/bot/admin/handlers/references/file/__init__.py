@@ -1,9 +1,9 @@
 from flaskr.bot.utils.is_admin import is_admin
-from flaskr.bot.admin.handlers.course_options import list_refferences
+from flaskr.bot.admin.handlers.courses.course import list_refferences
 from flaskr import db
 from flaskr.models import  Course, Refference
 from telegram.ext import CallbackContext, CallbackContext
-from telegram import Update, ReplyKeyboardRemove
+from telegram import Update
 
 
 

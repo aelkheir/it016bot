@@ -4,7 +4,6 @@ from flaskr.bot.admin.admin_constants import  EXAM_OPTIONS, RECIEVE_EXAM_NAME
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update, ReplyKeyboardRemove
 from telegram.replykeyboardmarkup import ReplyKeyboardMarkup
-
 from flaskr.models import Exam
 
 

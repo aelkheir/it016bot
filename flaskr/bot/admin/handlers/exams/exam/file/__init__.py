@@ -1,10 +1,7 @@
-from flaskr.bot.admin.handlers.exams_list import edit_exam
-from flaskr.bot.admin.handlers.labs_list import list_lab_files
-import re
+from flaskr.bot.admin.handlers.exams import edit_exam
 from flaskr.bot.utils.is_admin import is_admin
-from flaskr.bot.admin.handlers.lectures_list import list_lecture_files
 from flaskr import db
-from flaskr.models import  Document, Exam, Lab, Lecture, Photo, Video, YoutubeLink
+from flaskr.models import  Document, Exam, Photo
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update 
 
