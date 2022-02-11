@@ -20,6 +20,19 @@ class User(db.Model):
     def __repr__(self):
         return f"<User(firstname='{self.first_name}', lastname='{self.last_name}')>"
 
+class Semester(db.Model):
+    __tablename__ = 'semesters'
+
+    id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
+    number = db.Column(db.Integer)
+    archived = db.Column(db.Boolean, default=True)
+
+    courses = db.relationship("Course", back_populates = 'semester')
+
+
+    def __repr__(self):
+        return f"<Semester (number={self.number})>"
+
 class Course(db.Model):
     __tablename__ = 'courses'
 
@@ -28,6 +41,10 @@ class Course(db.Model):
     en_course_symbol = db.Column(db.String(50), default='')
     ar_name = db.Column(db.String(100))
     en_name = db.Column(db.String(100), default='')
+
+    semester_id = db.Column(db.Integer, db.ForeignKey('semesters.id'))
+    semester = db.relationship('Semester', back_populates="courses", cascade="save-update")
+
 
     lectures = db.relationship("Lecture", back_populates = 'course', cascade="all, delete")
     labs = db.relationship("Lab", back_populates = 'course', cascade="all, delete")

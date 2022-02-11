@@ -1,4 +1,5 @@
 import re
+from sqlalchemy import func
 from flaskr.bot.utils.is_admin import is_admin
 from flaskr.bot.admin.admin_constants import LAB_OPTIONS
 from flaskr import db
@@ -82,8 +83,14 @@ def add_lab(update: Update, context: CallbackContext) -> int:
     course_id = context.chat_data['course_id']
 
     course = session.query(Course).filter(Course.id==course_id).one()
-    new_lab = Lab(lab_number=len(course.labs)+1)
+
+    last_lab = session.query(func.max(Lab.lab_number)) \
+      .filter_by(course_id=course_id).first()
+    lab_number = last_lab[0] + 1 if last_lab[0] else 1
+
+    new_lab = Lab(lab_number=lab_number)
     new_lab.course = course
+
     session.add(new_lab)
 
     update.message.reply_text(f'تمت اضافة لاب جديد بنجاح')

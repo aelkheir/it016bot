@@ -35,6 +35,7 @@ en = {
     'manage_users': 'manage users',
     'update_commands': 'update bot commands',
     'send_announcement': 'send announcement to all users',
+    'manage_semesters': 'manage semesters',
     
     'back_to': 'back to',
 

@@ -23,7 +23,7 @@ def set_bot_commands(update: Update, context: CallbackContext) -> int:
         text='جاري تحديث اوامر البوت. قد ياخذ هذا الامر بعض الوقت'
     )
 
-    JOB_NAME = 'UPDATING_COMMANDS_' + owner_chat_id
+    JOB_NAME = 'UPDATING_ACOMMANDS_FOR_ALL_USERS' + owner_chat_id
 
     current_jobs = context.job_queue.get_jobs_by_name(JOB_NAME)
 
@@ -81,7 +81,7 @@ def set_commands_job(context):
     if is_last_user:
         context.bot.send_message(
             owner_chat_id,
-            text=f'تم تحديث اوامر البوت لكل المستخدمين'
+            text=f'تم تحديث اوامر البوت'
         )
 
 

@@ -1,4 +1,5 @@
 import re
+from sqlalchemy import func
 from flaskr.bot.utils.is_admin import is_admin
 from flaskr.bot.admin.admin_constants import LECTURE_OPTIONS
 from flaskr import db
@@ -82,8 +83,14 @@ def add_lecture(update: Update, context: CallbackContext) -> int:
     course_id = context.chat_data['course_id']
 
     course = session.query(Course).filter(Course.id==course_id).one()
-    new_lecture = Lecture(lecture_number=len(course.lectures)+1)
+
+    last_lecture = session.query(func.max(Lecture.lecture_number)) \
+      .filter_by(course_id=course_id).first()
+    lecture_number = last_lecture[0] + 1 if last_lecture[0] else 1
+
+    new_lecture = Lecture(lecture_number=lecture_number)
     new_lecture.course = course
+
     session.add(new_lecture)
 
     update.message.reply_text(f'تمت اضافة محاضرة جديدة بنجاح')

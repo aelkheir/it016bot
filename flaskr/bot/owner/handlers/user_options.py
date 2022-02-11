@@ -1,9 +1,11 @@
+from flaskr.bot.owner.handlers.update_commands import set_commands_job
 from flaskr.bot.owner.handlers.view_user import view_user
 from flaskr.bot.utils.is_owner import is_owner
 from flaskr.bot.owner.handlers.choice import  list_users
 from flaskr import db
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update
+from flaskr.bot.utils.user_required import user_required
 from flaskr.models import User
 
 
@@ -80,4 +82,40 @@ def unsubscribe_user(update: Update, context: CallbackContext) -> int:
 
     session.close()
     return view_user(update, context, user_id=user_id)
+
+def update_user_commands(update: Update, context: CallbackContext) -> int:
+
+    session = db.session
+    
+    if not is_owner(update, context, session):
+        return
+
+    # read from context
+    user_id = context.chat_data['viewed_user_id']
+
+    user = session.query(User).filter(User.id==user_id).one()
+
+    owner_chat_id = str(update.effective_chat.id)
+
+    JOB_NAME = 'UPDATING_ACOMMANDS_FOR_USER' + str(user.chat_id)
+
+    current_jobs = context.job_queue.get_jobs_by_name(JOB_NAME)
+
+    for job in current_jobs:
+        job.schedule_removal()
+
+    context.job_queue.start()
+
+    when = 0
+
+    context.job_queue.run_once(
+        set_commands_job,
+        when,
+        context=(user, owner_chat_id, True),
+        name=JOB_NAME
+        )
+
+    session.close()
+    return view_user(update, context, user_id=user_id)
+
 

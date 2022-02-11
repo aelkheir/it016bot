@@ -28,9 +28,10 @@ def view_user(update: Update, context: CallbackContext, user_id=None) -> int:
 
     reply_keyboard = []
 
-    reply_keyboard.append(['اشتراك', 'الغاء الاشتراك'])
+    reply_keyboard.append(['اشراك', 'الغاء الاشتراك'])
+    reply_keyboard.append(['حذف المستخدم', 'تحديث الاوامر'])
 
-    reply_keyboard.append(['حذف المستخدم'])
+    reply_keyboard.append([])
 
     reply_keyboard.append(['رجوع'])
 

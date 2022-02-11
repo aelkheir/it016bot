@@ -36,6 +36,7 @@ ar = {
     'manage_users': 'ادارة المستخدمين',
     'update_commands': 'تحديث اوامر البوت',
     'send_announcement': 'ارسل اعلان لكل المستخدمين',
+    'manage_semesters': 'ادارة السمسترات',
 
 
     'genitive': genitive,
