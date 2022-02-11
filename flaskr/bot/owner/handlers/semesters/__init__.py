@@ -32,8 +32,11 @@ def edit_semester(update: Update, context: CallbackContext, semester_id=None) ->
     reply_keyboard.append(['اضف للارشيف', f'استخرج من الارشيف'])
     reply_keyboard.append(['حذف السمستر', f'تعديل رقم السمستر: {semester.number}'])
     reply_keyboard.append(['رجوع'])
+
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
-    update.message.reply_text(f'سمستر {semester.number}',
+
+    status = 'مؤرشف' if semester.archived else 'غير مؤرشف'
+    update.message.reply_text(f'سمستر {semester.number}\n' f'الحالة: {status}',
             reply_markup=markup,
     )
 
