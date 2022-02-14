@@ -14,6 +14,6 @@ RUN pip  install -r requirements.txt
 
 COPY . .
 
-RUN flask db downgrade
+RUN flask db upgrade
 
 CMD exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 0 flaskr:app
