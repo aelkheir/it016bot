@@ -21,7 +21,7 @@ def upgrade():
     op.create_table('current_semester',
     sa.Column('id', sa.String(length=50), nullable=False),
     sa.Column('semester_id', sa.Integer(), nullable=True),
-    sa.CheckConstraint('id = "1G3S34OS29Z4"', name=op.f('ck_current_semester_only_one_row')),
+    sa.CheckConstraint("id = '1G3S34OS29Z4'", name=op.f('ck_current_semester_only_one_row')),
     sa.ForeignKeyConstraint(['semester_id'], ['semesters.id'], name=op.f('fk_current_semester_semester_id_semesters')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_current_semester'))
     )
