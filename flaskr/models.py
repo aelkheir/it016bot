@@ -37,12 +37,18 @@ class Semester(db.Model):
 
 class CurrentSemester(db.Model):
     __tablename__ = 'current_semester'
+    CURRENT_SEMESTER_PK = '1G3S34OS29Z4'
 
     __table_args__ = (
-            CheckConstraint('id = 1', name='only_one_row'),
+            CheckConstraint(f'id = "{CURRENT_SEMESTER_PK}"', name='only_one_row'),
         )
 
-    id = db.Column(db.Integer, CheckConstraint('id==1', name='only_one_row'), db.Sequence('user_id_seq'), primary_key=True )
+
+    id = db.Column(
+        db.String(50),
+        CheckConstraint(f'id=="{CURRENT_SEMESTER_PK}"', name='only_one_row'),
+        default=CURRENT_SEMESTER_PK,
+        primary_key=True )
 
     semester_id = db.Column(db.Integer, db.ForeignKey('semesters.id'))
     semester = db.relationship('Semester', cascade="save-update")
