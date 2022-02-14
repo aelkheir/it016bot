@@ -1,6 +1,7 @@
+from flaskr.bot.utils.get_current_semester import get_current_semester
 from flaskr.bot.utils.user_required import user_required
 import logging
-from flaskr.models import Course
+from flaskr.models import Course, Semester
 from flaskr import db
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -20,7 +21,12 @@ def start_over(update: Update, context: CallbackContext) -> int:
     user = user_required(update, context, session)
     language = context.chat_data['language']
 
-    courses =  session.query(Course).order_by(Course.id).all()
+    current_semester = get_current_semester(session)
+
+    courses =  session.query(Course) \
+        .join(Semester, Semester.id == Course.semester_id) \
+        .filter((Semester.id==current_semester.semester_id )) \
+        .order_by(Course.id).all()
 
     keyboard = []
 

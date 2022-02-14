@@ -14,6 +14,8 @@ en = {
     'exams': 'exams',
     'files': 'files',
 
+    'semester': 'semester',
+
     'indifinite_references': 'references',
     'indifinite_exams': 'exams',
 
@@ -30,12 +32,14 @@ en = {
     'choose_bot_language': 'choose bot language',
     'language_set_to': 'Language set to English',
 
+    'archive': 'archive',
     'language_settings': 'choose bot language',
     'edit_courses': 'edit courses',
     'manage_users': 'manage users',
     'update_commands': 'update bot commands',
     'send_announcement': 'send announcement to all users',
     'manage_semesters': 'manage semesters',
+    'edit_archive': 'edit archive',
     
     'back_to': 'back to',
 

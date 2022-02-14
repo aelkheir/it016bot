@@ -1,4 +1,4 @@
-from flaskr.bot.user.user_constants import COURSE, LABS, SUBJECT_LIST
+from flaskr.bot.user.user_constants import ARCHIVE, COURSE, LABS, SUBJECT_LIST
 from telegram import InlineKeyboardButton
 
 
@@ -51,4 +51,19 @@ def back_to_course_button(language, user_language, en_course_name, ar_course_nam
     return InlineKeyboardButton(
         ' '.join(text),
         callback_data=f'{COURSE} {course_id}'
+    )
+
+def back_to_archive_button(language, user_language):
+
+    ar_archive = language['archive'][1:]
+
+    text = [
+        back_icon, 
+        f"{language['back_to']}".capitalize() +
+        f"{' ' + language['archive'] if user_language == 'en' else ar_archive}".title(),
+    ]
+
+    return InlineKeyboardButton(
+        ' '.join(text),
+        callback_data=f"{ARCHIVE}"
     )

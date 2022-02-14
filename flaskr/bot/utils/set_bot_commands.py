@@ -10,24 +10,6 @@ def get_common_commands(language):
     ]
 
 def get_user_commands(language, user_language):
-    # session = db.session()
-
-    # courses = session.query(Course)\
-    #     .filter(Course.en_course_symbol!='')\
-    #     .order_by(Course.id).all()
-
-    # courses_commands = []
-
-    # for course in courses:
-
-    #     course_name = course.ar_name \
-    #         if user_language == 'ar' \
-    #         else course.en_name
-    #     course_name = course_name if course_name else course.ar_name
-
-    #     courses_commands.append((f'{course.en_course_symbol}', f'{course_name}'.capitalize()))
-
-    # session.close()
 
     return  [("courses", f"{language['courses']}".capitalize())] + get_common_commands(language)
 
@@ -38,7 +20,8 @@ def get_admin_commands(language, user_language):
 
 def get_owner_commands(language, user_language):
     return get_admin_commands(language, user_language) + [
-        ('semesters', f"{language['manage_semesters']}".capitalize()),
+        ('archive', f"{language['archive']}".capitalize()),
+        ('editarchive', f"{language['edit_archive']}".capitalize()),
         ('manageusers', f"{language['manage_users']}".capitalize()),
         ('updatecommands', f"{language['update_commands']}".capitalize()),
         ('sendannouncement', f"{language['send_announcement']}".capitalize()),

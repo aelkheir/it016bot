@@ -1,11 +1,11 @@
 import re
-from flaskr.bot.owner.owner_constants import RECIEVE_SEMESTER_NUMBER
+from flaskr.bot.admin.admin_constants import RECIEVE_SEMESTER_NUMBER
 from flaskr.bot.utils.is_owner import is_owner
 from flaskr import db
 from flaskr.models import Semester
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update
-from flaskr.bot.owner.handlers.semesters import edit_semester
+from flaskr.bot.admin.handlers.semesters import edit_semester
 
 
 semester_number_regex = re.compile(r'^\d+$')

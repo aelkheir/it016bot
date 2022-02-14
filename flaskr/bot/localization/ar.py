@@ -12,6 +12,8 @@ ar = {
     'exams': 'الامتحانات',
     'files': 'الملفات',
 
+    'semester': 'سمستر',
+
     'indifinite_references': 'مراجع',
     'indifinite_exams': 'امتحانات',
 
@@ -31,12 +33,15 @@ ar = {
 
     'back_to': 'العودة ل',
 
-    'language_settings': 'اختر لغة البوت',
+    'archive': 'الارشيف',
+    'language_settings': 'وضع لغة البوت',
     'edit_courses': 'تعديل المواد',
     'manage_users': 'ادارة المستخدمين',
     'update_commands': 'تحديث اوامر البوت',
     'send_announcement': 'ارسل اعلان لكل المستخدمين',
     'manage_semesters': 'ادارة السمسترات',
+    'edit_archive': 'تعديل الارشيف',
+
 
 
     'genitive': genitive,

@@ -20,6 +20,8 @@ def recieve_new_course(update: Update, context: CallbackContext) -> int:
     if not is_admin(update, context, session):
         return
 
+    # read from context
+    semester_id = context.chat_data['semester_id'] if 'semester_id' in context.chat_data else None
 
     new_coures_match = new_coures_regex.search(update.message.text)
 
@@ -39,6 +41,7 @@ def recieve_new_course(update: Update, context: CallbackContext) -> int:
             en_name=en_name,
             course_symbol=ar_course_symbol,
             en_course_symbol=en_course_symbol,
+            semester_id=semester_id,
         )
 
         session.add(course)
@@ -48,7 +51,9 @@ def recieve_new_course(update: Update, context: CallbackContext) -> int:
 
         update.message.reply_text(f'تم اضافة {ar_name} {ar_course_symbol}')
 
-        return admin_handler(update, context)
+        handler = context.chat_data['back_from_edit_course']
+
+        return handler(update, context)
 
     else:
         update.message.reply_text('الرجاء ادخال الاسم والرمز كما في المثال.')

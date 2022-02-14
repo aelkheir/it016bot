@@ -1,8 +1,9 @@
+from flaskr.bot.utils.get_current_semester import get_current_semester
 from flaskr.bot.utils.is_admin import is_admin
 from flaskr import db
-from flaskr.models import Course
+from flaskr.models import Course, Semester
 from telegram.ext import CallbackContext, CallbackContext
-from telegram import Update, ReplyKeyboardMarkup
+from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
 import logging
 from telegram.replykeyboardmarkup import ReplyKeyboardMarkup 
 from flaskr.bot.admin.admin_constants import COURSE_LIST
@@ -14,6 +15,9 @@ logging.basicConfig(
 
 def admin_handler(update: Update, context: CallbackContext) -> int:
 
+    # writes to context
+    context.chat_data['back_from_edit_course'] = admin_handler
+
     user = update.message.from_user
     logger.info("Admin %s started the conversation.", user.first_name)
 
@@ -24,8 +28,13 @@ def admin_handler(update: Update, context: CallbackContext) -> int:
 
     if 'course_id' in context.chat_data:
         del context.chat_data['course_id']
-    
-    courses =  session.query(Course).order_by(Course.id).all()
+
+    current_semester = get_current_semester(session)
+
+    courses =  session.query(Course) \
+        .join(Semester, Semester.id == Course.semester_id, isouter=True) \
+        .filter(( Semester.id==current_semester.semester_id ) | ( Course.semester_id==None )) \
+        .order_by(Course.semester_id.desc(), Course.id).all()
 
     reply_keyboard = []
 
@@ -33,12 +42,21 @@ def admin_handler(update: Update, context: CallbackContext) -> int:
         reply_keyboard.append([
             course.ar_name
         ])
-    reply_keyboard.append(['اضافة مادة'])
 
-    markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
+    markup = ReplyKeyboardMarkup(
+        reply_keyboard,
+        resize_keyboard=True,
+        input_field_placeholder='اختر مادة'
+        ) if len(reply_keyboard) > 1 else ReplyKeyboardRemove()
+
+
+    semester_name = ' - لا يوجد سمستر حالي'
+
+    if current_semester.semester:
+        semester_name = f' - سمستر {current_semester.semester.number}'
 
     update.message.reply_text(
-        f'Admin {user.first_name}',
+        f'Admin {user.first_name}{semester_name}',
         reply_markup=markup,
     )
 

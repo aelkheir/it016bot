@@ -2,9 +2,8 @@ import re
 from telegram import Update, ReplyKeyboardRemove
 from flaskr import db
 from telegram.ext import CallbackContext
-from flaskr.models import Course
+from flaskr.models import Course, Semester
 from flaskr.bot.admin.admin_constants import RECIEVE_NAME_SYMBOL, CONFIRM_COURSE_DELETION
-from flaskr.bot.admin.handlers.admin_handler import admin_handler
 from flaskr.bot.utils.is_admin import is_admin
 from flaskr.bot.admin.handlers.courses import edit_course
 
@@ -12,6 +11,8 @@ from flaskr.bot.admin.handlers.courses import edit_course
 name_regex = re.compile(r'الاسم: (\w+(\s\w+)*)( - ((\w+)(\s\w+)*))?', re.UNICODE)
 
 symbol_regex = re.compile(r'الرمز: (\w{3}\d{3})( - (\w+\d+))?', re.UNICODE)
+
+semester_regex = re.compile(r'سمستر\s(\d+)(\s.*)?', re.UNICODE)
 
 def recieve_name_symbol(update: Update, context: CallbackContext) -> int:
     session = db.session
@@ -51,6 +52,7 @@ def recieve_name_symbol(update: Update, context: CallbackContext) -> int:
         session.close()
         update.message.reply_text(f'تم التعديل بنجاح')
         return edit_course(update, context, course_name=course_name)
+        
     elif not (symbol_match or name_match):
         update.message.reply_text(f'الرجاء الاتزام بالطريقة الموضحة في المثال')
         return RECIEVE_NAME_SYMBOL
@@ -79,10 +81,45 @@ def apply_delete_course(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(f'تم حذف {course_name}')
         # delete from context
         del context.chat_data['course_id']
-        return admin_handler(update, context)
+
+        handler = context.chat_data['back_from_edit_course']
+
+        return handler(update, context)
 
     update.message.reply_text(f'''رجاءا للتاكيد ادخل: 
     نعم انا متاكد تماما.''', reply_markup=ReplyKeyboardRemove())
 
     session.close()
     return CONFIRM_COURSE_DELETION
+
+
+def recieve_course_semester(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    if not is_admin(update, context, session):
+        return
+
+    course_id = context.chat_data['course_id']
+
+    semester_match = semester_regex.search(update.message.text)
+
+    course = session.query(Course).filter(Course.id==course_id).one()
+
+    course_name = course.ar_name
+    
+    if semester_match:
+        semester_number = semester_match.groups()[0]
+        semester = session.query(Semester).filter(Semester.number == semester_number).one()
+
+
+        course.semester = semester
+
+        # write to context
+        context.chat_data['semester_id'] = semester.id
+
+        session.commit()
+
+        update.message.reply_text(f'تم التعديل بنجاح')
+
+    session.close()
+    return edit_course(update, context, course_name=course_name)

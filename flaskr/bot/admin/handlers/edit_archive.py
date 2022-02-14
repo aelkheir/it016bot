@@ -1,5 +1,5 @@
 import math
-from flaskr.bot.owner.owner_constants import SEMESTER_LIST
+from flaskr.bot.admin.admin_constants import SEMESTER_LIST
 from flaskr.bot.utils.is_owner import is_owner
 from flaskr import db
 from flaskr.models import Course, Semester
@@ -7,10 +7,9 @@ from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update, ReplyKeyboardMarkup
 import logging
 from telegram.replykeyboardmarkup import ReplyKeyboardMarkup 
-from flaskr.bot.admin.admin_constants import COURSE_LIST
 
 
-def manage_semesters(update: Update, context: CallbackContext) -> int:
+def edit_archive(update: Update, context: CallbackContext) -> int:
 
     user = update.message.from_user
 
@@ -34,7 +33,8 @@ def manage_semesters(update: Update, context: CallbackContext) -> int:
 
         for semester_index in range(row_start, row_start + row_size):
             semester = semesters[semester_index]
-            row.append( f'سمستر {semester.number}')
+            status = ' (حالي)' if semester.current else ''
+            row.append( f'سمستر {semester.number}{status}')
 
         reply_keyboard.append(row)
 

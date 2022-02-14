@@ -1,9 +1,9 @@
 from flaskr.bot.utils.is_admin import is_admin
 import re
-from flaskr.bot.admin.admin_constants import CONFIRM_COURSE_DELETION, EXAMS_LIST, LABS_LIST, RECIEVE_NAME_SYMBOL, LECTURES_LIST, REFFERENCES_LIST
+from flaskr.bot.admin.admin_constants import CONFIRM_COURSE_DELETION, EXAMS_LIST, LABS_LIST, RECIEVE_COURSE_SEMESTER, RECIEVE_NAME_SYMBOL, LECTURES_LIST, REFFERENCES_LIST
 import math
 from flaskr import db
-from flaskr.models import Course, Exam, Lab, Lecture
+from flaskr.models import Course, Exam, Lab, Lecture, Semester
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update, ReplyKeyboardRemove
 from telegram.replykeyboardmarkup import ReplyKeyboardMarkup
@@ -192,3 +192,35 @@ def confirm_delete_course(update: Update, context: CallbackContext) -> int:
     نعم انا متاكد تماما.''', reply_markup=ReplyKeyboardRemove())
     session.close()
     return CONFIRM_COURSE_DELETION
+
+def edit_course_semester(update: Update, context: CallbackContext) -> int:
+
+    session = db.session
+
+    if not is_admin(update, context, session):
+        return
+
+    semesters =  session.query(Semester).order_by(Semester.number).all()
+
+    reply_keyboard = []
+
+    for row_index in range(0, math.ceil(len(semesters) / 2)):
+        row = []
+        is_row_full =  len(semesters) // 2 >= row_index + 1
+        row_size = 2 if is_row_full else len(semesters) % 2
+        row_start = row_index * 2
+
+        for semester_index in range(row_start, row_start + row_size):
+            semester = semesters[semester_index]
+            status = ' (حالي)' if semester.current else ''
+            row.append( f'سمستر {semester.number}{status}')
+
+        reply_keyboard.append(row)
+
+    reply_keyboard.append(['رجوع'])
+
+    markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
+
+
+    update.message.reply_text(f'اختر سمستر', reply_markup=markup)
+    return RECIEVE_COURSE_SEMESTER

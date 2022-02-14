@@ -1,5 +1,4 @@
 from flaskr.bot.owner.handlers.announcement_options import send_announcement, view_announcement
-from flaskr.bot.owner.handlers.manage_semesters import manage_semesters
 from flaskr.bot.owner.handlers.recieve_announcement import recieve_announcement
 from flaskr.bot.owner.handlers.type_announcement import type_announcement
 from flaskr.bot.owner.handlers.user_options import delete_user, subscribe_user, unsubscribe_user, update_user_commands
@@ -15,8 +14,6 @@ from flaskr.bot.owner.handlers.recieve_new_admin import recieve_new_admin
 from flaskr.bot.owner.handlers.owner_handler import owner_handler
 from flaskr.bot.owner.handlers.view_user import  view_all_users, view_user
 
-from flaskr.bot.owner.handlers.semesters.states import states as semesters_states
-from flaskr.bot.owner.handlers.semesters import edit_semester, add_semester
 
 
 owner_conv = ConversationHandler(
@@ -24,7 +21,6 @@ owner_conv = ConversationHandler(
         CommandHandler('manageusers', owner_handler),
         CommandHandler('updatecommands', set_bot_commands),
         CommandHandler('sendannouncement', type_announcement),
-        CommandHandler('semesters', manage_semesters),
     ],
     states={
         constants.CHOICE: [
@@ -32,7 +28,6 @@ owner_conv = ConversationHandler(
             MessageHandler(Filters.regex(f'المدراء'), list_admins),
         ],
 
-        **semesters_states,
 
         constants.USER_VIEW: [
             MessageHandler(Filters.regex(f'رجوع'), owner_handler),

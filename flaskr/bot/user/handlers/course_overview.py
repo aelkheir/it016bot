@@ -8,6 +8,20 @@ from flaskr.bot.user.user_constants import  EXAMS, LABS, LECTURE, LECTURES, REFF
 from flaskr import db
 
 
+def back_from_course_overview(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    query = update.callback_query
+    query.answer()
+
+    user_required(update, context, session)
+
+    # read from context
+    handler = context.chat_data['back_from_course_overview']
+
+    return handler(update, context)
+
+
 
 
 def course_overview(update: Update, context: CallbackContext, course_id=None) -> int:

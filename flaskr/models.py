@@ -1,3 +1,4 @@
+from sqlalchemy import CheckConstraint
 from flaskr import db 
 
 class User(db.Model):
@@ -25,13 +26,31 @@ class Semester(db.Model):
 
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
     number = db.Column(db.Integer)
-    archived = db.Column(db.Boolean, default=True)
 
+    current = db.relationship("CurrentSemester", back_populates = 'semester')
     courses = db.relationship("Course", back_populates = 'semester')
 
 
     def __repr__(self):
         return f"<Semester (number={self.number})>"
+
+
+class CurrentSemester(db.Model):
+    __tablename__ = 'current_semester'
+
+    __table_args__ = (
+            CheckConstraint('id = 1', name='only_one_row'),
+        )
+
+    id = db.Column(db.Integer, CheckConstraint('id==1', name='only_one_row'), db.Sequence('user_id_seq'), primary_key=True )
+
+    semester_id = db.Column(db.Integer, db.ForeignKey('semesters.id'))
+    semester = db.relationship('Semester', cascade="save-update")
+
+
+    def __repr__(self):
+        return f"<CurrentSemester (number={self.semester.number})>"
+
 
 class Course(db.Model):
     __tablename__ = 'courses'
