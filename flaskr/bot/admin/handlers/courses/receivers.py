@@ -10,7 +10,7 @@ from telegram import Update
 
 new_coures_regex = re.compile(
     r'الاسم: (\w+(\s\w+)*)( - ((\w+)(\s\w+)*))?\n'
-    r'الرمز: (\w{3}\d{3})( - (\w+\d+))?',
+    r'الرمز: (\w+\d+)( - (\w+\d+))?',
     re.UNICODE
 )
 
