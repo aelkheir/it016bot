@@ -141,6 +141,7 @@ def get_lectures(
             input_message_content=InputTextMessageContent(
               text,
               parse_mode=ParseMode.MARKDOWN,
+              disable_web_page_preview=True,
             ),
             reply_markup=reply_markup if mode == 'keyboard' else None
         ),
@@ -204,7 +205,8 @@ def get_labs(
             description=description.title(),
             input_message_content=InputTextMessageContent(
               text,
-              parse_mode=ParseMode.MARKDOWN
+              parse_mode=ParseMode.MARKDOWN,
+              disable_web_page_preview=True,
             ),
             reply_markup= reply_markup if mode == 'keyboard' else None
         ),
@@ -270,7 +272,8 @@ def get_references(
             description=description.title(),
             input_message_content=InputTextMessageContent(
               text,
-              parse_mode=ParseMode.MARKDOWN
+              parse_mode=ParseMode.MARKDOWN,
+              disable_web_page_preview=True,
             ),
             reply_markup=reply_markup if mode == 'keyboard' else None
         ),
