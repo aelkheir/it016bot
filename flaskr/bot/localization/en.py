@@ -25,6 +25,8 @@ en = {
 
     'lecture': 'lecture',
     'lab': 'lab',
+    'reference': 'reference',
+    'exam': 'exam',
 
     'download': 'download',
     'all': 'all',

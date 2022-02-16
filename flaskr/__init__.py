@@ -8,8 +8,9 @@ from flask_migrate import Migrate
 import http
 
 from telegram import Bot, Update
-from telegram.ext import Dispatcher, PicklePersistence, Updater, JobQueue
+from telegram.ext import Dispatcher, PicklePersistence, Updater, JobQueue, InlineQueryHandler
 from flask_sqlalchemy import SQLAlchemy
+
 
 
 app = Flask(__name__)
@@ -50,6 +51,7 @@ from flaskr.bot.admin.admin_conv import admin_conv
 from flaskr.bot.user.user_conv import user_conv
 from flaskr.bot.owner.owner_conv import owner_conv
 from flaskr.bot.setlanguage import language_conv
+from flaskr.bot.inlinequery.inline_conv import inline_conv
 
 if app.env == 'production':
 
@@ -70,10 +72,11 @@ if app.env == 'production':
 
     job_queue.set_dispatcher(dispatcher)
 
-    dispatcher.add_handler(user_conv, 1)
-    dispatcher.add_handler(admin_conv, 2)
-    dispatcher.add_handler(owner_conv, 3)
-    dispatcher.add_handler(language_conv, 4)
+    dispatcher.add_handler(inline_conv, )
+    dispatcher.add_handler(user_conv, )
+    dispatcher.add_handler(admin_conv, 1)
+    dispatcher.add_handler(owner_conv, 2)
+    dispatcher.add_handler(language_conv, 3)
 
 
     @app.route("/", methods=["POST", "GET"])
@@ -94,10 +97,11 @@ elif app.env == 'development':
 
     dispatcher = updater.dispatcher
 
-    dispatcher.add_handler(user_conv, 1)
-    dispatcher.add_handler(admin_conv, 2)
-    dispatcher.add_handler(owner_conv, 3)
-    dispatcher.add_handler(language_conv, 4)
+    dispatcher.add_handler(inline_conv, )
+    dispatcher.add_handler(user_conv, )
+    dispatcher.add_handler(admin_conv, 1)
+    dispatcher.add_handler(owner_conv, 2)
+    dispatcher.add_handler(language_conv, 3)
 
     @app.route("/dev")
     def dev():
