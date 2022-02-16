@@ -59,7 +59,7 @@ def list_lab_files(update: Update, context: CallbackContext) -> int:
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     query.edit_message_text(
-        text=f"{course_name}: {language['lab']} {lab.lab_number}".title(),
+        text=f"{course_name}: {language['lab'].capitalize()} {lab.lab_number}",
         reply_markup=reply_markup
     )
 
@@ -122,7 +122,7 @@ def send_all_labs(update: Update, context: CallbackContext) -> int:
 
     for lab in course.labs:
         query.message.reply_text(
-            f"- {course_name.title()}: {language['lab'].capitalize()} {lab.lab_number}"
+            f"- {course_name}: {language['lab'].capitalize()} {lab.lab_number}"
         )
 
         for doc in lab.documents:
@@ -161,7 +161,7 @@ def send_all_lecture_files(update: Update, context: CallbackContext) -> int:
         else lecture.course.en_name
 
     query.message.reply_text(
-        f"- {course_name.title()}: {language['lecture'].capitalize()} {lecture.lecture_number}"
+        f"- {course_name}: {language['lecture'].capitalize()} {lecture.lecture_number}"
     )
 
     for doc in lecture.documents:
@@ -223,7 +223,7 @@ def send_all_course_refferences(update: Update, context: CallbackContext) -> int
 
     if len(course.refferences) > 0:
         query.message.reply_text(
-        f"{course_name.title()}: {language['references'].capitalize()}",
+        f"{course_name}: {language['references'].capitalize()}",
         )
         for refference in course.refferences:
             query.bot.sendDocument(query.message.chat.id, document=refference.file_id)
@@ -256,7 +256,7 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
     course_name = course_name if course_name else course.ar_name
 
     query.message.reply_text(
-        f"- {course_name.title()}: {exam.name}",
+        f"- {course_name}: {exam.name}",
     )
 
     photos = session.query(Photo)\
@@ -310,7 +310,7 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
 
     for exam in exams:
 
-        query.message.reply_text(f"- {course_name.title()}: {exam.name}")
+        query.message.reply_text(f"- {course_name}: {exam.name}")
 
         photos = session.query(Photo)\
             .filter(Photo.exam_id == exam.id)\

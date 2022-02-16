@@ -45,7 +45,7 @@ def back_to_course_button(language, user_language, en_course_name, ar_course_nam
     text = [
         back_icon, 
         f"{language['back_to']}".capitalize() +
-        f"{' ' + en_course_name.title() if user_language == 'en' else ar_course_name}".title(),
+        f"{' ' + en_course_name if user_language == 'en' else ar_course_name}",
     ]
 
     return InlineKeyboardButton(

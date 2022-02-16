@@ -27,7 +27,7 @@ def send_all_lab_files(update: Update, context: CallbackContext) -> int:
         else lab.course.en_name
 
     query.message.reply_text(
-        f"- {course_name.title()}: {language['lab'].capitalize()} {lab.lab_number}"
+        f"- {course_name}: {language['lab'].capitalize()} {lab.lab_number}"
     )
 
     for doc in lab.documents:

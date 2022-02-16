@@ -38,7 +38,7 @@ def start_over(update: Update, context: CallbackContext) -> int:
         course_name = course_name if course_name else course.ar_name
 
         keyboard.append([
-            InlineKeyboardButton(f'{course_name} ({len(course.lectures)})'.title(),
+            InlineKeyboardButton(f'{course_name} ({len(course.lectures)})',
             callback_data=f'{COURSE} {course.id}'),
         ])
 

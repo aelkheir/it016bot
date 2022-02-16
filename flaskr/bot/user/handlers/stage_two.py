@@ -61,7 +61,8 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{course_name}: {language['lecture']} {lecture.lecture_number}".title(), reply_markup=reply_markup
+        text=f"{course_name}: {language['lecture'].capitalize()} {lecture.lecture_number}",
+        reply_markup=reply_markup
     )
 
     session.close()
@@ -96,7 +97,7 @@ def send_all_lectures(update: Update, context: CallbackContext) -> int:
 
     for lecture in lectures:
         query.message.reply_text(
-            f"- {course_name.title()}: {language['lecture'].capitalize()} {lecture.lecture_number}"
+            f"- {course_name}: {language['lecture'].capitalize()} {lecture.lecture_number}"
         )
 
         for doc in lecture.documents:
@@ -153,7 +154,7 @@ def list_course_refferences(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{course_name.title()}: {language['references'].capitalize()}",
+        text=f"{course_name}: {language['references'].capitalize()}",
         reply_markup=reply_markup
     )
     return STAGE_THREE
@@ -213,7 +214,7 @@ def list_course_labs(update: Update, context: CallbackContext) -> int:
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     query.edit_message_text(
-        text=f"{course_name.title()}: {language['labs'].capitalize()}",
+        text=f"{course_name}: {language['labs'].capitalize()}",
         reply_markup=reply_markup
     )
     return STAGE_THREE
@@ -260,7 +261,7 @@ def list_course_exams(update: Update, context: CallbackContext) -> int:
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     query.edit_message_text(
-        text=f"{course_name.title()}: {language['exams'].capitalize()}",
+        text=f"{course_name}: {language['exams'].capitalize()}",
         reply_markup=reply_markup
     )
     return STAGE_THREE

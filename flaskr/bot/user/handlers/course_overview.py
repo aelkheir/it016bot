@@ -121,12 +121,12 @@ def course_overview(update: Update, context: CallbackContext, course_id=None) ->
 
         if update.callback_query:
             query.edit_message_text(
-                text=f"{course_name}:".title(),
+                text=f"{course_name}:",
                 reply_markup=reply_markup
             )
         elif update.message:
             update.message.reply_text(
-                f"{course_name}:".title(),
+                f"{course_name}:",
                 reply_markup=reply_markup
             )
 
