@@ -26,7 +26,6 @@ def inlinequery(update: Update, context: CallbackContext) -> None:
     update.inline_query.answer(
       results,
       auto_pagination=True,
-      cache_time=0,
       switch_pm_text='📖 Courses',
       switch_pm_parameter='start'
       )
