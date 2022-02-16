@@ -1,7 +1,5 @@
 import re
-from turtle import title
 from typing import Match
-import flaskr.bot.inlinequery.constants as constants
 from uuid import uuid4
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, ParseMode, InputTextMessageContent
@@ -13,7 +11,7 @@ from flaskr.bot.inlinequery.constants import LAB, LECTURE, REFERENCES
 from flaskr.bot.localization.en import en
 from flaskr.bot.localization.ar import ar
 from flaskr.bot.utils.get_current_semester import get_current_semester
-from flaskr.models import Course, Document, Semester
+from flaskr.models import Course,  Semester
 
 
 def get_all_courses(session, context: CallbackContext) -> None:
