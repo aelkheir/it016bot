@@ -58,7 +58,7 @@ def get_course(session, context: CallbackContext, query: str) -> None:
     return results
 
 
-insert_regex = re.compile(r'\+.*\+')
+insert_regex = re.compile(r'\+.*\+', re.DOTALL)
 
 
 def insert_link(session, context: CallbackContext, match: Match[str]) -> None:

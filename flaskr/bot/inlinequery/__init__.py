@@ -10,7 +10,7 @@ from flaskr.bot.inlinequery.constants import SEND
 from flaskr.bot.inlinequery.search import get_all_courses, get_course, insert_link
 from flaskr.models import Document
 
-insert_link_regex = re.compile(r'.*(\+(.*)\+).*')
+insert_link_regex = re.compile(r'.*(\+(.*)\+).*', re.DOTALL)
 
 
 def inlinequery(update: Update, context: CallbackContext) -> None:
