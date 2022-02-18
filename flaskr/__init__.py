@@ -8,7 +8,7 @@ from flask_migrate import Migrate
 import http
 
 from telegram import Bot, Update
-from telegram.ext import Dispatcher, PicklePersistence, Updater, JobQueue, InlineQueryHandler
+from telegram.ext import Dispatcher, PicklePersistence, Updater, JobQueue, CommandHandler
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -52,6 +52,9 @@ from flaskr.bot.user.user_conv import user_conv
 from flaskr.bot.owner.owner_conv import owner_conv
 from flaskr.bot.setlanguage import language_conv
 from flaskr.bot.inlinequery.inline_conv import inline_conv
+from flaskr.bot.user.handlers.start import start
+from flaskr.bot.user.handlers.archive import list_semesters
+
 
 if app.env == 'production':
 
@@ -73,7 +76,11 @@ if app.env == 'production':
     job_queue.set_dispatcher(dispatcher)
 
     dispatcher.add_handler(inline_conv, )
+
+    dispatcher.add_handler(CommandHandler(['courses', 'start'], start))
+    dispatcher.add_handler(CommandHandler('archive', list_semesters))
     dispatcher.add_handler(user_conv, )
+
     dispatcher.add_handler(admin_conv, 1)
     dispatcher.add_handler(owner_conv, 2)
     dispatcher.add_handler(language_conv, 3)
@@ -98,7 +105,11 @@ elif app.env == 'development':
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(inline_conv, )
+
+    dispatcher.add_handler(CommandHandler(['courses', 'start'], start))
+    dispatcher.add_handler(CommandHandler('archive', list_semesters))
     dispatcher.add_handler(user_conv, )
+
     dispatcher.add_handler(admin_conv, 1)
     dispatcher.add_handler(owner_conv, 2)
     dispatcher.add_handler(language_conv, 3)

@@ -34,7 +34,7 @@ def list_semesters(update: Update, context: CallbackContext) -> int:
       return None
 
     semesters =  session.query(Semester) \
-      .filter(Semester.id < current_semester.semester_id) \
+      .filter(Semester.number < current_semester.semester.number) \
       .order_by(Semester.number).all()
 
     reply_keyboard = []
@@ -70,4 +70,3 @@ def list_semesters(update: Update, context: CallbackContext) -> int:
 
     session.commit()
     session.close()
-    return SEMESTER_LIST

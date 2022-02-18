@@ -7,11 +7,8 @@ from flaskr.models import Course, Semester, User
 from flaskr import db
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import   COURSE, COURSE_OVERVIEW
+from flaskr.bot.user.user_constants import   ARCHIVED_SEMESTER, COURSE, COURSE_OVERVIEW
 
-
-# to get back from course_overview
-callback = None
 
 
 def list_semester_courses(
@@ -31,14 +28,10 @@ def list_semester_courses(
     if not semester_id:
         _, semester_id, semester_number = query.data.split(' ')
 
-    # to get back from course_overview
-    global callback
-    if not callback:
-        def callback(update, context):
-            return list_semester_courses(update, context, semester_id, semester_number)
 
     # wirite to context
-    context.chat_data['back_from_course_overview'] = callback
+    context.chat_data['user_semester_id'] = semester_id
+    context.chat_data['user_semester_number'] = semester_number
 
     courses =  session.query(Course) \
         .join(Semester, Semester.id == Course.semester_id) \
@@ -70,5 +63,5 @@ def list_semester_courses(
 
     session.commit()
     session.close()
-    return COURSE_OVERVIEW
+    return ARCHIVED_SEMESTER
 

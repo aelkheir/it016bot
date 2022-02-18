@@ -1,4 +1,4 @@
-from flaskr.bot.utils.buttons import back_to_courses_button
+from flaskr.bot.utils.buttons import back_to_courses_button, back_to_semester
 from flaskr.bot.utils.user_required import user_required
 import math
 from flaskr.models import Course, Lecture
@@ -8,23 +8,8 @@ from flaskr.bot.user.user_constants import  EXAMS, LABS, LECTURE, LECTURES, REFF
 from flaskr import db
 
 
-def back_from_course_overview(update: Update, context: CallbackContext) -> int:
-    session = db.session
 
-    query = update.callback_query
-    query.answer()
-
-    user_required(update, context, session)
-
-    # read from context
-    handler = context.chat_data['back_from_course_overview']
-
-    return handler(update, context)
-
-
-
-
-def course_overview(update: Update, context: CallbackContext, course_id=None) -> int:
+def course_overview(update: Update, context: CallbackContext, course_id=None, from_archive=False) -> int:
     session = db.session
 
     query = update.callback_query
@@ -99,36 +84,35 @@ def course_overview(update: Update, context: CallbackContext, course_id=None) ->
             )
         ])
 
-    keyboard.append([back_to_courses_button(language, user.language)])
+
+    if not from_archive:
+        keyboard.append([back_to_courses_button(language, user.language)])
+
+    elif from_archive:
+        # read from context
+        semester_id = context.chat_data['user_semester_id']
+        semester_number = context.chat_data['user_semester_number'] 
+        keyboard.append([back_to_semester(language, user.language, semester_id, semester_number)])
+
+
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    if len(course.lectures) == 0 and len(course.refferences) == 0 and len(course.exams) == 0:
-        if update.callback_query:
-            query.edit_message_text(
-                text=f"{language['nothing_yet']}.".capitalize(), reply_markup=reply_markup
-            )
-        elif update.message:
-            update.message.reply_text(
-                text=f"{language['nothing_yet']}.".capitalize(), reply_markup=reply_markup
-            )
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
 
-    else:
-        course_name = course.ar_name \
-            if user.language == 'ar' \
-            else course.en_name
-        course_name = course_name if course_name else course.ar_name
-
-        if update.callback_query:
-            query.edit_message_text(
-                text=f"{course_name}:",
-                reply_markup=reply_markup
-            )
-        elif update.message:
-            update.message.reply_text(
-                f"{course_name}:",
-                reply_markup=reply_markup
-            )
+    if update.callback_query:
+        query.edit_message_text(
+            text=f"{course_name}:",
+            reply_markup=reply_markup
+        )
+    elif update.message:
+        update.message.reply_text(
+            f"{course_name}:",
+            reply_markup=reply_markup
+        )
 
     session.close()
     return STAGE_TWO

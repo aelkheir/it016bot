@@ -19,10 +19,6 @@ def start(update: Update, context: CallbackContext) -> int:
     from_user = update.message.from_user
     logger.info("User %s started the conversation.", from_user.first_name)
 
-    # werite to context
-    context.chat_data['back_from_course_overview'] = start_over
-
-
     user = user_required(update, context, session)
     language = context.chat_data['language']
 
@@ -68,4 +64,3 @@ def start(update: Update, context: CallbackContext) -> int:
 
     session.commit()
     session.close()
-    return COURSE_OVERVIEW
