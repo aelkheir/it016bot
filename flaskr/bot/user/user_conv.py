@@ -21,6 +21,10 @@ user_conv = ConversationHandler(
             CallbackQueryHandler(course_overview, pattern='^' + f'{constants.COURSE} \d+' + '$'),
         ],
 
+        constants.SEMESTER_LIST: [
+        CallbackQueryHandler(list_semester_courses, pattern='^' + f'{constants.SEMESTER} .+' + '$'),
+        ],
+
         constants.STAGE_TWO: [
             CallbackQueryHandler(list_lecture_files, pattern='^' + f'{constants.LECTURE} \d+' + '$'),
             CallbackQueryHandler(send_all_lectures, pattern='^' + f'{constants.LECTURES} \d+' + '$'),
