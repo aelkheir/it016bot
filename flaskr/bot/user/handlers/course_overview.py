@@ -1,4 +1,5 @@
 from flaskr.bot.utils.buttons import back_to_courses_button, back_to_semester
+from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
 import math
 from flaskr.models import Course, Lecture
@@ -17,7 +18,7 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
         query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
 
     if not course_id:

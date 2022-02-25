@@ -21,6 +21,23 @@ class User(db.Model):
     def __repr__(self):
         return f"<User(firstname='{self.first_name}', lastname='{self.last_name}')>"
 
+class Persistence(db.Model):
+    __tablename__ = 'persistence'
+    DATA_PK = '18G-934ae4-9Z4'
+
+    __table_args__ = (
+            CheckConstraint(f'id = "{DATA_PK}"', name='only_one_row'),
+        )
+
+    id = db.Column(
+        db.String(50),
+        CheckConstraint(f'id=="{DATA_PK}"', name='only_one_row'),
+        default=DATA_PK,
+        primary_key=True
+    )
+
+    data = db.Column(db.Text, nullable=False)
+
 class Semester(db.Model):
     __tablename__ = 'semesters'
 
@@ -43,12 +60,12 @@ class CurrentSemester(db.Model):
             CheckConstraint(f'id = "{CURRENT_SEMESTER_PK}"', name='only_one_row'),
         )
 
-
     id = db.Column(
         db.String(50),
         CheckConstraint(f'id=="{CURRENT_SEMESTER_PK}"', name='only_one_row'),
         default=CURRENT_SEMESTER_PK,
-        primary_key=True )
+        primary_key=True
+    )
 
     semester_id = db.Column(db.Integer, db.ForeignKey('semesters.id'))
     semester = db.relationship('Semester', cascade="save-update")

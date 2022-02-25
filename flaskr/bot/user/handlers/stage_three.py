@@ -1,5 +1,6 @@
 from flaskr.bot.utils.buttons import back_to_labs_button
 from flaskr.bot.user.user_constants import FILE, LAB, STAGE_FOURE
+from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
 from flaskr.models import  Course, Document, Exam, Lab, Lecture, Photo, Refference, User,  Video, YoutubeLink
 from flaskr import db
@@ -14,7 +15,7 @@ def list_lab_files(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     _, lab_id = query.data.split(' ')
 
@@ -105,7 +106,7 @@ def send_all_labs(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     _, course_id = query.data.split(' ')
 
@@ -150,7 +151,7 @@ def send_all_lecture_files(update: Update, context: CallbackContext) -> int:
     user = user_required(update, context, session)
     user = session.query(User).filter(User.id==user.id).one()
 
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     _, lecture_id = query.data.split(' ')
 
@@ -210,7 +211,7 @@ def send_all_course_refferences(update: Update, context: CallbackContext) -> int
     user = user_required(update, context, session)
     user = session.query(User).filter(User.id==user.id).one()
 
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     _, course_id = query.data.split(' ')
 
@@ -242,7 +243,7 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
     user = user_required(update, context, session)
     user = session.query(User).filter(User.id==user.id).one()
 
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     _, exam_id = query.data.split(' ')
 
@@ -294,7 +295,7 @@ def send_all_course_exams(update: Update, context: CallbackContext) -> int:
     user = user_required(update, context, session)
     user = session.query(User).filter(User.id==user.id).one()
     
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     _, course_id = query.data.split(' ')
 

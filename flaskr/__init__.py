@@ -1,5 +1,7 @@
+import signal
 import os
-from queue import Queue  
+from queue import Queue
+import sys  
 from threading import Thread
 from flask import Flask, request
 from sqlalchemy import MetaData
@@ -10,7 +12,6 @@ import http
 from telegram import Bot, Update
 from telegram.ext import Dispatcher, PicklePersistence, Updater, JobQueue, CommandHandler
 from flask_sqlalchemy import SQLAlchemy
-
 
 
 app = Flask(__name__)
@@ -47,6 +48,7 @@ with app.app_context():
 migrate = Migrate(app, db, render_as_batch=True)
 
 
+from flaskr.bot.persistence import PostgresPersistence
 from flaskr.bot.admin.admin_conv import admin_conv
 from flaskr.bot.user.user_conv import user_conv
 from flaskr.bot.owner.owner_conv import owner_conv
@@ -61,7 +63,7 @@ if app.env == 'production':
     BOT_TOKEN = os.getenv('BOT_TOKEN')
     bot = Bot(token=BOT_TOKEN)
 
-    persistence = PicklePersistence(filename='pickle')
+    persistence = PostgresPersistence()
 
     update_queue = Queue()
     job_queue = JobQueue()
@@ -85,6 +87,11 @@ if app.env == 'production':
     dispatcher.add_handler(owner_conv, 2)
     dispatcher.add_handler(language_conv, 3)
 
+    def flush_db(signum, frame):
+        persistence.flush()
+
+    signal.signal(signal.SIGTERM, flush_db)
+    signal.signal(signal.SIGINT, flush_db)
 
     @app.route("/", methods=["POST", "GET"])
     def index():
@@ -95,12 +102,11 @@ if app.env == 'production':
 
 
 elif app.env == 'development':
-
     DEV_BOT_TOKEN = os.getenv('DEV_BOT_TOKEN')
 
-    dev_persistence = PicklePersistence(filename='dev_pickle')
+    persistence = PostgresPersistence()
 
-    updater = Updater(token=DEV_BOT_TOKEN, persistence=dev_persistence, use_context=True)
+    updater = Updater(token=DEV_BOT_TOKEN, persistence=persistence, use_context=True)
 
     dispatcher = updater.dispatcher
 
@@ -114,7 +120,15 @@ elif app.env == 'development':
     dispatcher.add_handler(owner_conv, 2)
     dispatcher.add_handler(language_conv, 3)
 
-    @app.route("/dev")
+    def flush_db(signum, frame):
+        persistence.flush()
+        sys.exit()
+
+    signal.signal(signal.SIGTERM, flush_db)
+    signal.signal(signal.SIGINT, flush_db)
+    
+
+    @app.route("/")
     def dev():
         updater.start_polling()
         return ''

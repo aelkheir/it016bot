@@ -1,7 +1,3 @@
-def genitive(subject, genitive):
-    return subject + ' ' + genitive
-
-
 
 en = {
 
@@ -44,9 +40,6 @@ en = {
     'edit_archive': 'edit archive',
     
     'back_to': 'back to',
-
-    'genitive': genitive,
-
 
     'nothing_yet': "nothing yet",
 }

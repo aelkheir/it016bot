@@ -62,7 +62,6 @@ user_conv = ConversationHandler(
         ],
     },
     fallbacks=[],
-    # MessageHandler(Filters.command, cancel_conversation)
     persistent=True,
     name='user_conv',
     per_message=True,

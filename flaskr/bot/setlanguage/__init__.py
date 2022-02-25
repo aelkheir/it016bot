@@ -2,6 +2,7 @@ from flaskr.models import User
 from flaskr.bot.utils.set_bot_commands import set_bot_commands
 from telegram.ext.filters import Filters
 from flaskr.bot.utils.user_required import user_required
+from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.cancel_conversation import cancel_conversation
 from telegram.ext import CommandHandler, CallbackContext, ConversationHandler, MessageHandler
 from telegram import Update, ReplyKeyboardRemove
@@ -19,7 +20,7 @@ def language_handler(update: Update, context: CallbackContext):
     session = db.session
 
     user_required(update, context, session)
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     reply_keyboard = [
         ['العربية', 'English']
@@ -59,11 +60,9 @@ def recieve_language_choice(update: Update, context: CallbackContext):
         session.commit()
 
         # write to context
-        context.chat_data['language'] = ar\
-            if user.language == 'ar'\
-            else en
+        context.chat_data['language'] = user.language
 
-        language = context.chat_data['language']
+        language = get_user_language(context.chat_data['language'])
 
         update.message.reply_text(
             f"{language['language_set_to']}",
@@ -83,7 +82,7 @@ language_conv = ConversationHandler(
             MessageHandler(Filters.text & ~ Filters.command, recieve_language_choice)
         }
     },
-    fallbacks=[MessageHandler(Filters.command, cancel_conversation)],
+    fallbacks=[],
     name="language_conv",
     allow_reentry=True
 )

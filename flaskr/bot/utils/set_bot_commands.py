@@ -1,3 +1,4 @@
+from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.models import Course
 from telegram.botcommandscope import  BotCommandScopeChat
 from telegram import Update
@@ -31,7 +32,7 @@ def get_owner_commands(language, user_language):
 
 def set_bot_commands(update: Update, context: CallbackContext, user):
 
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     if not user.is_admin and not user.is_owner:
 

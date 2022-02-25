@@ -1,3 +1,4 @@
+from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
 from flaskr.models import Lab, User
 from flaskr import db
@@ -16,7 +17,7 @@ def send_all_lab_files(update: Update, context: CallbackContext) -> int:
     user = user_required(update, context, session)
     user = session.query(User).filter(User.id==user.id).one()
 
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     _, lab_id = query.data.split(' ')
 

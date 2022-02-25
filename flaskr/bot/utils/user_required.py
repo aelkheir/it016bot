@@ -54,9 +54,7 @@ def user_required(update: Update, context: CallbackContext, session) -> int:
 
     if not 'language' in context.chat_data:
         # write to context
-        context.chat_data['language'] = ar\
-            if user.language == 'ar'\
-            else en
+        context.chat_data['language'] = user.language
 
     # set_bot_commands(update, context, user)
 

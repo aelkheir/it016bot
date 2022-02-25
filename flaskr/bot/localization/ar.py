@@ -1,5 +1,3 @@
-def genitive(subject, genitive):
-    return genitive + ' ' + subject
 
 ar = {
 
@@ -41,11 +39,6 @@ ar = {
     'send_announcement': 'ارسل اعلان لكل المستخدمين',
     'manage_semesters': 'ادارة السمسترات',
     'edit_archive': 'تعديل الارشيف',
-
-
-
-    'genitive': genitive,
-
 
     'nothing_yet': "لا شيء بعد",
 }

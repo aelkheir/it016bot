@@ -1,6 +1,7 @@
 from flaskr.bot.user.handlers.archive import list_semesters
 from flaskr.bot.utils.buttons import back_to_archive_button
 from flaskr.bot.utils.get_current_semester import get_current_semester
+from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
 import logging
 from flaskr.models import Course, Semester, User
@@ -22,7 +23,7 @@ def list_semester_courses(
     query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
 
     if not semester_id:

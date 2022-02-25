@@ -1,5 +1,6 @@
 import math
 from flaskr.bot.utils.get_current_semester import get_current_semester
+from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
 import logging
 from flaskr.models import Course, Semester, User
@@ -19,7 +20,7 @@ def list_semesters(update: Update, context: CallbackContext) -> int:
         query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     user = session.query(User).filter(User.id==user.id).one()
 

@@ -1,5 +1,6 @@
 import math
 from flaskr.bot.utils.buttons import back_to_course_button
+from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
 from flaskr.models import Course, Exam, Lecture, User
 from telegram.ext import CallbackContext
@@ -16,7 +17,7 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     _, lecture_id = query.data.split(' ')
 
@@ -76,7 +77,7 @@ def send_all_lectures(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     _, course_id = query.data.split(' ')
 
@@ -124,7 +125,7 @@ def list_course_refferences(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     course_id, _ = query.data.split(' ')
 
@@ -167,7 +168,7 @@ def list_course_labs(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     course_id, _ = query.data.split(' ')
 
@@ -227,7 +228,7 @@ def list_course_exams(update: Update, context: CallbackContext) -> int:
     query.answer()
 
     user = user_required(update, context, session)
-    language = context.chat_data['language']
+    language = get_user_language(context.chat_data['language'])
 
     course_id, _ = query.data.split(' ')
 
