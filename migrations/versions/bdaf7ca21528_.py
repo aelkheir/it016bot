@@ -21,7 +21,7 @@ def upgrade():
     op.create_table('persistence',
     sa.Column('id', sa.String(length=50), nullable=False),
     sa.Column('data', sa.Text(), nullable=False),
-    sa.CheckConstraint('id = "18F9fe34ae49Z4"', name=op.f('ck_persistence_only_one_row')),
+    sa.CheckConstraint("id = '18F9fe34ae49Z4'", name=op.f('ck_persistence_only_one_row')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_persistence'))
     )
 
