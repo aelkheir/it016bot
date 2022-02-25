@@ -63,7 +63,7 @@ if app.env == 'production':
     BOT_TOKEN = os.getenv('BOT_TOKEN')
     bot = Bot(token=BOT_TOKEN)
 
-    persistence = PicklePersistence(filename='pickle')
+    persistence = PostgresPersistence()
 
     update_queue = Queue()
     job_queue = JobQueue()
@@ -104,7 +104,7 @@ if app.env == 'production':
 elif app.env == 'development':
     DEV_BOT_TOKEN = os.getenv('DEV_BOT_TOKEN')
 
-    persistence = PicklePersistence(filename='pickle')
+    persistence = PostgresPersistence()
 
     updater = Updater(token=DEV_BOT_TOKEN, persistence=persistence, use_context=True)
 
