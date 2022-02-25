@@ -104,7 +104,7 @@ if app.env == 'production':
 elif app.env == 'development':
     DEV_BOT_TOKEN = os.getenv('DEV_BOT_TOKEN')
 
-    persistence = PostgresPersistence()
+    persistence = PicklePersistence(filename='pickle')
 
     updater = Updater(token=DEV_BOT_TOKEN, persistence=persistence, use_context=True)
 

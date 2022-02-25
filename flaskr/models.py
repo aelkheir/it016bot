@@ -23,7 +23,7 @@ class User(db.Model):
 
 class Persistence(db.Model):
     __tablename__ = 'persistence'
-    DATA_PK = '18G-934ae4-9Z4'
+    DATA_PK = '18F9fe34ae49Z4'
 
     __table_args__ = (
             CheckConstraint(f'id = "{DATA_PK}"', name='only_one_row'),
