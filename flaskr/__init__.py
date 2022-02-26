@@ -48,6 +48,7 @@ with app.app_context():
 migrate = Migrate(app, db, render_as_batch=True)
 
 
+from flaskr.bot.persistence import PostgresPersistence
 from flaskr.bot.admin.admin_conv import admin_conv
 from flaskr.bot.user.user_conv import user_conv
 from flaskr.bot.owner.owner_conv import owner_conv
@@ -62,7 +63,7 @@ if app.env == 'production':
     BOT_TOKEN = os.getenv('BOT_TOKEN')
     bot = Bot(token=BOT_TOKEN)
 
-    persistence = PicklePersistence(filename='dev_pickle')
+    persistence = PostgresPersistence(store_bot_data=False)
 
     update_queue = Queue()
     job_queue = JobQueue()
@@ -96,7 +97,6 @@ if app.env == 'production':
 
 
 elif app.env == 'development':
-    from flaskr.bot.persistence import PostgresPersistence
 
     DEV_BOT_TOKEN = os.getenv('DEV_BOT_TOKEN')
 
