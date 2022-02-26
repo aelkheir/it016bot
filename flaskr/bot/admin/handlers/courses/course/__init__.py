@@ -100,6 +100,10 @@ def list_labs(update: Update, context: CallbackContext) -> int:
 def list_refferences(update: Update, context: CallbackContext) -> int:
     session = db.session
 
+    # delet from context
+    if 'file_name' in context.chat_data:
+        del context.chat_data['file_name']
+
     if not is_admin(update, context, session):
         return
 

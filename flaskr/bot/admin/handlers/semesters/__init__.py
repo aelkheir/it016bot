@@ -18,10 +18,7 @@ def edit_semester(update: Update, context: CallbackContext, semester_id=None) ->
     if not is_owner(update, context, session):
         return
 
-    context.chat_data['back_from_edit_course'] = edit_semester
-
     semester = None
-
 
     if 'semester_id' in context.chat_data:
         semester = session.query(Semester).filter(Semester.id==context.chat_data['semester_id']).one()
@@ -34,9 +31,13 @@ def edit_semester(update: Update, context: CallbackContext, semester_id=None) ->
         semester_number = int(update.message.text.split(' ')[1])
         semester = session.query(Semester).filter(Semester.number==semester_number).first()
 
+    # delete from contetxt
+    if 'course_id' in context.chat_data:
+      del context.chat_data['course_id']
 
     # write to chat data
     context.chat_data['semester_id'] = semester.id
+    context.chat_data['semester_number'] = semester.number
 
 
     courses = session.query(Course) \

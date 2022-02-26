@@ -48,7 +48,6 @@ with app.app_context():
 migrate = Migrate(app, db, render_as_batch=True)
 
 
-from flaskr.bot.persistence import PostgresPersistence
 from flaskr.bot.admin.admin_conv import admin_conv
 from flaskr.bot.user.user_conv import user_conv
 from flaskr.bot.owner.owner_conv import owner_conv
@@ -63,7 +62,7 @@ if app.env == 'production':
     BOT_TOKEN = os.getenv('BOT_TOKEN')
     bot = Bot(token=BOT_TOKEN)
 
-    persistence = PostgresPersistence()
+    persistence = PicklePersistence(filename='dev_pickle')
 
     update_queue = Queue()
     job_queue = JobQueue()
@@ -87,11 +86,6 @@ if app.env == 'production':
     dispatcher.add_handler(owner_conv, 2)
     dispatcher.add_handler(language_conv, 3)
 
-    def flush_db(signum, frame):
-        persistence.flush()
-
-    signal.signal(signal.SIGTERM, flush_db)
-    signal.signal(signal.SIGINT, flush_db)
 
     @app.route("/", methods=["POST", "GET"])
     def index():
@@ -102,9 +96,11 @@ if app.env == 'production':
 
 
 elif app.env == 'development':
+    from flaskr.bot.persistence import PostgresPersistence
+
     DEV_BOT_TOKEN = os.getenv('DEV_BOT_TOKEN')
 
-    persistence = PostgresPersistence()
+    persistence = PostgresPersistence(store_bot_data=False)
 
     updater = Updater(token=DEV_BOT_TOKEN, persistence=persistence, use_context=True)
 
@@ -119,14 +115,6 @@ elif app.env == 'development':
     dispatcher.add_handler(admin_conv, 1)
     dispatcher.add_handler(owner_conv, 2)
     dispatcher.add_handler(language_conv, 3)
-
-    def flush_db(signum, frame):
-        persistence.flush()
-        sys.exit()
-
-    signal.signal(signal.SIGTERM, flush_db)
-    signal.signal(signal.SIGINT, flush_db)
-    
 
     @app.route("/")
     def dev():

@@ -21,22 +21,39 @@ class User(db.Model):
     def __repr__(self):
         return f"<User(firstname='{self.first_name}', lastname='{self.last_name}')>"
 
-class Persistence(db.Model):
-    __tablename__ = 'persistence'
-    DATA_PK = '18F9fe34ae49Z4'
+class UserData(db.Model):
+    __tablename__ = 'user_data'
 
-    __table_args__ = (
-            CheckConstraint(f'id = "{DATA_PK}"', name='only_one_row'),
-        )
-
-    id = db.Column(
-        db.String(50),
-        CheckConstraint(f'id=="{DATA_PK}"', name='only_one_row'),
-        default=DATA_PK,
-        primary_key=True
-    )
+    id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
+    user_id = db.Column(db.Integer, unique=True, nullable=False)
 
     data = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        return f"<UserData (user_id={self.user_id})>"
+
+class ChatData(db.Model):
+    __tablename__ = 'chat_data'
+
+    id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
+    chat_id = db.Column(db.Integer, unique=True, nullable=False)
+
+    data = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        return f"<ChatData (chat_id={self.chat_id})>"
+
+class Conversation(db.Model):
+    __tablename__ = 'conversations'
+
+    id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
+    name = db.Column(db.String(20), nullable=False)
+    key = db.Column(db.String(100), nullable=False)
+    new_state = db.Column(db.Integer)
+
+    def __repr__(self):
+        return f"<Conversation (id={self.id})>"
+
 
 class Semester(db.Model):
     __tablename__ = 'semesters'

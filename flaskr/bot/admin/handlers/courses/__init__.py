@@ -7,11 +7,12 @@ from telegram.replykeyboardmarkup import ReplyKeyboardMarkup
 from flaskr.bot.admin.admin_constants import COURSE_OPTIONS, RECIEVE_NEW_COURSE
 
 
-def back_from_edit_course(update: Update, context: CallbackContext) -> int:
-    handler = context.chat_data['back_from_edit_course']
-    return handler(update, context)
-
-def edit_course(update: Update, context: CallbackContext, course_name=None) -> int:
+def edit_course(
+    update: Update,
+    context: CallbackContext,
+    course_name=None,
+    from_archive=False
+    ) -> int:
     session = db.session
 
     if not is_admin(update, context, session):
@@ -38,7 +39,11 @@ def edit_course(update: Update, context: CallbackContext, course_name=None) -> i
     reply_keyboard.append(['الامتحانات'])
     reply_keyboard.append(['تعديل الاسم', 'تعديل الرمز'])
     reply_keyboard.append(['حذف المادة', f'سمستر: {course_semester}'])
-    reply_keyboard.append(['رجوع'])
+    if from_archive:
+        semester_number = context.chat_data['semester_number']
+        reply_keyboard.append([f'رجوع لسمستر {semester_number}'])
+    else:
+        reply_keyboard.append(['رجوع'])
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
     update.message.reply_text(f'{course.ar_name}',
             reply_markup=markup,

@@ -15,9 +15,6 @@ logging.basicConfig(
 
 def admin_handler(update: Update, context: CallbackContext) -> int:
 
-    # writes to context
-    context.chat_data['back_from_edit_course'] = admin_handler
-
     user = update.message.from_user
     logger.info("Admin %s started the conversation.", user.first_name)
 

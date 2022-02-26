@@ -1,3 +1,4 @@
+import functools
 from telegram.ext import MessageHandler, Filters
 import flaskr.bot.admin.admin_constants as constants
 import flaskr.bot.admin.handlers.courses as  courses
@@ -24,7 +25,10 @@ states = {
 
         MessageHandler(Filters.regex(f'رجوع'), edit_archive),
 
-        MessageHandler(Filters.text & ~ Filters.command, courses.edit_course),
+        MessageHandler(
+            Filters.text & ~ Filters.command,
+            functools.partial(courses.edit_course, from_archive=True)
+        ),
     ],
 
     constants.RECIEVE_SEMESTER_NUMBER: [

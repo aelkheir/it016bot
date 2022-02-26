@@ -5,6 +5,7 @@ import flaskr.bot.admin.handlers.courses.receivers as courses_receivers
 import flaskr.bot.admin.handlers.courses.course as course
 import flaskr.bot.admin.handlers.courses.course.receivers as course_receivers
 from flaskr.bot.admin.handlers.admin_handler import admin_handler
+import flaskr.bot.admin.handlers.semesters  as semesters
 
 
 states = {
@@ -22,7 +23,8 @@ states = {
         MessageHandler(Filters.regex(f'سمستر:\s.+'), course.edit_course_semester),
         MessageHandler(Filters.regex(f'حذف المادة'),
                         course.confirm_delete_course),
-        MessageHandler(Filters.regex(f'رجوع'), courses.back_from_edit_course)
+        MessageHandler(Filters.regex(f'^رجوع$'), admin_handler),
+        MessageHandler(Filters.regex(f'رجوع لسمستر.*'), semesters.edit_semester),
     ],
 
     admin_constants.RECIEVE_NAME_SYMBOL: [

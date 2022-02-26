@@ -20,6 +20,9 @@ def edit_archive(update: Update, context: CallbackContext) -> int:
 
     if 'semester_id' in context.chat_data:
         del context.chat_data['semester_id']
+
+    if 'semester_number' in context.chat_data:
+        del context.chat_data['semester_number']
     
     semesters =  session.query(Semester).order_by(Semester.number).all()
 
