@@ -1,7 +1,15 @@
 
 en = {
 
+    'global_note': '\n\n⚠️ This content belongs to 015 and may become obselete',
+
     'of': 'of',
+
+    'subscribe': 'subscribe',
+    'unsubscribe': 'unsubscribe',
+    'subscribed': 'subscribed',
+    'unsubscribed': 'unsubscribed',
+    'current_status': 'current status',
 
     'courses': 'courses',
     'lectures': 'lectures',
@@ -30,8 +38,13 @@ en = {
     'choose_bot_language': 'choose bot language',
     'language_set_to': 'Language set to English',
 
+    'subscribed_successfully': 'subscribed successfully',
+    'unsubscribed_successfully': 'you\'re no longer subscribed',
+
+
     'archive': 'archive',
     'language_settings': 'choose bot language',
+    'subscription_settings': 'manage subscription',
     'edit_courses': 'edit courses',
     'manage_users': 'manage users',
     'update_commands': 'update bot commands',

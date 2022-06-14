@@ -60,13 +60,18 @@ def to_edit_course(update: Update, context: CallbackContext) -> int:
     if not is_admin(update, context, session):
         return
 
+    from_archive = False
+    # reads from context
+    if 'semester_id' in context.chat_data:
+        from_archive = True
+
     # reads from context
     course_id = context.chat_data['course_id']
 
     course = session.query(Course).filter(Course.id==course_id).one()
     course_name = course.ar_name
     session.close()
-    return edit_course(update, context, course_name=course_name)
+    return edit_course(update, context, course_name=course_name, from_archive=from_archive)
 
 
 def add_course(update: Update, context: CallbackContext) -> int:

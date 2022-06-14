@@ -14,9 +14,9 @@ def view_announcement(update: Update, context: CallbackContext) -> int:
     if not is_owner(update, context, session):
         return
 
-    announcement_text = context.chat_data['announcement_text']
+    message_id = context.chat_data['announcement_message_id']
 
-    update.message.reply_text(announcement_text)
+    context.bot.copy_message(update.effective_message.chat_id, update.effective_message.chat_id, message_id)
 
     return ANNOUNCEMENT_OPTIONS
 
@@ -27,7 +27,7 @@ def send_announcement(update: Update, context: CallbackContext) -> int:
     if not is_owner(update, context, session):
         return
 
-    announcement_text = context.chat_data['announcement_text']
+    message_id = context.chat_data['announcement_message_id']
 
     owner_chat_id = str(update.effective_chat.id)
 
@@ -63,7 +63,7 @@ def send_announcement(update: Update, context: CallbackContext) -> int:
             send_announcement_job,
             when,
             context=(
-                announcement_text,
+                message_id,
                 user.chat_id,
                 owner_chat_id,
                 is_last,
@@ -73,12 +73,12 @@ def send_announcement(update: Update, context: CallbackContext) -> int:
 
 
 def send_announcement_job(context):
-    announcement_text = context.job.context[0]
+    message_id = context.job.context[0]
     user_chat_id = context.job.context[1]
     owner_chat_id = context.job.context[2]
     is_last_user =  context.job.context[3]
 
-    context.bot.send_message(user_chat_id, text=announcement_text)
+    context.bot.copy_message(user_chat_id, owner_chat_id, message_id)
 
     if is_last_user:
         context.bot.send_message(

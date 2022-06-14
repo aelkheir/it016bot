@@ -53,6 +53,7 @@ from flaskr.bot.admin.admin_conv import admin_conv
 from flaskr.bot.user.user_conv import user_conv
 from flaskr.bot.owner.owner_conv import owner_conv
 from flaskr.bot.setlanguage import language_conv
+from flaskr.bot.subscription import subscription_conv
 from flaskr.bot.inlinequery.inline_conv import inline_conv
 from flaskr.bot.user.handlers.start import start
 from flaskr.bot.user.handlers.archive import list_semesters
@@ -86,6 +87,7 @@ if app.env == 'production':
     dispatcher.add_handler(admin_conv, 1)
     dispatcher.add_handler(owner_conv, 2)
     dispatcher.add_handler(language_conv, 3)
+    dispatcher.add_handler(subscription_conv, 4)
 
 
     @app.route("/", methods=["POST", "GET"])
@@ -115,6 +117,7 @@ elif app.env == 'development':
     dispatcher.add_handler(admin_conv, 1)
     dispatcher.add_handler(owner_conv, 2)
     dispatcher.add_handler(language_conv, 3)
+    dispatcher.add_handler(subscription_conv, 4)
 
     @app.route("/")
     def dev():

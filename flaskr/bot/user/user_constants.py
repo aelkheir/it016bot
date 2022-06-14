@@ -1,3 +1,6 @@
+# show global note - boolean
+SHOW_GLOBAL_NOTE = True
+
 # Navigation stages
 
 ( COURSE_OVERVIEW,
@@ -50,7 +53,6 @@ FILES = 'FILES'
 
 # All
 ALL = 'الكل'
-
 
 # Subject list menu
 SUBJECT_LIST = 'SUBJECT_LIST'

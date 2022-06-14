@@ -23,6 +23,9 @@ def admin_handler(update: Update, context: CallbackContext) -> int:
     if not is_admin(update, context, session):
         return
 
+    if 'semester_id' in context.chat_data:
+        del context.chat_data['semester_id']
+
     if 'course_id' in context.chat_data:
         del context.chat_data['course_id']
 

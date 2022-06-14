@@ -8,11 +8,15 @@ from flaskr import db
 def get_common_commands(language):
     return [
         ('setlanguage',f"{language['language_settings']}".capitalize()),
+        ('subscription',f"{language['subscription_settings']}".capitalize()),
     ]
 
 def get_user_commands(language, user_language):
 
-    return  [("courses", f"{language['courses']}".capitalize())] + get_common_commands(language)
+    return  [
+        ("courses", f"{language['courses']}".capitalize()),
+        ('archive', f"{language['archive']}".capitalize()),
+    ] + get_common_commands(language)
 
 def get_admin_commands(language, user_language):
     return get_user_commands(language, user_language) + [
@@ -21,7 +25,6 @@ def get_admin_commands(language, user_language):
 
 def get_owner_commands(language, user_language):
     return get_admin_commands(language, user_language) + [
-        ('archive', f"{language['archive']}".capitalize()),
         ('editarchive', f"{language['edit_archive']}".capitalize()),
         ('manageusers', f"{language['manage_users']}".capitalize()),
         ('updatecommands', f"{language['update_commands']}".capitalize()),

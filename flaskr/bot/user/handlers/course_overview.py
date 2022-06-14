@@ -1,3 +1,4 @@
+from sqlalchemy import true
 from flaskr.bot.utils.buttons import back_to_courses_button, back_to_semester
 from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
@@ -5,7 +6,7 @@ import math
 from flaskr.models import Course, Lecture
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import  EXAMS, LABS, LECTURE, LECTURES, REFFERENCES, STAGE_TWO
+from flaskr.bot.user.user_constants import  EXAMS, LABS, LECTURE, LECTURES, REFFERENCES, SHOW_GLOBAL_NOTE, STAGE_TWO
 from flaskr import db
 
 
@@ -85,9 +86,15 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
             )
         ])
 
+    
+    # mutates from_archive
+    if 'user_semester_id' in context.chat_data and \
+        'user_semester_number' in context.chat_data:
+        from_archive = true
 
     if not from_archive:
         keyboard.append([back_to_courses_button(language, user.language)])
+
 
     elif from_archive:
         # read from context
@@ -104,14 +111,16 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
         else course.en_name
     course_name = course_name if course_name else course.ar_name
 
+    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
+
     if update.callback_query:
         query.edit_message_text(
-            text=f"{course_name}:",
+            text=f"{course_name}:" + (f"{language['global_note']}" if show_note else ''),
             reply_markup=reply_markup
         )
     elif update.message:
         update.message.reply_text(
-            f"{course_name}:",
+            f"{course_name}:" + (f"{language['global_note']}" if show_note else ''),
             reply_markup=reply_markup
         )
 

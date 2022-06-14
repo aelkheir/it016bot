@@ -5,7 +5,7 @@ from flaskr.bot.utils.user_required import user_required
 from flaskr.models import Course, Exam, Lecture, User
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import  EXAM, EXAMS, FILE, LAB, LABS, LECTURE, REFFERENCES, REFFERENCE, STAGE_THREE
+from flaskr.bot.user.user_constants import  EXAM, EXAMS, FILE, LAB, LABS, LECTURE, REFFERENCES, REFFERENCE, SHOW_GLOBAL_NOTE, STAGE_THREE
 from flaskr import db
 
 back_icon ='»'
@@ -59,10 +59,12 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
         back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
     ])
 
+    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{course_name}: {language['lecture'].capitalize()} {lecture.lecture_number}",
+        text=f"{course_name}: {language['lecture'].capitalize()} {lecture.lecture_number}"
+        + (f"{language['global_note']}" if show_note else ''),
         reply_markup=reply_markup
     )
 
@@ -153,9 +155,12 @@ def list_course_refferences(update: Update, context: CallbackContext) -> int:
         back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
     ])
 
+    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
+
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{course_name}: {language['references'].capitalize()}",
+        text=f"{course_name}: {language['references'].capitalize()}"
+        + (f"{language['global_note']}" if show_note else ''),
         reply_markup=reply_markup
     )
     return STAGE_THREE
@@ -214,8 +219,11 @@ def list_course_labs(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
+    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
+
     query.edit_message_text(
-        text=f"{course_name}: {language['labs'].capitalize()}",
+        text=f"{course_name}: {language['labs'].capitalize()}"
+        + (f"{language['global_note']}" if show_note else ''),
         reply_markup=reply_markup
     )
     return STAGE_THREE
@@ -261,8 +269,11 @@ def list_course_exams(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
+    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
+
     query.edit_message_text(
-        text=f"{course_name}: {language['exams'].capitalize()}",
+        text=f"{course_name}: {language['exams'].capitalize()}"
+        + (f"{language['global_note']}" if show_note else ''),
         reply_markup=reply_markup
     )
     return STAGE_THREE

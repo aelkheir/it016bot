@@ -1,5 +1,5 @@
 from flaskr.bot.utils.buttons import back_to_labs_button
-from flaskr.bot.user.user_constants import FILE, LAB, STAGE_FOURE
+from flaskr.bot.user.user_constants import FILE, LAB, SHOW_GLOBAL_NOTE, STAGE_FOURE
 from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
 from flaskr.models import  Course, Document, Exam, Lab, Lecture, Photo, Refference, User,  Video, YoutubeLink
@@ -59,8 +59,11 @@ def list_lab_files(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
+    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
+
     query.edit_message_text(
-        text=f"{course_name}: {language['lab'].capitalize()} {lab.lab_number}",
+        text=f"{course_name}: {language['lab'].capitalize()} {lab.lab_number}"
+        + (f"{language['global_note']}" if show_note else ''),
         reply_markup=reply_markup
     )
 

@@ -42,7 +42,8 @@ owner_conv = ConversationHandler(
         ],
 
         constants.RECIEVE_ANNOUNCEMENT: [
-            MessageHandler(Filters.text & ~ Filters.command, recieve_announcement),
+            # MessageHandler(Filters.text & ~ Filters.command, recieve_announcement),
+            MessageHandler(Filters.all & ~ Filters.command, recieve_announcement),
         ],
 
         constants.ANNOUNCEMENT_OPTIONS: [
