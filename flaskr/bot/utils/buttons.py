@@ -73,7 +73,7 @@ def back_to_semester(language, user_language, semester_id, semester_number):
     text = [
         back_icon, 
         f"{language['back_to']}".capitalize() +
-        f"{' ' + language['semester']} {semester_number}".title(),
+        f"{' ' + language['semester'] if user_language == 'en' else language['semester']} {semester_number}".title(),
     ]
 
     return InlineKeyboardButton(
