@@ -29,14 +29,6 @@ def start_over(update: Update, context: CallbackContext) -> int:
         .filter((Semester.id==current_semester.semester_id )) \
         .order_by(Course.id).all()
 
-    # temeporarly allow loqman to accses semester 7
-    # dlelete if block later
-    if user.telegram_id == '1294118831':
-        courses = session.query(Course) \
-        .join(Semester, Semester.id == Course.semester_id) \
-        .filter((Semester.number== 7 )) \
-        .order_by(Course.id).all()
-
     keyboard = []
 
 
