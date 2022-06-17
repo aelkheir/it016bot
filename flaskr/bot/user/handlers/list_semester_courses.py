@@ -31,8 +31,13 @@ def list_semester_courses(
 
 
     # wirite to context
-    context.chat_data['user_semester_id'] = semester_id
-    context.chat_data['user_semester_number'] = semester_number
+    context.chat_data[f'{update.effective_message.message_id} user_semester_id'] = semester_id
+    context.chat_data[f'{update.effective_message.message_id} user_semester_number'] = semester_number
+
+    # wirite to context
+    context.chat_data[f"{update.effective_message.message_id} from_archive"] = True
+
+
 
     courses =  session.query(Course) \
         .join(Semester, Semester.id == Course.semester_id) \

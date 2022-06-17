@@ -24,7 +24,6 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
     lecture = session.query(Lecture).filter(Lecture.id==lecture_id).one()
     course = lecture.course
 
-
     keyboard = []
 
     for document in lecture.documents:

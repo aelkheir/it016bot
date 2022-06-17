@@ -1,5 +1,6 @@
 from logging import getLogger
 from collections import defaultdict
+from pprint import pprint
 from typing import Dict, Tuple, Any, Callable, Optional
 
 from telegram.ext import DictPersistence
@@ -33,7 +34,7 @@ class PostgresPersistence(DictPersistence):
 
     def __init__(
         self,
-        on_flush: bool = True,
+        on_flush: bool = False,
         **kwargs: Any,
     ) -> None:
 
@@ -101,6 +102,8 @@ class PostgresPersistence(DictPersistence):
             .filter((Conversation.name==name) & (Conversation.key==json_key)) \
             .one_or_none()
         if conv:
+            if conv.new_state == new_state:
+                return
             conv.new_state = new_state
             self._session.commit()
         else:

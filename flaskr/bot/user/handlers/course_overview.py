@@ -86,20 +86,17 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
             )
         ])
 
-    
     # mutates from_archive
-    if 'user_semester_id' in context.chat_data and \
-        'user_semester_number' in context.chat_data:
+    if f"{update.effective_message.message_id} from_archive" in context.chat_data:
         from_archive = true
 
     if not from_archive:
         keyboard.append([back_to_courses_button(language, user.language)])
 
-
     elif from_archive:
         # read from context
-        semester_id = context.chat_data['user_semester_id']
-        semester_number = context.chat_data['user_semester_number'] 
+        semester_id = context.chat_data[f'{update.effective_message.message_id} user_semester_id']
+        semester_number = context.chat_data[f'{update.effective_message.message_id} user_semester_number'] 
         keyboard.append([back_to_semester(language, user.language, semester_id, semester_number)])
 
 

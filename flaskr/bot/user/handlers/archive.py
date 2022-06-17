@@ -72,3 +72,5 @@ def list_semesters(update: Update, context: CallbackContext) -> int:
     session.commit()
     session.close()
 
+    return SEMESTER_LIST
+

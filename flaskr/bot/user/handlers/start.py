@@ -20,12 +20,6 @@ def start(update: Update, context: CallbackContext) -> int:
     from_user = update.message.from_user
     logger.info("User %s started the conversation.", from_user.first_name)
 
-    # delete from context
-    if 'user_semester_id' in context.chat_data:
-        del context.chat_data['user_semester_id']
-    if 'user_semester_number' in context.chat_data:
-        del context.chat_data['user_semester_number']
-
     user = user_required(update, context, session)
     language = get_user_language(context.chat_data['language'])
 
@@ -62,3 +56,5 @@ def start(update: Update, context: CallbackContext) -> int:
 
     session.commit()
     session.close()
+
+    return COURSE_OVERVIEW
