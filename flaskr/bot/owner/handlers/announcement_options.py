@@ -67,6 +67,7 @@ def send_announcement(update: Update, context: CallbackContext) -> int:
                 user.chat_id,
                 owner_chat_id,
                 is_last,
+                user.subscribed,
             ),
             name=JOB_NAME
         )
@@ -77,8 +78,10 @@ def send_announcement_job(context):
     user_chat_id = context.job.context[1]
     owner_chat_id = context.job.context[2]
     is_last_user =  context.job.context[3]
-
-    context.bot.copy_message(user_chat_id, owner_chat_id, message_id)
+    subscribed = context.job.context[4]
+    
+    if subscribed:
+        context.bot.copy_message(user_chat_id, owner_chat_id, message_id)
 
     if is_last_user:
         context.bot.send_message(
