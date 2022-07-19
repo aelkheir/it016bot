@@ -107,7 +107,7 @@ def send_all_lectures(update: Update, context: CallbackContext) -> int:
             user.download_count += 1
 
         for vid in lecture.videos:
-            query.bot.sendVideo(query.message.chat.id, video=vid.file_id)
+            query.bot.sendVideo(query.message.chat.id, video=vid.file_id, caption=vid.file_name)
             user.download_count += 1
 
         for link in lecture.youtube_links:

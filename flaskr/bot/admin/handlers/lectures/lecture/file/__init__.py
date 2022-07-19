@@ -72,7 +72,7 @@ def send_file(update: Update, context: CallbackContext) -> int:
         update.message.bot.sendDocument(update.message.chat_id, document=file.file_id)
 
     if isinstance(file, Video):
-        update.message.bot.sendVideo(update.message.chat_id, video=file.file_id)
+        update.message.bot.sendVideo(update.message.chat_id, video=file.file_id, caption=file.file_name)
 
     if isinstance(file, YoutubeLink):
         update.message.bot.sendMessage(update.message.chat_id, text=file.url)

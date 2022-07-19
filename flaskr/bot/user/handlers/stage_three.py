@@ -91,7 +91,7 @@ def send_file(update: Update, context: CallbackContext) -> int:
         user.download_count += 1
 
     elif vid:
-        query.bot.sendVideo(query.message.chat.id, video=vid.file_id)
+        query.bot.sendVideo(query.message.chat.id, video=vid.file_id, caption=vid.file_name)
         user.download_count += 1
 
     elif link:
@@ -134,7 +134,7 @@ def send_all_labs(update: Update, context: CallbackContext) -> int:
             user.download_count += 1
 
         for vid in lab.videos:
-            query.bot.sendVideo(query.message.chat.id, video=vid.file_id)
+            query.bot.sendVideo(query.message.chat.id, video=vid.file_id, caption=vid.file_name)
             user.download_count += 1
 
         for link in lab.youtube_links:
@@ -173,7 +173,7 @@ def send_all_lecture_files(update: Update, context: CallbackContext) -> int:
         user.download_count += 1
 
     for vid in lecture.videos:
-        query.bot.sendVideo(query.message.chat.id, video=vid.file_id)
+        query.bot.sendVideo(query.message.chat.id, video=vid.file_id, caption=vid.file_name)
         user.download_count += 1
 
     for link in lecture.youtube_links:

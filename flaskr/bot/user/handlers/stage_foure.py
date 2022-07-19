@@ -36,7 +36,7 @@ def send_all_lab_files(update: Update, context: CallbackContext) -> int:
         user.download_count += 1
 
     for vid in lab.videos:
-        query.bot.sendVideo(query.message.chat.id, video=vid.file_id)
+        query.bot.sendVideo(query.message.chat.id, video=vid.file_id, caption=vid.file_name)
         user.download_count += 1
 
     for link in lab.youtube_links:
