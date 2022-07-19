@@ -53,7 +53,7 @@ def list_semester_courses(
         course_name = course_name if course_name else course.ar_name
 
         keyboard.append([
-            InlineKeyboardButton(f'{course_name} ({len(course.lectures)})',
+            InlineKeyboardButton(f'{course_name}',
             callback_data=f'{COURSE} {course.id}'),
         ])
 
