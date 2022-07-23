@@ -85,7 +85,6 @@ class PostgresPersistence(DictPersistence):
 
         finally:
             pass
-            self._session.close()
 
     def update_conversation(
         self, name: str, key: Tuple[int, ...], new_state: Optional[object]
