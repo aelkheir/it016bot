@@ -7,8 +7,8 @@ class User(db.Model):
 
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
 
-    telegram_id = db.Column(db.Integer, unique=True)
-    chat_id = db.Column(db.Integer, default='')
+    telegram_id = db.Column(db.BigInteger, unique=True)
+    chat_id = db.Column(db.BigInteger, default='')
 
     telegram_id_copy = db.Column(db.BigInteger, unique=True)
     chat_id_copy = db.Column(db.BigInteger, unique=True)
@@ -32,7 +32,7 @@ class UserData(db.Model):
 
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
 
-    user_id = db.Column(db.Integer, unique=True, nullable=False)
+    user_id = db.Column(db.BigInteger, unique=True, nullable=False)
 
     user_id_copy = db.Column(db.BigInteger, unique=True)
 
@@ -46,7 +46,7 @@ class ChatData(db.Model):
 
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
 
-    chat_id = db.Column(db.Integer, unique=True, nullable=False)
+    chat_id = db.Column(db.BigInteger, unique=True, nullable=False)
     
     chat_id_copy = db.Column(db.BigInteger, unique=True)
 
