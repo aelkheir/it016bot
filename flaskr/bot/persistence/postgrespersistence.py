@@ -3,7 +3,7 @@ from collections import defaultdict
 from pprint import pprint
 from typing import Dict, Tuple, Any, Callable, Optional
 
-from telegram.ext import DictPersistence
+from telegram.ext import DictPersistence, PicklePersistence
 from telegram.utils.helpers import (
     encode_conversations_to_json,
     decode_conversations_from_json,
@@ -120,11 +120,16 @@ class PostgresPersistence(DictPersistence):
         user_data = self._session.query(UserData) \
             .filter(UserData.user_id==user_id) \
             .one_or_none()
-        if user_data:
-            user_data.data = json.dumps(data)
-        else:
-            user_data = UserData(user_id=user_id, data=json.dumps(data))
+
+        if user_data is None:
+            user_data = UserData(user_id=user_id, data=json.dumps({}))
             self._session.add(user_data)
+            self._session.commit()
+
+        if user_data.data == json.dumps(data):
+            return
+
+        user_data.data = json.dumps(data)
         self._session.commit()
 
     def update_chat_data(self, chat_id: int, data: Dict) -> None:
@@ -137,11 +142,16 @@ class PostgresPersistence(DictPersistence):
         chat_data = self._session.query(ChatData) \
             .filter(ChatData.chat_id==chat_id) \
             .one_or_none()
-        if chat_data:
-            chat_data.data = json.dumps(data)
-        else:
-            chat_data = ChatData(chat_id=chat_id, data=json.dumps(data))
+
+        if chat_data is None:
+            chat_data = ChatData(chat_id=chat_id, data=json.dumps({}))
             self._session.add(chat_data)
+            self._session.commit()
+
+        if chat_data.data == json.dumps(data):
+            return
+
+        chat_data.data = json.dumps(data)
         self._session.commit()
 
     def update_bot_data(self, data: Dict) -> None:

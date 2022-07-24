@@ -6,7 +6,7 @@ from flaskr import db
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update
 from flaskr.bot.utils.user_required import user_required
-from flaskr.models import User
+from flaskr.models import ChatData, User, UserData
 
 
 
@@ -21,9 +21,13 @@ def delete_user(update: Update, context: CallbackContext) -> int:
     user_id = context.chat_data['viewed_user_id']
 
     user = session.query(User).filter(User.id==user_id).one_or_none()
+    user_data = session.query(UserData).filter(UserData.user_id==user.telegram_id).one_or_none()
+    chat_data = session.query(ChatData).filter(ChatData.chat_id==user.chat_id).one_or_none()
 
     if user:
         session.delete(user)
+        session.delete(user_data)
+        session.delete(chat_data)
         update.message.reply_text(f'تم حذف المستخدم {user.first_name} {user.last_name if user.last_name else ""}')
     else:
         update.message.reply_text(f'حدث خطا: لم يتم العثور على {user.first_name}')
