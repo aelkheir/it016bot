@@ -5,8 +5,8 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
-    telegram_id = db.Column(db.BigInteger, unique=True)
-    chat_id = db.Column(db.BigInteger, default='')
+    telegram_id = db.Column(db.Integer, unique=True)
+    chat_id = db.Column(db.Integer, default='')
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     language = db.Column(db.String(5), default='ar', nullable=False)
@@ -36,7 +36,7 @@ class ChatData(db.Model):
     __tablename__ = 'chat_data'
 
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
-    chat_id = db.Column(db.BigInteger, unique=True, nullable=False)
+    chat_id = db.Column(db.Integer, unique=True, nullable=False)
 
     data = db.Column(db.Text, nullable=False)
 
