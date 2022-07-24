@@ -1,3 +1,4 @@
+from enum import unique
 from sqlalchemy import CheckConstraint
 from flaskr import db 
 
@@ -5,8 +6,13 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
+
     telegram_id = db.Column(db.Integer, unique=True)
     chat_id = db.Column(db.Integer, default='')
+
+    telegram_id_copy = db.Column(db.BigInteger, unique=True)
+    chat_id_copy = db.Column(db.BigInteger, unique=True)
+
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     language = db.Column(db.String(5), default='ar', nullable=False)
@@ -25,7 +31,10 @@ class UserData(db.Model):
     __tablename__ = 'user_data'
 
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
-    user_id = db.Column(db.BigInteger, unique=True, nullable=False)
+
+    user_id = db.Column(db.Integer, unique=True, nullable=False)
+
+    user_id_copy = db.Column(db.BigInteger, unique=True)
 
     data = db.Column(db.Text, nullable=False)
 
@@ -36,7 +45,10 @@ class ChatData(db.Model):
     __tablename__ = 'chat_data'
 
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
+
     chat_id = db.Column(db.Integer, unique=True, nullable=False)
+    
+    chat_id_copy = db.Column(db.BigInteger, unique=True)
 
     data = db.Column(db.Text, nullable=False)
 
