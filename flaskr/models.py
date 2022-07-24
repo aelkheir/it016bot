@@ -68,7 +68,6 @@ class Semester(db.Model):
     def __repr__(self):
         return f"<Semester (number={self.number})>"
 
-
 class CurrentSemester(db.Model):
     __tablename__ = 'current_semester'
     CURRENT_SEMESTER_PK = '1G3S34OS29Z4'
