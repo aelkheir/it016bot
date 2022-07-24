@@ -45,7 +45,7 @@ db = SQLAlchemy(app, metadata=metadata)
 with app.app_context():
     db.create_all()
 
-migrate = Migrate(app, db, render_as_batch=True)
+migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
 
 
 from flaskr.bot.persistence import PostgresPersistence
