@@ -9,10 +9,6 @@ class User(db.Model):
 
     telegram_id = db.Column(db.BigInteger, unique=True)
     chat_id = db.Column(db.BigInteger, default='')
-
-    telegram_id_copy = db.Column(db.BigInteger, unique=True)
-    chat_id_copy = db.Column(db.BigInteger, unique=True)
-
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     language = db.Column(db.String(5), default='ar', nullable=False)
@@ -33,9 +29,6 @@ class UserData(db.Model):
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
 
     user_id = db.Column(db.BigInteger, unique=True, nullable=False)
-
-    user_id_copy = db.Column(db.BigInteger, unique=True)
-
     data = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
@@ -47,9 +40,6 @@ class ChatData(db.Model):
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True )
 
     chat_id = db.Column(db.BigInteger, unique=True, nullable=False)
-    
-    chat_id_copy = db.Column(db.BigInteger, unique=True)
-
     data = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
