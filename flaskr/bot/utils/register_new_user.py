@@ -25,13 +25,13 @@ def register_new_user(session, first_name, last_name, telegram_id, chat_id, upda
         session.add(user)
         session.commit()
 
-        if not 'language' in context.chat_data:
-            # write to context
-            context.chat_data['language'] = user.language
+    if not 'language' in context.chat_data:
+        # write to context
+        context.chat_data['language'] = user.language
 
-        if not 'user_id' in context.chat_data:
-            # write to context
-            context.user_data['user_id'] = user.id
+    if not 'user_id' in context.chat_data:
+        # write to context
+        context.user_data['user_id'] = user.id
 
     set_bot_commands(update, context, user)
 
