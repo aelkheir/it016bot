@@ -27,7 +27,7 @@ user_conv = ConversationHandler(
 
         constants.STAGE_TWO: [
             CallbackQueryHandler(list_lecture_files, pattern='^' + f'{constants.LECTURE} \d+' + '$'),
-            CallbackQueryHandler(send_all_lectures, pattern='^' + f'{constants.LECTURES} \d+' + '$'),
+            # CallbackQueryHandler(send_all_lectures, pattern='^' + f'{constants.LECTURES} \d+' + '$'),
             CallbackQueryHandler(list_course_labs, pattern='^' + f'\d+ {constants.LABS}' + '$'),
             CallbackQueryHandler(list_course_refferences, pattern='^' + f'\d+ {constants.REFFERENCES}' + '$'),
             CallbackQueryHandler(list_course_exams, pattern='^' + f'\d+ {constants.EXAMS}' + '$'),
@@ -45,13 +45,13 @@ user_conv = ConversationHandler(
 
         constants.STAGE_THREE: [
             CallbackQueryHandler(list_lab_files, pattern='^' + f'{constants.LAB} \d+' + '$'),
-            CallbackQueryHandler(send_all_labs, pattern='^' + f'{constants.LABS} \d+' + '$'),
+            # CallbackQueryHandler(send_all_labs, pattern='^' + f'{constants.LABS} \d+' + '$'),
             CallbackQueryHandler(send_file, pattern='^' + f'{constants.FILE} .+' + '$'),
             CallbackQueryHandler(send_all_lecture_files, pattern='^' + f'{constants.LECTURE} \d+' + '$'),
             CallbackQueryHandler(send_course_refference, pattern='^' + f'{constants.REFFERENCE} \d+' + '$'),
             CallbackQueryHandler(send_all_course_refferences, pattern='^' + f'{constants.REFFERENCES} \d+' + '$'),
             CallbackQueryHandler(send_course_exam, pattern='^' + f'{constants.EXAM} \d+' + '$'),
-            CallbackQueryHandler(send_all_course_exams, pattern='^' + f'{constants.EXAMS} \d+' + '$'),
+            # CallbackQueryHandler(send_all_course_exams, pattern='^' + f'{constants.EXAMS} \d+' + '$'),
             CallbackQueryHandler(course_overview, pattern='^' + f'{constants.COURSE} \d+' + '$'),
         ],
 

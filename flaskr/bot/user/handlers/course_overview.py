@@ -51,12 +51,12 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
 
         keyboard.append(row)
     
-    if len(lectures) > 1:
-        keyboard.append([
-            InlineKeyboardButton(
-                f"{language['download']} {language['all']} {language['lectures']}".title(),
-                callback_data=f'{LECTURES} {course.id}')
-        ])
+    # if len(lectures) > 1:
+    #     keyboard.append([
+    #         InlineKeyboardButton(
+    #             f"{language['download']} {language['all']} {language['lectures']}".title(),
+    #             callback_data=f'{LECTURES} {course.id}')
+    #     ])
 
 
     refference_lab_row = []

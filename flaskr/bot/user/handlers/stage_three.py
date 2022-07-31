@@ -5,7 +5,7 @@ from flaskr.bot.utils.user_required import user_required
 from flaskr.models import  Course, Document, Exam, Lab, Lecture, Photo, Refference, User,  Video, YoutubeLink
 from flaskr import db
 from telegram.ext import  CallbackContext
-from telegram import  Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import  InputMediaPhoto, Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 
 def list_lab_files(update: Update, context: CallbackContext) -> int:
@@ -271,14 +271,18 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
         .filter(Document.exam_id == exam_id)\
         .order_by(Document.id).all()
 
+    media_group = []
     for (i, photo) in enumerate(photos):
         page = f"{i + 1} {language['of']} {len(photos)}"
-
-        query.bot.sendPhoto(
-            query.message.chat.id,
-            photo=photo.file_id,
-            caption=f'{page}'
+        album_caption = f"{exam.name}\n{len(photos)} {language['pages']}"
+        input_media = InputMediaPhoto(
+            photo.file_id,
+            caption=album_caption if i == 0 else None
         )
+        media_group.append(input_media)
+
+    if media_group:
+        query.bot.sendMediaGroup(query.message.chat.id, media_group)
 
     for doc in documents:
         query.bot.sendDocument(query.message.chat.id, document=doc.file_id)

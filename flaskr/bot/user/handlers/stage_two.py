@@ -206,11 +206,11 @@ def list_course_labs(update: Update, context: CallbackContext) -> int:
         keyboard.append(row)
 
 
-    if len(course.labs) > 1:
-        keyboard.append([InlineKeyboardButton(
-            f"{language['download']} {language['all']} {language['labs']}".title(),
-            callback_data=f'{LABS} {course.id}'),
-        ])
+    # if len(course.labs) > 1:
+    #     keyboard.append([InlineKeyboardButton(
+    #         f"{language['download']} {language['all']} {language['labs']}".title(),
+    #         callback_data=f'{LABS} {course.id}'),
+    #     ])
 
     keyboard.append([
         back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
@@ -256,11 +256,11 @@ def list_course_exams(update: Update, context: CallbackContext) -> int:
             InlineKeyboardButton(f'{exam.name}', callback_data=f'{EXAM} {exam.id}')
         ])
 
-    if len(course.exams) > 1:
-        keyboard.append([InlineKeyboardButton(
-            f"{language['download']} {language['all']} {language['exams']}".title(),
-            callback_data=f'{EXAMS} {course.id}'),
-        ])
+    # if len(course.exams) > 1:
+    #     keyboard.append([InlineKeyboardButton(
+    #         f"{language['download']} {language['all']} {language['exams']}".title(),
+    #         callback_data=f'{EXAMS} {course.id}'),
+    #     ])
 
     keyboard.append([
         back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),

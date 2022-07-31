@@ -17,6 +17,7 @@ en = {
     'labs': 'labs',
     'exams': 'exams',
     'files': 'files',
+    'pages': 'pages',
 
     'semester': 'semester',
 
