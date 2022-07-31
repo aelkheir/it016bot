@@ -18,6 +18,7 @@ ar = {
     'exams': 'الامتحانات',
     'files': 'الملفات',
     'pages': 'صفحات',
+    'number_of_pages': 'عدد الصفحات',
 
     'semester': 'سمستر',
 

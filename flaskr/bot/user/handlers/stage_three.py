@@ -1,3 +1,4 @@
+from flaskr.bot.localization import ar
 from flaskr.bot.utils.buttons import back_to_labs_button
 from flaskr.bot.user.user_constants import FILE, LAB, SHOW_GLOBAL_NOTE, STAGE_FOURE
 from flaskr.bot.utils.get_user_language import get_user_language
@@ -259,10 +260,6 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
         else course.en_name
     course_name = course_name if course_name else course.ar_name
 
-    query.message.reply_text(
-        f"- {course_name}: {exam.name}",
-    )
-
     photos = session.query(Photo)\
         .filter(Photo.exam_id == exam_id)\
         .order_by(Photo.id).all()
@@ -273,8 +270,7 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
 
     media_group = []
     for (i, photo) in enumerate(photos):
-        page = f"{i + 1} {language['of']} {len(photos)}"
-        album_caption = f"{exam.name}\n{len(photos)} {language['pages']}"
+        album_caption = f"{course.ar_name}\n{exam.name}\n{ar['number_of_pages']}: {len(photos)}"
         input_media = InputMediaPhoto(
             photo.file_id,
             caption=album_caption if i == 0 else None
