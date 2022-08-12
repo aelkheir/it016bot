@@ -19,6 +19,7 @@ states = {
         MessageHandler(Filters.regex(f'المراجع'), course.list_refferences),
         MessageHandler(Filters.regex(f'اللابات'), course.list_labs),
         MessageHandler(Filters.regex(f'الامتحانات'), course.list_exams),
+        MessageHandler(Filters.regex(f'التساليم'), course.list_assignments),
         MessageHandler(Filters.regex(f'تعديل\sال(.+)'), course.edit_name_symbol),
         MessageHandler(Filters.regex(f'سمستر:\s.+'), course.edit_course_semester),
         MessageHandler(Filters.regex(f'حذف المادة'),

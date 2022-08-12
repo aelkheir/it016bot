@@ -1,9 +1,9 @@
 from flaskr.bot.localization import ar
-from flaskr.bot.utils.buttons import back_to_labs_button
-from flaskr.bot.user.user_constants import FILE, LAB, SHOW_GLOBAL_NOTE, STAGE_FOURE
+from flaskr.bot.utils.buttons import back_to_assignments_button, back_to_labs_button
+from flaskr.bot.user.user_constants import ASSIGNMENT, FILE, LAB, SHOW_GLOBAL_NOTE, STAGE_FOURE
 from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
-from flaskr.models import  Course, Document, Exam, Lab, Lecture, Photo, Refference, User,  Video, YoutubeLink
+from flaskr.models import  Assignment, Course, Document, Exam, Lab, Lecture, Photo, Refference, User,  Video, YoutubeLink
 from flaskr import db
 from telegram.ext import  CallbackContext
 from telegram import  InputMediaPhoto, Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -70,7 +70,6 @@ def list_lab_files(update: Update, context: CallbackContext) -> int:
 
     session.close()
     return STAGE_FOURE
-
 
 def send_file(update: Update, context: CallbackContext) -> int:
     session = db.session
@@ -233,6 +232,62 @@ def send_all_course_refferences(update: Update, context: CallbackContext) -> int
         for refference in course.refferences:
             query.bot.sendDocument(query.message.chat.id, document=refference.file_id)
             user.download_count += 1
+
+    session.commit()
+    session.close()
+    return None
+
+def send_assignment(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    query = update.callback_query
+    query.answer()
+
+    user = user_required(update, context, session)
+    user = session.query(User).filter(User.id==user.id).one()
+
+    language = get_user_language(context.chat_data['language'])
+
+    _, assignment_id = query.data.split(' ')
+
+    assignment = session.query(Assignment).filter(Assignment.id==assignment_id).one()
+
+    course = assignment.course
+
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
+
+    photos = session.query(Photo)\
+        .filter(Photo.assignment_id == assignment_id)\
+        .order_by(Photo.id).all()
+
+    documents = session.query(Document)\
+        .filter(Document.assignment_id == assignment_id)\
+        .order_by(Document.id).all()
+
+    media_group = []
+    for (i, photo) in enumerate(photos):
+        album_caption = f"{language['assignment'].capitalize()} {assignment.assignment_number}"
+        input_media = InputMediaPhoto(
+            photo.file_id,
+            caption=album_caption if i == 0 else None
+        )
+        media_group.append(input_media)
+
+    query.message.reply_text(
+        f"- {course_name}: {language['assignment'].capitalize()} {assignment.assignment_number}"
+    )
+
+    if media_group:
+        query.bot.sendMediaGroup(query.message.chat.id, media_group)
+
+    for doc in documents:
+        query.bot.sendDocument(query.message.chat.id, document=doc.file_id)
+
+    user.download_count += 1
+
 
     session.commit()
     session.close()

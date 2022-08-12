@@ -16,6 +16,7 @@ ar = {
     'references': 'المراجع',
     'labs': 'اللابات',
     'exams': 'الامتحانات',
+    'assignments': 'التساليم',
     'files': 'الملفات',
     'pages': 'صفحات',
     'number_of_pages': 'عدد الصفحات',
@@ -31,6 +32,7 @@ ar = {
 
     'lecture': 'المحاضرة',
     'lab': 'لاب',
+    'assignment': 'تسليم',
 
     'download': 'تحميل',
     'all': 'جميع',

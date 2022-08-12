@@ -16,6 +16,7 @@ en = {
     'references': 'references',
     'labs': 'labs',
     'exams': 'exams',
+    'assignments': 'assignments',
     'files': 'files',
     'pages': 'pages',
 
@@ -30,6 +31,7 @@ en = {
 
     'lecture': 'lecture',
     'lab': 'lab',
+    'assignment': 'assignment',
     'reference': 'reference',
     'exam': 'exam',
 

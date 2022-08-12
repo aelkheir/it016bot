@@ -6,7 +6,7 @@ import math
 from flaskr.models import Course, Lecture
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import  EXAMS, LABS, LECTURE, LECTURES, REFFERENCES, SHOW_GLOBAL_NOTE, STAGE_TWO
+from flaskr.bot.user.user_constants import  ASSIGNMENTS, EXAMS, LABS, LECTURE, LECTURES, REFFERENCES, SHOW_GLOBAL_NOTE, STAGE_TWO
 from flaskr import db
 
 
@@ -78,13 +78,27 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
     if len(refference_lab_row) > 0:
         keyboard.append(refference_lab_row)
 
+
+    exam_assignment_row = []
+
     if len(course.exams) > 0:
-        keyboard.append([
+        exam_assignment_row.append(
             InlineKeyboardButton(
                 f"{language['exams']} ({len(course.exams)})".capitalize(),
                 callback_data=f'{course.id} {EXAMS}'
             )
-        ])
+        )
+
+    if len(course.assignments) > 0:
+        exam_assignment_row.append(
+            InlineKeyboardButton(
+                f"{language['assignments']} ({len(course.assignments)})".capitalize(),
+                callback_data=f'{course.id} {ASSIGNMENTS}'
+            )
+        )
+
+    if len(exam_assignment_row) > 0:
+        keyboard.append(exam_assignment_row)
 
     # mutates from_archive
     if f"{update.effective_message.message_id} from_archive" in context.chat_data:

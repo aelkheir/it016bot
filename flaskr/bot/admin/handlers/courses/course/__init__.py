@@ -1,9 +1,9 @@
 from flaskr.bot.utils.is_admin import is_admin
 import re
-from flaskr.bot.admin.admin_constants import CONFIRM_COURSE_DELETION, EXAMS_LIST, LABS_LIST, RECIEVE_COURSE_SEMESTER, RECIEVE_NAME_SYMBOL, LECTURES_LIST, REFFERENCES_LIST
+from flaskr.bot.admin.admin_constants import ASSIGNMENTS_LIST, CONFIRM_COURSE_DELETION, EXAMS_LIST, LABS_LIST, RECIEVE_COURSE_SEMESTER, RECIEVE_NAME_SYMBOL, LECTURES_LIST, REFFERENCES_LIST
 import math
 from flaskr import db
-from flaskr.models import Course, Exam, Lab, Lecture, Semester
+from flaskr.models import Assignment, Course, Exam, Lab, Lecture, Semester
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update, ReplyKeyboardRemove
 from telegram.replykeyboardmarkup import ReplyKeyboardMarkup
@@ -94,6 +94,50 @@ def list_labs(update: Update, context: CallbackContext) -> int:
 
     session.close()
     return LABS_LIST
+
+def list_assignments(update: Update, context: CallbackContext) -> int:
+
+    if 'assignment_id' in context.chat_data:
+        del context.chat_data['assignment_id']
+
+    session = db.session
+
+    if not is_admin(update, context, session):
+        return
+
+    # reads from context
+    course_id = context.chat_data['course_id']
+
+    course = session.query(Course).filter(Course.id==course_id).one()
+
+    assignments = session.query(Assignment)\
+        .filter(Assignment.course_id==course_id)\
+        .order_by(Assignment.assignment_number).all()
+    
+    reply_keyboard = []
+
+    for row_index in range(0, math.ceil(len(assignments) / 3)):
+        row = []
+        is_row_full =  len(assignments) // 3 >= row_index + 1
+        row_size = 3 if is_row_full else len(assignments) % 3
+        row_start = row_index * 3
+
+        for assignment_index in range(row_start, row_start + row_size):
+            assignment = assignments[assignment_index]
+            row.append( f'تسليم رقم: {assignment.assignment_number}\n(id: {assignment.id})')
+
+        reply_keyboard.append(row)
+
+    reply_keyboard.append(['رجوع', 'اضافة تسليم'])
+
+    markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
+    update.message.reply_text(f'{course.ar_name}: التساليم',
+            reply_markup=markup,
+    )
+
+    session.close()
+    return ASSIGNMENTS_LIST
+
 
 
 

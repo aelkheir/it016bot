@@ -1,6 +1,5 @@
-from enum import unique
 from sqlalchemy import CheckConstraint
-from flaskr import db 
+from flaskr import db
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -108,6 +107,7 @@ class Course(db.Model):
 
     lectures = db.relationship("Lecture", back_populates = 'course', cascade="all, delete")
     labs = db.relationship("Lab", back_populates = 'course', cascade="all, delete")
+    assignments = db.relationship("Assignment", back_populates = 'course', cascade="all, delete")
     refferences = db.relationship("Refference", back_populates = 'course', cascade="all, delete")
     exams = db.relationship("Exam", back_populates = 'course', cascade="all, delete")
 
@@ -146,6 +146,21 @@ class Lab(db.Model):
     def __repr__(self):
         return f"<Lab(Course='{self.course.ar_name}', No='{self.lab_number}')>"
 
+class Assignment(db.Model):
+    __tablename__ = 'assignments'
+
+    id = db.Column(db.Integer,  db.Sequence('user_id_seq'), primary_key=True )
+    assignment_number = db.Column(db.Integer)
+
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
+    course = db.relationship("Course", back_populates="assignments", cascade="save-update")
+
+    documents = db.relationship("Document", back_populates = 'assignment', cascade="all, delete")
+    photos = db.relationship("Photo", back_populates = 'assignment', cascade="all, delete")
+
+    def __repr__(self):
+        return f"<Lab(Course='{self.course.ar_name}', No='{self.lab_number}')>"
+
 
 class Document(db.Model):
     __tablename__ = 'documents'
@@ -160,6 +175,9 @@ class Document(db.Model):
 
     lab_id = db.Column(db.Integer, db.ForeignKey('labs.id'))
     lab = db.relationship("Lab", back_populates="documents", cascade="save-update")
+
+    assignment_id = db.Column(db.Integer, db.ForeignKey('assignments.id'))
+    assignment = db.relationship("Assignment", back_populates="documents", cascade="save-update")
 
     exam_id = db.Column(db.Integer, db.ForeignKey('exams.id'))
     exam = db.relationship("Exam", back_populates="documents", cascade="save-update")
@@ -241,6 +259,9 @@ class Photo(db.Model):
 
     exam_id = db.Column(db.Integer, db.ForeignKey('exams.id'))
     exam = db.relationship("Exam", back_populates="photos", cascade="save-update")
+
+    assignment_id = db.Column(db.Integer, db.ForeignKey('assignments.id'))
+    assignment = db.relationship("Assignment", back_populates="photos", cascade="save-update")
 
     def __repr__(self):
         return f"<Photo(id='{self.id}')>"
