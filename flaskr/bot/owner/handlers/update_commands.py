@@ -41,7 +41,7 @@ def set_bot_commands(update: Update, context: CallbackContext) -> int:
 
         is_last = index == len(users) - 1
 
-        when = index * 10
+        when = index * 4
 
         context.job_queue.run_once(
             set_commands_job,
