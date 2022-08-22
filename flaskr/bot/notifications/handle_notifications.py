@@ -107,5 +107,4 @@ def handle_notifications(update: Update, context: CallbackContext, has_changed=T
 
     session.close()
 
-    return myconstants.ENTRY_POINTS
 
