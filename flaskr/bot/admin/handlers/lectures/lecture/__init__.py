@@ -1,5 +1,5 @@
 from flaskr.bot.utils.is_admin import is_admin
-from flaskr.bot.admin.admin_constants import LECTURE_FILE_OPTIONS, RECIEVE_LECTURE_NUMBER, RECIEVIE_LECTURE_FILE
+from flaskr.bot.admin.admin_constants import LECTURE_FILE_OPTIONS, PUBLISH_LECTURE, RECIEVE_LECTURE_NUMBER, RECIEVIE_LECTURE_FILE
 from flaskr import db
 from flaskr.models import  Lecture
 from telegram.ext import CallbackContext, CallbackContext
@@ -77,3 +77,26 @@ def edit_file(update: Update, context: CallbackContext) -> int:
 
     session.close()
     return LECTURE_FILE_OPTIONS
+
+def publish(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    # reads from context
+    lecture_id = context.chat_data['lecture_id']
+
+    lecture = session.query(Lecture).filter(Lecture.id==lecture_id).one()
+
+    reply_keyboard = [
+        ['ارسل تنبيه', 'نشر بصمت'],
+        ['رجوع']
+    ]
+    markup = ReplyKeyboardMarkup(keyboard=reply_keyboard, resize_keyboard=True)
+
+    if not is_admin(update, context, session):
+        return
+
+    status = 'منشور' if lecture.published  else 'غير منشور'
+    update.message.reply_text(f'الوضع الحالي: {status}', reply_markup=markup)
+
+    session.close()
+    return PUBLISH_LECTURE

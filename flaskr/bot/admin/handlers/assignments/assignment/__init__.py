@@ -1,5 +1,5 @@
 from flaskr.bot.utils.is_admin import is_admin
-from flaskr.bot.admin.admin_constants import ASSIGNMENT_FILE_OPTIONS,  RECIEVE_ASSIGNMENT_NUMBER, RECIEVIE_ASSIGNMENT_FILE
+from flaskr.bot.admin.admin_constants import ASSIGNMENT_FILE_OPTIONS, PUBLISH_ASSIGNMENT,  RECIEVE_ASSIGNMENT_NUMBER, RECIEVIE_ASSIGNMENT_FILE
 from flaskr import db
 from flaskr.models import  Assignment
 from telegram.ext import CallbackContext, CallbackContext
@@ -79,3 +79,26 @@ def edit_file(update: Update, context: CallbackContext) -> int:
 
     session.close()
     return ASSIGNMENT_FILE_OPTIONS
+
+def publish(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    # reads from context
+    assignment_id = context.chat_data['assignment_id']
+
+    assignment = session.query(Assignment).filter(Assignment.id==assignment_id).one()
+
+    reply_keyboard = [
+        ['ارسل تنبيه', 'نشر بصمت'],
+        ['رجوع']
+    ]
+    markup = ReplyKeyboardMarkup(keyboard=reply_keyboard, resize_keyboard=True)
+
+    if not is_admin(update, context, session):
+        return
+
+    status = 'منشور' if assignment.published  else 'غير منشور'
+    update.message.reply_text(f'الوضع الحالي: {status}', reply_markup=markup)
+
+    session.close()
+    return PUBLISH_ASSIGNMENT

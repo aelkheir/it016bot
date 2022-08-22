@@ -46,7 +46,7 @@ def list_assignment_files(update: Update, context: CallbackContext, assignment_i
         reply_keyboard.append([f'{photo.file_name}'])
     
 
-    reply_keyboard.append(['اضافة ملف'])
+    reply_keyboard.append(['اضافة ملف', 'نشر'])
     reply_keyboard.append(['حذف التسليم', f'تعديل رقم التسليم: {assignment.assignment_number}'])
     reply_keyboard.append(['رجوع'])
 
@@ -57,19 +57,6 @@ def list_assignment_files(update: Update, context: CallbackContext, assignment_i
 
     session.close()
     return ASSIGNMENT_OPTIONS
-
-
-def to_list_lab_files(update: Update, context: CallbackContext) -> int:
-    session = db.session
-
-    if not is_admin(update, context, session):
-        return
-
-    # read from context
-    lecture_id = context.chat_data['lecture_id']
-
-    session.close()
-    return list_assignment_files(update, context, lecture_id=lecture_id)
 
 def add_assignment(update: Update, context: CallbackContext) -> int:
     session = db.session
@@ -86,13 +73,15 @@ def add_assignment(update: Update, context: CallbackContext) -> int:
       .filter_by(course_id=course_id).first()
     assignment_number = last_assignment[0] + 1 if last_assignment[0] else 1
 
-    assignment = Assignment(assignment_number=assignment_number)
+    assignment = Assignment(assignment_number=assignment_number, published=False)
     assignment.course = course
 
     session.add(assignment)
+    session.commit()
+
+    assignment_id = assignment.id
 
     update.message.reply_text(f'تمت اضافة تسليم جديد بنجاح')
 
-    session.commit()
     session.close()
-    return list_assignments(update, context)
+    return list_assignment_files(update, context, assignment_id=assignment_id)

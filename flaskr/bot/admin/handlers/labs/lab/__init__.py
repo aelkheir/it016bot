@@ -1,5 +1,5 @@
 from flaskr.bot.utils.is_admin import is_admin
-from flaskr.bot.admin.admin_constants import LAB_FILE_OPTIONS, RECIEVE_LAB_NUMBER, RECIEVIE_LAB_FILE
+from flaskr.bot.admin.admin_constants import LAB_FILE_OPTIONS, PUBLISH_LAB, RECIEVE_LAB_NUMBER, RECIEVIE_LAB_FILE
 from flaskr import db
 from flaskr.models import  Lab
 from telegram.ext import CallbackContext, CallbackContext
@@ -77,3 +77,26 @@ def edit_file(update: Update, context: CallbackContext) -> int:
 
     session.close()
     return LAB_FILE_OPTIONS
+
+def publish(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    # reads from context
+    lab_id = context.chat_data['lab_id']
+
+    lab = session.query(Lab).filter(Lab.id==lab_id).one()
+
+    reply_keyboard = [
+        ['ارسل تنبيه', 'نشر بصمت'],
+        ['رجوع']
+    ]
+    markup = ReplyKeyboardMarkup(keyboard=reply_keyboard, resize_keyboard=True)
+
+    if not is_admin(update, context, session):
+        return
+
+    status = 'منشور' if lab.published  else 'غير منشور'
+    update.message.reply_text(f'الوضع الحالي: {status}', reply_markup=markup)
+
+    session.close()
+    return PUBLISH_LAB

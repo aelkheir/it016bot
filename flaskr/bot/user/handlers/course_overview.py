@@ -3,7 +3,7 @@ from flaskr.bot.utils.buttons import back_to_courses_button, back_to_semester
 from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
 import math
-from flaskr.models import Course, Lecture
+from flaskr.models import Assignment, Course, Lab, Lecture
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from flaskr.bot.user.user_constants import  ASSIGNMENTS, EXAMS, LABS, LECTURE, LECTURES, REFFERENCES, SHOW_GLOBAL_NOTE, STAGE_TWO
@@ -28,8 +28,14 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
     course =  session.query(Course).filter(Course.id == course_id).one()
 
     lectures = session.query(Lecture)\
-        .filter(Lecture.course_id == course_id)\
+        .filter(Lecture.course_id == course_id, Lecture.published==True)\
         .order_by(Lecture.lecture_number).all()
+
+    labs = session.query(Lab)\
+        .filter(Lab.course_id == course_id, Lab.published==True).all()
+
+    assignments = session.query(Assignment)\
+        .filter(Assignment.course_id == course_id, Assignment.published==True).all()
 
     keyboard = []
 
@@ -50,14 +56,6 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
             row.reverse()
 
         keyboard.append(row)
-    
-    # if len(lectures) > 1:
-    #     keyboard.append([
-    #         InlineKeyboardButton(
-    #             f"{language['download']} {language['all']} {language['lectures']}".title(),
-    #             callback_data=f'{LECTURES} {course.id}')
-    #     ])
-
 
     refference_lab_row = []
 
@@ -68,10 +66,10 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
                 callback_data=f'{course.id} {REFFERENCES}'),
         )
 
-    if len(course.labs) > 0:
+    if len(labs) > 0:
         refference_lab_row.append(
             InlineKeyboardButton(
-                f"{language['labs']} ({len(course.labs)})".capitalize(),
+                f"{language['labs']} ({len(labs)})".capitalize(),
                 callback_data=f'{course.id} {LABS}'
         ))
 
@@ -89,10 +87,10 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
             )
         )
 
-    if len(course.assignments) > 0:
+    if len(assignments) > 0:
         exam_assignment_row.append(
             InlineKeyboardButton(
-                f"{language['assignments']} ({len(course.assignments)})".capitalize(),
+                f"{language['assignments']} ({len(assignments)})".capitalize(),
                 callback_data=f'{course.id} {ASSIGNMENTS}'
             )
         )

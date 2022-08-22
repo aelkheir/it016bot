@@ -52,11 +52,13 @@ from flaskr.bot.persistence import PostgresPersistence
 from flaskr.bot.admin.admin_conv import admin_conv
 from flaskr.bot.user.user_conv import user_conv
 from flaskr.bot.owner.owner_conv import owner_conv
+from flaskr.bot.notifications.notifications_conv import notifications_conv
 from flaskr.bot.setlanguage import language_conv
 from flaskr.bot.subscription import subscription_conv
 from flaskr.bot.inlinequery.inline_conv import inline_conv
 from flaskr.bot.user.handlers.start import start
 from flaskr.bot.user.handlers.archive import list_semesters
+from .bot.notifications.handle_notifications import handle_notifications
 
 
 if app.env == 'production':
@@ -82,12 +84,14 @@ if app.env == 'production':
 
     dispatcher.add_handler(CommandHandler(['courses', 'start'], start))
     dispatcher.add_handler(CommandHandler('archive', list_semesters))
+    dispatcher.add_handler(CommandHandler('notifications', handle_notifications))
     dispatcher.add_handler(user_conv, )
 
     dispatcher.add_handler(admin_conv, 1)
     dispatcher.add_handler(owner_conv, 2)
     dispatcher.add_handler(language_conv, 3)
-    dispatcher.add_handler(subscription_conv, 4)
+    dispatcher.add_handler(notifications_conv, 4)
+    # dispatcher.add_handler(subscription_conv, 5)
 
 
     @app.route("/", methods=["POST", "GET"])
@@ -116,12 +120,14 @@ elif app.env == 'development':
 
     dispatcher.add_handler(CommandHandler(['courses', 'start'], start))
     dispatcher.add_handler(CommandHandler('archive', list_semesters))
-    dispatcher.add_handler(user_conv, )
+    dispatcher.add_handler(CommandHandler('notifications', handle_notifications))
+    dispatcher.add_handler(user_conv, 1)
 
-    dispatcher.add_handler(admin_conv, 1)
-    dispatcher.add_handler(owner_conv, 2)
-    dispatcher.add_handler(language_conv, 3)
-    dispatcher.add_handler(subscription_conv, 4)
+    dispatcher.add_handler(notifications_conv, 2)
+    dispatcher.add_handler(admin_conv, 3)
+    dispatcher.add_handler(owner_conv, 4)
+    dispatcher.add_handler(language_conv, 5)
+    # dispatcher.add_handler(subscription_conv, 6)
 
     @app.route("/")
     def dev():

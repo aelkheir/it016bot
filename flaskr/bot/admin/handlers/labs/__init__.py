@@ -48,7 +48,7 @@ def list_lab_files(update: Update, context: CallbackContext, lab_id=None) -> int
     for youtube_link in lab.youtube_links:
         reply_keyboard.append([f'{youtube_link.video_title}'])
 
-    reply_keyboard.append(['اضافة ملف'])
+    reply_keyboard.append(['اضافة ملف', 'نشر'])
     reply_keyboard.append(['حذف اللاب', f'تعديل رقم اللاب: {lab.lab_number}'])
     reply_keyboard.append(['رجوع'])
 
@@ -88,13 +88,15 @@ def add_lab(update: Update, context: CallbackContext) -> int:
       .filter_by(course_id=course_id).first()
     lab_number = last_lab[0] + 1 if last_lab[0] else 1
 
-    new_lab = Lab(lab_number=lab_number)
+    new_lab = Lab(lab_number=lab_number, published=False)
     new_lab.course = course
 
     session.add(new_lab)
+    session.commit()
+
+    lab_id = new_lab.id
 
     update.message.reply_text(f'تمت اضافة لاب جديد بنجاح')
 
-    session.commit()
     session.close()
-    return list_labs(update, context)
+    return list_lab_files(update, context, lab_id=lab_id)

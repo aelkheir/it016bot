@@ -4,6 +4,8 @@ en = {
     'global_note': '\n\n⚠️ This content belongs to 015 and may become obselete',
 
     'of': 'of',
+    'is': 'is',
+    'are': 'are',
 
     'subscribe': 'subscribe',
     'unsubscribe': 'unsubscribe',
@@ -17,8 +19,15 @@ en = {
     'labs': 'labs',
     'exams': 'exams',
     'assignments': 'assignments',
+    'notifications': 'notifications',
     'files': 'files',
     'pages': 'pages',
+    'enabled': 'enabled',
+    'disabled': 'disabled',
+    'show': 'show',
+    'more': 'more',
+    'hide': 'hide',
+    'back': 'back',
 
     'semester': 'semester',
 
@@ -38,15 +47,20 @@ en = {
     'download': 'download',
     'all': 'all',
 
-    'choose_bot_language': 'choose bot language',
+    'select_bot_language': 'select language',
     'language_set_to': 'Language set to English',
+    'notifications_settings': 'notification settings',
 
     'subscribed_successfully': 'subscribed successfully',
     'unsubscribed_successfully': 'you\'re no longer subscribed',
+    'turn_on': 'turn on',
+    'turn_off': 'turn off',
+    'turned_on': 'on',
+    'turned_off': 'off',
 
 
     'archive': 'archive',
-    'language_settings': 'choose bot language',
+    'language_settings': 'set bot language',
     'subscription_settings': 'manage subscription',
     'edit_courses': 'edit courses',
     'manage_users': 'manage users',
@@ -57,5 +71,14 @@ en = {
     
     'back_to': 'back to',
 
-    'nothing_yet': "nothing yet",
+    'lecture_notification': 'lecture notifications',
+    'lab_notification': 'lab notifications',
+    'assignment_notification': 'assignment notifications',
+    'disable_all': 'disable all',
+
+    'all_notifications_are_off': 'all notifications are turned off',
+
+    'notify_lecture_template': '*_+c+_* has a new `Lecture +n+`',
+    'notify_lab_template': '*_+c+_* has a new `Lab +n+`',
+    'notify_assignment_template': '*_+c+_* has a new `Assignment +n+`',
 }

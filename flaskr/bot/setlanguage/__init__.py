@@ -29,7 +29,7 @@ def language_handler(update: Update, context: CallbackContext):
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
 
     update.message.reply_text(
-        f"{language['choose_bot_language']}".capitalize(),
+        f"{language['select_bot_language']}".capitalize(),
         reply_markup=markup,
     )
 

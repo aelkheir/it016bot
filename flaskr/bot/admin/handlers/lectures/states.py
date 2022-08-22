@@ -6,6 +6,7 @@ import flaskr.bot.admin.handlers.lectures  as lectures
 import flaskr.bot.admin.handlers.lectures.lecture  as lecture
 import flaskr.bot.admin.handlers.lectures.lecture.file  as lecture_file
 import flaskr.bot.admin.handlers.lectures.lecture.receivers as lecture_receivers
+import flaskr.bot.admin.handlers.lectures.lecture.publishers as lecture_publishers
 
 
 states = {
@@ -21,6 +22,7 @@ states = {
         MessageHandler(Filters.regex(f'تعديل رقم المحاضرة: \d+'),
                         lectures.lecture.edit_lecture_number),
         MessageHandler(Filters.regex(f'اضافة ملف'), lecture.add_file),
+        MessageHandler(Filters.regex(f'نشر'), lecture.publish),
         MessageHandler(Filters.regex(f'رجوع'), course.list_lectures),
         MessageHandler(Filters.text & ~ Filters.command, lecture.edit_file),
     ],
@@ -42,4 +44,9 @@ states = {
         MessageHandler(Filters.regex('رجوع'), lectures.list_lecture_files)
     ],
 
+    admin_constants.PUBLISH_LECTURE: [
+        MessageHandler(Filters.regex(f'ارسل تنبيه'), lecture_publishers.publish_with_notification),
+        MessageHandler(Filters.regex(f'نشر بصمت'), lecture_publishers.publish_silently),
+        MessageHandler(Filters.regex(f'رجوع'), lectures.to_list_lecture_files),
+    ],
 }

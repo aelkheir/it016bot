@@ -19,8 +19,27 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     is_owner = db.Column(db.Boolean, default=False)
 
+    settings = db.relationship("UserSetting", back_populates = 'user', cascade="all, delete")
+
     def __repr__(self):
         return f"<User(firstname='{self.first_name}', lastname='{self.last_name}')>"
+
+class UserSetting(db.Model):
+    __tablename__ = 'user_settings'
+
+    id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True)
+
+    key = db.Column(db.String(50), nullable=False)
+    value = db.Column(db.String(50), nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user = db.relationship('User', back_populates="settings", cascade="save-update")
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'key', name='user_settings_user_id_key_uc'),
+    )
+
+    def __repr__(self):
+        return f"<UserSetting(key='{self.key}', value='{self.value}', user='')>"
 
 class UserData(db.Model):
     __tablename__ = 'user_data'
@@ -119,6 +138,7 @@ class Lecture(db.Model):
 
     id = db.Column(db.Integer,  db.Sequence('user_id_seq'), primary_key=True )
     lecture_number = db.Column(db.Integer)
+    published = db.Column(db.Boolean, default=False)
 
     course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
     course = db.relationship("Course", back_populates="lectures", cascade="save-update")
@@ -135,6 +155,7 @@ class Lab(db.Model):
 
     id = db.Column(db.Integer,  db.Sequence('user_id_seq'), primary_key=True )
     lab_number = db.Column(db.Integer)
+    published = db.Column(db.Boolean, default=False)
 
     course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
     course = db.relationship("Course", back_populates="labs", cascade="save-update")
@@ -151,6 +172,7 @@ class Assignment(db.Model):
 
     id = db.Column(db.Integer,  db.Sequence('user_id_seq'), primary_key=True )
     assignment_number = db.Column(db.Integer)
+    published = db.Column(db.Boolean, default=False)
 
     course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
     course = db.relationship("Course", back_populates="assignments", cascade="save-update")

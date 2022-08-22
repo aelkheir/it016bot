@@ -2,7 +2,7 @@ import math
 from flaskr.bot.utils.buttons import back_to_course_button
 from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
-from flaskr.models import Course, Exam, Lecture, User
+from flaskr.models import Assignment, Course, Exam, Lab, Lecture, User
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from flaskr.bot.user.user_constants import  ASSIGNMENT, EXAM, EXAMS, FILE, LAB, LABS, LECTURE, REFFERENCES, REFFERENCE, SHOW_GLOBAL_NOTE, STAGE_THREE
@@ -28,12 +28,18 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
 
     for document in lecture.documents:
         keyboard.append([
-            InlineKeyboardButton(f'{document.file_name}', callback_data=f'{FILE} {document.id}')
+            InlineKeyboardButton(
+                f'{document.file_name}',
+                callback_data=f'{FILE} {document.id} {document.file_unique_id}'
+            )
         ])
 
     for video in lecture.videos:
         keyboard.append([
-            InlineKeyboardButton(f'{video.file_name}', callback_data=f'{FILE} {video.id}')
+            InlineKeyboardButton(
+                f'{video.file_name}',
+                callback_data=f'{FILE} {video.id} {video.file_unique_id}'
+            )
         ])
 
     for youtube_link in lecture.youtube_links:
@@ -183,7 +189,9 @@ def list_course_labs(update: Update, context: CallbackContext) -> int:
         else course.en_name
     course_name = course_name if course_name else course.ar_name
 
-    labs = course.labs
+    labs = session.query(Lab)\
+        .filter(Lab.course_id == course_id, Lab.published==True)\
+        .order_by(Lab.lab_number).all()
 
     keyboard = []
 
@@ -245,7 +253,9 @@ def list_course_assignments(update: Update, context: CallbackContext) -> int:
         else course.en_name
     course_name = course_name if course_name else course.ar_name
 
-    assignments = course.assignments
+    assignments = session.query(Assignment)\
+        .filter(Assignment.course_id == course_id, Assignment.published==True)\
+        .order_by(Assignment.assignment_number).all()
 
     keyboard = []
 

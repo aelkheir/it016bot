@@ -28,12 +28,18 @@ def list_lab_files(update: Update, context: CallbackContext) -> int:
 
     for document in lab.documents:
         keyboard.append([
-            InlineKeyboardButton(f'{document.file_name}', callback_data=f'{FILE} {document.id}')
+            InlineKeyboardButton(
+                f'{document.file_name}',
+                callback_data=f'{FILE} {document.id} {document.file_unique_id}'
+            )
         ])
 
     for video in lab.videos:
         keyboard.append([
-            InlineKeyboardButton(f'{video.file_name}', callback_data=f'{FILE} {video.id}')
+            InlineKeyboardButton(
+                f'{video.file_name}',
+                callback_data=f'{FILE} {video.id} {video.file_unique_id}'
+            )
         ])
 
     for youtube_link in lab.youtube_links:
@@ -80,10 +86,16 @@ def send_file(update: Update, context: CallbackContext) -> int:
     user = user_required(update, context, session)
     user = session.query(User).filter(User.id==user.id).one()
 
-    _, file_id = query.data.split(' ')
+    _, file_id, file_unique_id = query.data.split(' ')
 
-    doc = session.query(Document).filter(Document.id==file_id).one_or_none()
-    vid = session.query(Video).filter(Video.id==file_id).one_or_none()
+    doc = session.query(Document) \
+        .filter(Document.id==file_id, Document.file_unique_id==file_unique_id) \
+        .one_or_none()
+
+    vid = session.query(Video) \
+        .filter(Video.id==file_id, Video.file_unique_id==file_unique_id) \
+        .one_or_none()
+
     link = session.query(YoutubeLink).filter(YoutubeLink.id==file_id).one_or_none()
 
     if doc:

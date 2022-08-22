@@ -48,7 +48,7 @@ def list_lecture_files(update: Update, context: CallbackContext, lecture_id=None
     for youtube_link in lecture.youtube_links:
         reply_keyboard.append([f'{youtube_link.video_title}'])
 
-    reply_keyboard.append(['اضافة ملف'])
+    reply_keyboard.append(['اضافة ملف', 'نشر'])
     reply_keyboard.append(['حذف المحاضرة', f'تعديل رقم المحاضرة: {lecture.lecture_number}'])
     reply_keyboard.append(['رجوع'])
 
@@ -88,13 +88,15 @@ def add_lecture(update: Update, context: CallbackContext) -> int:
       .filter_by(course_id=course_id).first()
     lecture_number = last_lecture[0] + 1 if last_lecture[0] else 1
 
-    new_lecture = Lecture(lecture_number=lecture_number)
+    new_lecture = Lecture(lecture_number=lecture_number, published=False)
     new_lecture.course = course
 
     session.add(new_lecture)
+    session.commit()
 
     update.message.reply_text(f'تمت اضافة محاضرة جديدة بنجاح')
 
-    session.commit()
+    lecture_id = new_lecture.id
+
     session.close()
-    return list_lectures(update, context)
+    return list_lecture_files(update, context, lecture_id=lecture_id)

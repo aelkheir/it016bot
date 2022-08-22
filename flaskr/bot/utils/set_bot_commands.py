@@ -8,7 +8,8 @@ from flaskr import db
 def get_common_commands(language):
     return [
         ('setlanguage',f"{language['language_settings']}".capitalize()),
-        ('subscription',f"{language['subscription_settings']}".capitalize()),
+        # ('subscription',f"{language['subscription_settings']}".capitalize()),
+        ('notifications',f"{language['notifications_settings']}".capitalize()),
     ]
 
 def get_user_commands(language, user_language):

@@ -1,3 +1,4 @@
+from flaskr.bot.notifications.notifications_constants import NOTIFICATIONS_SETTINGS
 from flaskr.bot.user.user_constants import ARCHIVE, ASSIGNMENTS, COURSE, LABS, SEMESTER, SUBJECT_LIST
 from telegram import InlineKeyboardButton
 
@@ -49,6 +50,21 @@ def back_to_assignments_button(language, user_language, course_id):
         ' '.join(text),
         callback_data=f"{course_id} {ASSIGNMENTS}"
     )
+
+def back_to_notification_settings(language, user_language):
+    ar_notifications = language['notifications'][1:]
+
+    text = [
+        back_icon, 
+        f"{language['back_to']}".capitalize() +
+        f"{' ' + language['notifications'] if user_language == 'en' else ar_notifications}".title(),
+    ]
+
+    return InlineKeyboardButton(
+        ' '.join(text),
+        callback_data=f"{NOTIFICATIONS_SETTINGS}"
+    )
+
 
 def back_to_course_button(language, user_language, en_course_name, ar_course_name, course_id):
 
