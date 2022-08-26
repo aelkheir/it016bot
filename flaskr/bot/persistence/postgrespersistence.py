@@ -1,6 +1,6 @@
 from logging import getLogger
 from collections import defaultdict
-from pprint import pprint
+from pprint import pprint, pformat
 from typing import Dict, Tuple, Any, Callable, Optional
 
 from telegram.ext import DictPersistence, PicklePersistence
@@ -72,7 +72,7 @@ class PostgresPersistence(DictPersistence):
                 conversations[record.name] = {}
             tuple_key = tuple(json.loads(record.key))
             conversations[record.name][tuple_key] = record.new_state
-        pprint(conversations)
+        self.logger.info(pformat(conversations))
         return conversations
         
     def __load_database(self) -> None:
