@@ -1,3 +1,4 @@
+from flaskr.bot.admin.handlers.semesters import edit_semester
 from flaskr.bot.utils.is_admin import is_admin
 import re
 from flaskr import db
@@ -51,9 +52,8 @@ def recieve_new_course(update: Update, context: CallbackContext) -> int:
 
         update.message.reply_text(f'تم اضافة {ar_name} {ar_course_symbol}')
 
-        handler = context.chat_data['back_from_edit_course']
 
-        return handler(update, context)
+        return edit_semester(update, context, semester_id=semester_id)
 
     else:
         update.message.reply_text('الرجاء ادخال الاسم والرمز كما في المثال.')

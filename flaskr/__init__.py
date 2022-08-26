@@ -21,7 +21,7 @@ if app.env == 'development':
     load_dotenv()
 
 PROD_SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
-DEV_SQLALCHEMY_DATABASE_URI = 'sqlite:///dev.db'
+DEV_SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres:postgres@localhost:5432/it016db'
 
 DATABASE_URI = PROD_SQLALCHEMY_DATABASE_URI \
     if app.env == 'production'\
@@ -42,9 +42,6 @@ metadata = MetaData(
 
 db = SQLAlchemy(app, metadata=metadata)
 
-with app.app_context():
-    db.create_all()
-
 migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
 
 
@@ -59,6 +56,9 @@ from flaskr.bot.inlinequery.inline_conv import inline_conv
 from flaskr.bot.user.handlers.start import start
 from flaskr.bot.user.handlers.archive import list_semesters
 from .bot.notifications.handle_notifications import handle_notifications
+
+with app.app_context():
+    db.create_all()
 
 
 if app.env == 'production':

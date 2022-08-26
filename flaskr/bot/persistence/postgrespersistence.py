@@ -72,6 +72,7 @@ class PostgresPersistence(DictPersistence):
                 conversations[record.name] = {}
             tuple_key = tuple(json.loads(record.key))
             conversations[record.name][tuple_key] = record.new_state
+        pprint(conversations)
         return conversations
         
     def __load_database(self) -> None:

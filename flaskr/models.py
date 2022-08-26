@@ -93,12 +93,11 @@ class CurrentSemester(db.Model):
     CURRENT_SEMESTER_PK = '1G3S34OS29Z4'
 
     __table_args__ = (
-            CheckConstraint(f'id = "{CURRENT_SEMESTER_PK}"', name='only_one_row'),
+            CheckConstraint(f"id = '{CURRENT_SEMESTER_PK}'", name='only_one_row'),
         )
 
     id = db.Column(
         db.String(50),
-        CheckConstraint(f'id=="{CURRENT_SEMESTER_PK}"', name='only_one_row'),
         default=CURRENT_SEMESTER_PK,
         primary_key=True
     )
@@ -131,7 +130,7 @@ class Course(db.Model):
     exams = db.relationship("Exam", back_populates = 'course', cascade="all, delete")
 
     def __repr__(self):
-        return f"<Course(name='{self.name}', course_symbol='{self.course_symbol}')>"
+        return f"<Course(ar_name='{self.ar_name}', course_symbol='{self.course_symbol}')>"
 
 class Lecture(db.Model):
     __tablename__ = 'lectures'
