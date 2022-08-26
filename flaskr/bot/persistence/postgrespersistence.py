@@ -65,14 +65,14 @@ class PostgresPersistence(DictPersistence):
     def __load_conversations(self):
         conversations = {}
         data = self._session.query(Conversation).all()
-        self.logger.info(f'Number of records in convos {len(data)}')
-        name = ''
+        handler_name = ''
         for record in data:
-            if record.name != name:
-                name = record.name
-                conversations[record.name] = {}
+            if handler_name != record.name:
+                handler_name = record.name
+                conversations[handler_name] = {}
+                self.logger.info(f'created convo {handler_name}')
             tuple_key = tuple(json.loads(record.key))
-            conversations[record.name][tuple_key] = record.new_state
+            conversations[handler_name][tuple_key] = record.new_state
         self.logger.info(pformat(conversations))
         return conversations
         
