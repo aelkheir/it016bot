@@ -1,6 +1,5 @@
 from logging import getLogger
 from collections import defaultdict
-from pprint import pprint, pformat
 from typing import Dict, Tuple, Any, Callable, Optional
 
 from telegram.ext import DictPersistence, PicklePersistence
@@ -70,10 +69,8 @@ class PostgresPersistence(DictPersistence):
             if handler_name != record.name:
                 handler_name = record.name
                 conversations[handler_name] = {}
-                self.logger.info(f'created convo {handler_name}')
             tuple_key = tuple(json.loads(record.key))
             conversations[handler_name][tuple_key] = record.new_state
-        self.logger.info(pformat(conversations))
         return conversations
         
     def __load_database(self) -> None:
