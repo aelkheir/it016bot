@@ -65,6 +65,7 @@ class PostgresPersistence(DictPersistence):
     def __load_conversations(self):
         conversations = {}
         data = self._session.query(Conversation).all()
+        self.logger.info(f'Number of records in convos {len(data)}')
         name = ''
         for record in data:
             if record.name != name:
