@@ -20,12 +20,7 @@ if app.env == 'development':
     from dotenv import load_dotenv
     load_dotenv()
 
-PROD_SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
-DEV_SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres:postgres@localhost:5432/it016db'
-
-DATABASE_URI = PROD_SQLALCHEMY_DATABASE_URI \
-    if app.env == 'production'\
-    else DEV_SQLALCHEMY_DATABASE_URI 
+DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI') 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 
@@ -61,12 +56,12 @@ with app.app_context():
     db.create_all()
 
 
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+persistence = PostgresPersistence(store_bot_data=False)
+
 if app.env == 'production':
 
-    BOT_TOKEN = os.getenv('BOT_TOKEN')
     bot = Bot(token=BOT_TOKEN)
-
-    persistence = PostgresPersistence(store_bot_data=False)
 
     update_queue = Queue()
     job_queue = JobQueue()
@@ -75,7 +70,8 @@ if app.env == 'production':
         bot=bot,
         persistence=persistence,
         update_queue=update_queue,
-        job_queue=job_queue
+        job_queue=job_queue,
+        use_context=True
     )
 
     job_queue.set_dispatcher(dispatcher)
@@ -104,12 +100,8 @@ if app.env == 'production':
 
 elif app.env == 'development':
 
-    DEV_BOT_TOKEN = os.getenv('DEV_BOT_TOKEN')
-
-    persistence = PostgresPersistence(store_bot_data=False)
-
     updater = Updater(
-     token=DEV_BOT_TOKEN,
+     token=BOT_TOKEN,
      persistence=persistence,
      use_context=True
     )
