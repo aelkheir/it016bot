@@ -64,7 +64,7 @@ class PostgresPersistence(DictPersistence):
 
     def __load_conversations(self):
         conversations = {}
-        data = self._session.query(Conversation).all()
+        data = self._session.query(Conversation).order_by(Conversation.name).all()
         handler_name = ''
         for record in data:
             if handler_name != record.name:
