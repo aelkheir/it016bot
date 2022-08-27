@@ -86,17 +86,37 @@ def send_file(update: Update, context: CallbackContext) -> int:
     user = user_required(update, context, session)
     user = session.query(User).filter(User.id==user.id).one()
 
-    _, file_id, file_unique_id = query.data.split(' ')
+    try: 
+        _, file_id, file_unique_id = query.data.split(' ')
+    except ValueError:
+        _, file_id  = query.data.split(' ')
 
-    doc = session.query(Document) \
-        .filter(Document.id==file_id, Document.file_unique_id==file_unique_id) \
-        .one_or_none()
+    file_unique_id = file_unique_id or None
 
-    vid = session.query(Video) \
-        .filter(Video.id==file_id, Video.file_unique_id==file_unique_id) \
-        .one_or_none()
+    doc = None
+    vid = None
+    link = None
 
-    link = session.query(YoutubeLink).filter(YoutubeLink.id==file_id).one_or_none()
+    if file_unique_id:
+        doc = session.query(Document) \
+            .filter(Document.id==file_id, Document.file_unique_id==file_unique_id) \
+            .one_or_none()
+
+        vid = session.query(Video) \
+            .filter(Video.id==file_id, Video.file_unique_id==file_unique_id) \
+            .one_or_none()
+
+        link = session.query(YoutubeLink).filter(YoutubeLink.id==file_id).one_or_none()
+    else:
+        doc = session.query(Document) \
+            .filter(Document.id==file_id) \
+            .one_or_none()
+
+        vid = session.query(Video) \
+            .filter(Video.id==file_id) \
+            .one_or_none()
+
+        link = session.query(YoutubeLink).filter(YoutubeLink.id==file_id).one_or_none()
 
     if doc:
         query.bot.sendDocument(query.message.chat.id, document=doc.file_id)
