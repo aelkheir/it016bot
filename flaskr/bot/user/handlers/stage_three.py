@@ -86,6 +86,8 @@ def send_file(update: Update, context: CallbackContext) -> int:
     user = user_required(update, context, session)
     user = session.query(User).filter(User.id==user.id).one()
 
+    file_unique_id = None
+
     try: 
         _, file_id, file_unique_id = query.data.split(' ')
     except ValueError:
