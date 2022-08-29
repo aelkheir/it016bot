@@ -6,7 +6,7 @@ from flaskr.bot.utils.user_required import user_required
 from flaskr.models import  Assignment, Course, Document, Exam, Lab, Lecture, Photo, Refference, User,  Video, YoutubeLink
 from flaskr import db
 from telegram.ext import  CallbackContext
-from telegram import  InputMediaVideo, Update, InlineKeyboardButton, InlineKeyboardMarkup, constants
+from telegram import  InputMediaVideo, InputMediaPhoto, Update, InlineKeyboardButton, InlineKeyboardMarkup, constants
 
 
 def list_lab_files(update: Update, context: CallbackContext) -> int:
