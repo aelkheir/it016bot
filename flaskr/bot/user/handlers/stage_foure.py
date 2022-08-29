@@ -1,9 +1,9 @@
 from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
-from flaskr.models import Lab, User
+from flaskr.models import Lab, User, Video
 from flaskr import db
 from telegram.ext import  CallbackContext
-from telegram import  Update
+from telegram import  Update, InputMediaVideo, constants
 
 
 
@@ -35,9 +35,22 @@ def send_all_lab_files(update: Update, context: CallbackContext) -> int:
         query.bot.sendDocument(query.message.chat.id, document=doc.file_id)
         user.download_count += 1
 
-    for vid in lab.videos:
-        query.bot.sendVideo(query.message.chat.id, video=vid.file_id, caption=vid.file_name)
+    media_group = []
+    album_caption = '*Left to right, Top to bottom*\n'
+    videos = session.query(Video).filter(Video.lab_id==lab_id).order_by(Video.id).all()
+    for (i, video) in enumerate(videos):
+        video_filename = video.file_name.replace('.', '\.').replace('_', '\_').replace('*', '\*')
+        album_caption = album_caption + f'{video_filename}\n'
+    for (i, video) in enumerate(videos):
         user.download_count += 1
+        input_media = InputMediaVideo(
+            video.file_id,
+            caption=album_caption if i == 0 else None,
+            parse_mode=constants.PARSEMODE_MARKDOWN_V2
+        )
+        media_group.append(input_media)
+    if media_group:
+        query.bot.sendMediaGroup(query.message.chat.id, media_group)
 
     for link in lab.youtube_links:
         query.bot.sendMessage(query.message.chat.id, text=link.url)

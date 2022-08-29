@@ -109,7 +109,6 @@ class CurrentSemester(db.Model):
     def __repr__(self):
         return f"<CurrentSemester (number={self.semester.number})>"
 
-
 class Course(db.Model):
     __tablename__ = 'courses'
 
@@ -131,6 +130,7 @@ class Course(db.Model):
 
     def __repr__(self):
         return f"<Course(ar_name='{self.ar_name}', course_symbol='{self.course_symbol}')>"
+
 
 class Lecture(db.Model):
     __tablename__ = 'lectures'
