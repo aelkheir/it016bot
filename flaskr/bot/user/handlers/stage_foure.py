@@ -36,7 +36,7 @@ def send_all_lab_files(update: Update, context: CallbackContext) -> int:
         user.download_count += 1
 
     media_group = []
-    album_caption = '*Left to right, Top to bottom*\n'
+    album_caption = '*Left to right, top to bottom*\n'
     videos = session.query(Video).filter(Video.lab_id==lab_id).order_by(Video.id).all()
     for (i, video) in enumerate(videos):
         video_filename = video.file_name.replace('.', '\.').replace('_', '\_').replace('*', '\*')
