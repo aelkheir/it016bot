@@ -6,7 +6,7 @@ from flaskr.bot.utils.user_required import user_required
 from flaskr.models import  Assignment, Course, Document, Exam, Lab, Lecture, Photo, Refference, User,  Video, YoutubeLink
 from flaskr import db
 from telegram.ext import  CallbackContext
-from telegram import  InputMediaVideo, InputMediaPhoto, Update, InlineKeyboardButton, InlineKeyboardMarkup, constants
+from telegram import  InputMediaVideo, InputMediaPhoto, Update, InlineKeyboardButton, InlineKeyboardMarkup 
 
 
 def list_lab_files(update: Update, context: CallbackContext) -> int:
@@ -208,16 +208,15 @@ def send_all_lecture_files(update: Update, context: CallbackContext) -> int:
 
     media_group = []
     videos = session.query(Video).filter(Video.lecture_id==lecture_id).order_by(Video.id).all()
-    album_caption = '*Left to right, top to bottom*\n' if len(videos) > 1 else ''
+    album_caption = 'Left to right, top to bottom\n' if len(videos) > 1 else ''
     for (i, video) in enumerate(videos):
-        video_filename = video.file_name.replace('.', '\.').replace('_', '\_').replace('*', '\*')
+        video_filename = video.file_name
         album_caption = album_caption + f'{video_filename}\n'
     for (i, video) in enumerate(videos):
         user.download_count += 1
         input_media = InputMediaVideo(
             video.file_id,
             caption=album_caption if i == 0 else None,
-            parse_mode=constants.PARSEMODE_MARKDOWN_V2
         )
         media_group.append(input_media)
     if media_group:
