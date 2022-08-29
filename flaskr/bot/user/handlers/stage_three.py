@@ -207,8 +207,8 @@ def send_all_lecture_files(update: Update, context: CallbackContext) -> int:
         user.download_count += 1
 
     media_group = []
-    album_caption = '*Left to right, top to bottom*\n'
     videos = session.query(Video).filter(Video.lecture_id==lecture_id).order_by(Video.id).all()
+    album_caption = '*Left to right, top to bottom*\n' if len(videos) > 1 else ''
     for (i, video) in enumerate(videos):
         video_filename = video.file_name.replace('.', '\.').replace('_', '\_').replace('*', '\*')
         album_caption = album_caption + f'{video_filename}\n'
