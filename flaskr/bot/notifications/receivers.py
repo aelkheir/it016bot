@@ -125,6 +125,64 @@ def recieve_notify_on_lab(update: Update, context: CallbackContext):
 
     return RECEIVE_ENTRY_NOTIFICATIONS
 
+def recieve_notify_on_tutorial(update: Update, context: CallbackContext):
+    session = db.session
+
+    query = update.callback_query
+    query.answer()
+
+    user = user_required(update, context, session)
+    user = session.query(User).filter(User.id==user.id).one()
+
+    language = get_user_language(context.chat_data['language'])
+
+    _, notify_on_tutorial = query.data.split(' ')
+    notify_on_tutorial = bool(int(notify_on_tutorial))
+
+    user_setting = session.query(UserSetting) \
+      .filter(UserSetting.user_id==user.id, UserSetting.key==KEYS['NOTIFY_ON_TUTORIAL']) \
+      .one_or_none()
+
+    if user_setting is None:
+      user_setting = UserSetting(
+        key=KEYS['NOTIFY_ON_TUTORIAL'],
+        value=json.dumps(notify_on_tutorial)
+      )
+      user_setting.user = user
+      session.add(user_setting)
+
+    else:
+      user_setting.value = json.dumps(notify_on_tutorial)
+
+    option = language['turn_off'] if notify_on_tutorial else language['turn_on']
+
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                f'{option.capitalize()}',
+                callback_data=f'{KEYS["NOTIFY_ON_TUTORIAL"]} {int(not notify_on_tutorial)}'
+            ),
+        ],
+        [
+            back_to_notification_settings(language, user.language)
+        ]
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    message = f"{language['tutorial_notification']} {language['are']} *{language['enabled'] + '  🧿' if notify_on_tutorial else language['disabled'] + '  🔘'}*"
+
+    query.edit_message_text(
+        f"{message}".capitalize(),
+        reply_markup=reply_markup,
+        parse_mode=constants.PARSEMODE_MARKDOWN_V2,
+    )
+
+    session.commit()
+    session.close()
+
+    return RECEIVE_ENTRY_NOTIFICATIONS
+
         
 def recieve_notify_on_assignment(update: Update, context: CallbackContext):
     session = db.session

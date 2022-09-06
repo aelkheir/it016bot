@@ -1,9 +1,9 @@
 from flaskr.bot.localization import ar
-from flaskr.bot.utils.buttons import back_to_assignments_button, back_to_labs_button
-from flaskr.bot.user.user_constants import ASSIGNMENT, FILE, LAB, SHOW_GLOBAL_NOTE, STAGE_FOURE
+from flaskr.bot.utils.buttons import back_to_assignments_button, back_to_labs_button, back_to_tutorials_button
+from flaskr.bot.user.user_constants import ASSIGNMENT, FILE, LAB, SHOW_GLOBAL_NOTE, STAGE_FOURE, TUTORIAL
 from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
-from flaskr.models import  Assignment, Course, Document, Exam, Lab, Lecture, Photo, Refference, User,  Video, YoutubeLink
+from flaskr.models import  Assignment, Course, Document, Exam, Lab, Lecture, Photo, Refference, Tutorial, User,  Video, YoutubeLink
 from flaskr import db
 from telegram.ext import  CallbackContext
 from telegram import  InputMediaVideo, InputMediaPhoto, Update, InlineKeyboardButton, InlineKeyboardMarkup 
@@ -76,6 +76,73 @@ def list_lab_files(update: Update, context: CallbackContext) -> int:
 
     session.close()
     return STAGE_FOURE
+
+def list_tutorial_files(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    query = update.callback_query
+    query.answer()
+
+    user = user_required(update, context, session)
+    language = get_user_language(context.chat_data['language'])
+
+    _, tutorial_id = query.data.split(' ')
+
+    tutorial = session.query(Tutorial).filter(Tutorial.id==tutorial_id).one()
+    course = tutorial.course
+
+    keyboard = []
+
+    for document in tutorial.documents:
+        keyboard.append([
+            InlineKeyboardButton(
+                f'{document.file_name}',
+                callback_data=f'{FILE} {document.id} {document.file_unique_id}'
+            )
+        ])
+
+    for video in tutorial.videos:
+        keyboard.append([
+            InlineKeyboardButton(
+                f'{video.file_name}',
+                callback_data=f'{FILE} {video.id} {video.file_unique_id}'
+            )
+        ])
+
+    for youtube_link in tutorial.youtube_links:
+        keyboard.append([
+            InlineKeyboardButton(f'{youtube_link.video_title}',
+            callback_data=f'{FILE} {youtube_link.id}')
+        ])
+
+    if len(tutorial.documents) + len(tutorial.videos) + len(tutorial.youtube_links) > 1:
+        keyboard.append([InlineKeyboardButton(
+            f"{language['download']} {language['all']} {language['files']}".title(),
+            callback_data=f'{TUTORIAL} {tutorial.id}')
+        ])
+
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
+
+    keyboard.append([
+        back_to_tutorials_button(language, user.language, course.id),
+    ])
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
+
+    query.edit_message_text(
+        text=f"{course_name}: {language['tutorial'].capitalize()} {tutorial.tutorial_number}"
+        + (f"{language['global_note']}" if show_note else ''),
+        reply_markup=reply_markup
+    )
+
+    session.close()
+    return STAGE_FOURE
+
 
 def send_file(update: Update, context: CallbackContext) -> int:
     session = db.session

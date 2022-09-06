@@ -39,6 +39,8 @@ db = SQLAlchemy(app, metadata=metadata)
 
 migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
 
+with app.app_context():
+    db.create_all()
 
 from flaskr.bot.persistence import PostgresPersistence
 from flaskr.bot.admin.admin_conv import admin_conv
@@ -51,10 +53,6 @@ from flaskr.bot.inlinequery.inline_conv import inline_conv
 from flaskr.bot.user.handlers.start import start
 from flaskr.bot.user.handlers.archive import list_semesters
 from .bot.notifications.handle_notifications import handle_notifications
-
-with app.app_context():
-    db.create_all()
-
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 persistence = PostgresPersistence(store_bot_data=False)

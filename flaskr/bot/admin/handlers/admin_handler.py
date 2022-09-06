@@ -36,6 +36,8 @@ def admin_handler(update: Update, context: CallbackContext) -> int:
         .filter(( Semester.id==current_semester.semester_id ) | ( Course.semester_id==None )) \
         .order_by(Course.semester_id.desc(), Course.id).all()
 
+    print(courses)
+
     reply_keyboard = []
 
     for course in courses:
@@ -47,7 +49,7 @@ def admin_handler(update: Update, context: CallbackContext) -> int:
         reply_keyboard,
         resize_keyboard=True,
         input_field_placeholder='اختر مادة'
-        ) if len(reply_keyboard) > 1 else ReplyKeyboardRemove()
+        ) if len(reply_keyboard) > 0 else ReplyKeyboardRemove()
 
 
     semester_name = ' - لا يوجد سمستر حالي'

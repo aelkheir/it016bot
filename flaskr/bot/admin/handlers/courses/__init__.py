@@ -35,7 +35,8 @@ def edit_course(
     course_semester = 'N/A' if course.semester is None else course.semester.number
 
     reply_keyboard = []
-    reply_keyboard.append(['المحاضرات', 'المراجع', 'اللابات'])
+    reply_keyboard.append(['المحاضرات', 'المراجع']),
+    reply_keyboard.append(['اللابات', 'التمارين']),
     reply_keyboard.append(['الامتحانات', 'التساليم'])
     reply_keyboard.append(['تعديل الاسم', 'تعديل الرمز'])
     reply_keyboard.append(['حذف المادة', f'سمستر: {course_semester}'])

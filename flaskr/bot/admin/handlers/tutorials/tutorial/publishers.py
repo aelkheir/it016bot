@@ -1,11 +1,12 @@
 import json
 import re
-from flaskr.bot.admin.handlers.lectures.lecture import publish
-from flaskr.bot.notifications.notifications_constants import NOTIFIED_LECTURE 
+from flaskr.bot.admin.admin_constants import LECTURE_FILE_OPTIONS, PUBLISH_LECTURE
+from flaskr.bot.admin.handlers.tutorials.tutorial import publish
+from flaskr.bot.notifications.notifications_constants import  NOTIFIED_TUTORIAL 
 from flaskr.bot.utils.is_admin import is_admin
 from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr import db
-from flaskr.models import  Lecture, User, UserSetting
+from flaskr.models import  Lab, Lecture, Tutorial, User, UserSetting
 from telegram.ext import CallbackContext, CallbackContext
 from telegram import Update, constants, InlineKeyboardButton, InlineKeyboardMarkup
 from flaskr.user_settings import KEYS
@@ -20,16 +21,16 @@ def publish_silently(update: Update, context: CallbackContext) -> int:
         return
 
     # read from to context
-    lecture_id = context.chat_data['lecture_id']
-    lecture = session.query(Lecture).filter(Lecture.id==int(lecture_id)).one()
+    tutorial_id = context.chat_data['tutorial_id']
+    tutorial = session.query(Tutorial).filter(Tutorial.id==int(tutorial_id)).one()
 
-    if lecture.published:
+    if tutorial.published:
         update.message.reply_text(
-            'هذه المحاضرة نشرت من قبل',
+            'هذه التمرين نشر من قبل',
         )
         return publish(update, context)
 
-    lecture.published = True
+    tutorial.published = True
     session.commit()
 
     update.message.reply_text(
@@ -47,14 +48,14 @@ def publish_with_notification(update: Update, context: CallbackContext) -> int:
         return
 
     # read from to context
-    lecture_id = context.chat_data['lecture_id']
-    lecture = session.query(Lecture).filter(Lecture.id==int(lecture_id)).one()
-    course = lecture.course
+    tutorial_id = context.chat_data['tutorial_id']
+    tutorial = session.query(Tutorial).filter(Tutorial.id==int(tutorial_id)).one()
+    course = tutorial.course
     owner_chat_id = str(update.effective_chat.id)
 
-    if lecture.published:
+    if tutorial.published:
         update.message.reply_text(
-            'هذه المحاضرة نشرت من قبل',
+            'هذا التمرين نشر من قبل',
         )
         return publish(update, context)
 
@@ -62,7 +63,7 @@ def publish_with_notification(update: Update, context: CallbackContext) -> int:
         'جاري ارسال التنبيه للمستخدمين. قد ياخذ هذا الامر بعض الوقت',
     )
 
-    JOB_NAME = 'SENDING_LECTURE_NOTIFICATION_' + owner_chat_id
+    JOB_NAME = 'SENDING_TUTORIAL_NOTIFICATION_' + owner_chat_id
 
     current_jobs = context.job_queue.get_jobs_by_name(JOB_NAME)
 
@@ -87,7 +88,7 @@ def publish_with_notification(update: Update, context: CallbackContext) -> int:
             else course.en_name
 
         context.job_queue.run_once(
-            send__lecture_notification_job,
+            send__tutorial_notification_job,
             when,
             context=(
                 user.id,
@@ -95,37 +96,37 @@ def publish_with_notification(update: Update, context: CallbackContext) -> int:
                 user.language,
                 owner_chat_id,
                 is_last,
-                lecture.lecture_number,
-                lecture.id,
+                tutorial.tutorial_number,
+                tutorial.id,
                 course_name,
             ),
             name=JOB_NAME
         )
 
-    lecture.published = True
+    tutorial.published = True
     
     session.commit()
 
     return publish(update, context)
 
-def send__lecture_notification_job(context: CallbackContext):
+def send__tutorial_notification_job(context: CallbackContext):
     user_id = context.job.context[0]
     chat_id = context.job.context[1]
     user_language = context.job.context[2]
     owner_chat_id = context.job.context[3]
     is_last_user =  context.job.context[4]
-    lecture_number =  context.job.context[5]
-    lecture_id =  context.job.context[6]
+    tutorial_number =  context.job.context[5]
+    tutorial_id =  context.job.context[6]
     course_name = context.job.context[7]
 
     session = db.session
 
-    notify_on_lecture = session.query(UserSetting) \
-        .filter(UserSetting.user_id==user_id, UserSetting.key==KEYS['NOTIFY_ON_LECTURE']) \
+    notify_on_tutorial = session.query(UserSetting) \
+        .filter(UserSetting.user_id==user_id, UserSetting.key==KEYS['NOTIFY_ON_TUTORIAL']) \
         .one_or_none()
-    notify_on_lecture = json.loads(notify_on_lecture.value) if notify_on_lecture else True
+    notify_on_tutorial = json.loads(notify_on_tutorial.value) if notify_on_tutorial else True
     
-    if not notify_on_lecture:
+    if not notify_on_tutorial:
         return
 
     language = get_user_language(user_language)
@@ -133,14 +134,14 @@ def send__lecture_notification_job(context: CallbackContext):
     keyboard = [
       [
             InlineKeyboardButton(f"{language['show'].capitalize()} {language['more']}",
-            callback_data=f'{NOTIFIED_LECTURE} {lecture_id}'),
+            callback_data=f'{NOTIFIED_TUTORIAL} {tutorial_id}'),
       ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    template = language['notify_lecture_template']
+    template = language['notify_tutorial_template']
     message = re.sub(course_regex, course_name, template)
-    message = '🔔  ' + re.sub(number_regex, f'{lecture_number}', message)
+    message = '🔔  ' + re.sub(number_regex, f'{tutorial_number}', message)
 
     context.bot.send_message(
         text=message,

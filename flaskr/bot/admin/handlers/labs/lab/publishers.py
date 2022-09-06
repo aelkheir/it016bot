@@ -1,8 +1,7 @@
 import json
 import re
-from flaskr.bot.admin.admin_constants import LECTURE_FILE_OPTIONS, PUBLISH_LECTURE
 from flaskr.bot.admin.handlers.labs.lab import publish
-from flaskr.bot.notifications.notifications_constants import NOTIFIED_LAB, SEND_NOTIFIED_LAB
+from flaskr.bot.notifications.notifications_constants import NOTIFIED_LAB 
 from flaskr.bot.utils.is_admin import is_admin
 from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr import db

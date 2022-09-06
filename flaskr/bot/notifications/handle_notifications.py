@@ -45,6 +45,12 @@ def handle_notifications(update: Update, context: CallbackContext, has_changed=T
         ],
         [
             InlineKeyboardButton(
+                f'{language["tutorial_notification"].title()}',
+                callback_data=f'{myconstants.TUTORIAL_NOTIFICATION}'
+            ),
+        ],
+        [
+            InlineKeyboardButton(
                 f'{language["assignment_notification"].title()}',
                 callback_data=f'{myconstants.ASSIGNMENT_NOTIFICATION}'
             ),
@@ -70,6 +76,14 @@ def handle_notifications(update: Update, context: CallbackContext, has_changed=T
         if lab_setting \
         else language["turned_off"].capitalize()
 
+    tutorial_setting = session.query(UserSetting) \
+        .filter(UserSetting.user_id==user.id, UserSetting.key==KEYS['NOTIFY_ON_TUTORIAL']) \
+        .one_or_none()
+    tutorial_setting = json.loads(tutorial_setting.value) if tutorial_setting else True
+    notify_on_tutorial = language["turned_on"].capitalize()  \
+        if tutorial_setting \
+        else language["turned_off"].capitalize()
+
     assignment_setting = session.query(UserSetting) \
         .filter(UserSetting.user_id==user.id, UserSetting.key==KEYS['NOTIFY_ON_ASSIGNMENT']) \
         .one_or_none()
@@ -80,15 +94,18 @@ def handle_notifications(update: Update, context: CallbackContext, has_changed=T
 
     lectures_notification = f"*{language['lecture_notification']}*:  ".title()
     lab_notification = f"*{language['lab_notification']}*:  ".title()
+    tutorial_notification = f"*{language['tutorial_notification']}*:  ".title()
     assignment_notification = f"*{language['assignment_notification']}*:  ".title()
 
     lecture_icon = on_icon if lecture_setting else off_icon
     lab_icon = on_icon if lab_setting else off_icon
+    tutorial_icon = on_icon if tutorial_setting else off_icon
     assignment_icon = on_icon if assignment_setting else off_icon
 
     reply_text = '*%s*\n\n' %  language["notifications"].title() + \
                  '%s %s  %s\n' % (lectures_notification, notify_on_lecture, lecture_icon) + \
                  '%s %s  %s\n' % (lab_notification, notify_on_lab, lab_icon) + \
+                 '%s %s  %s\n' % (tutorial_notification, notify_on_tutorial, tutorial_icon) + \
                  '%s %s  %s\n' % (assignment_notification, notify_on_assignment, assignment_icon) 
 
     if query and has_changed:

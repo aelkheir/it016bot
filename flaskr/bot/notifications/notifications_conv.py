@@ -2,11 +2,12 @@ from telegram.ext import  ConversationHandler, CallbackQueryHandler
 from flaskr.bot.notifications.handle_notifications import handle_notifications
 import flaskr.bot.notifications.notifications_constants as constants
 from flaskr.bot.notifications.notified_lab_options import lab_notification_message
-from flaskr.bot.user.handlers.stage_foure import send_all_lab_files
+from flaskr.bot.notifications.notified_tutorial_options import tutorial_notification_message
+from flaskr.bot.user.handlers.stage_foure import send_all_lab_files, send_all_tutorial_files
 import flaskr.bot.user.user_constants as user_constants
-from flaskr.bot.notifications.notified_entry import list_notified_lab_files, list_notified_lecture_files
+from flaskr.bot.notifications.notified_entry import list_notified_lab_files, list_notified_lecture_files, list_notified_tutorial_files
 from flaskr.bot.notifications.notified_lecture_options import lecture_notification_message
-from flaskr.bot.notifications.set_entry_notifications import disable_all_notifications, set_lecture_notification, set_assignment_notification, set_labs_notification
+from flaskr.bot.notifications.set_entry_notifications import disable_all_notifications, set_lecture_notification, set_assignment_notification, set_labs_notification, set_tutorials_notification
 import flaskr.bot.notifications.receivers as receivers
 from flaskr.bot.user.handlers.stage_three import send_all_lecture_files, send_assignment, send_file
 from ...user_settings import KEYS
@@ -19,6 +20,9 @@ notifications_conv = ConversationHandler(
         ),
         CallbackQueryHandler(
             set_labs_notification, pattern='^' + f'{constants.LAB_NOTIFICATION}' + '$'
+        ),
+        CallbackQueryHandler(
+            set_tutorials_notification, pattern='^' + f'{constants.TUTORIAL_NOTIFICATION}' + '$'
         ),
         CallbackQueryHandler(
             set_assignment_notification, pattern='^' + f'{constants.ASSIGNMENT_NOTIFICATION}' + '$'
@@ -36,6 +40,10 @@ notifications_conv = ConversationHandler(
             pattern='^' + f'{constants.NOTIFIED_LAB}\s\d+' + '$'
         ),
         CallbackQueryHandler(
+            list_notified_tutorial_files,
+            pattern='^' + f'{constants.NOTIFIED_TUTORIAL}\s\d+' + '$'
+        ),
+        CallbackQueryHandler(
             send_assignment,
             pattern='^' + f'{constants.SEND_NOTIFIED_ASSIGNMENT}\s\d+' + '$'
         ),
@@ -49,6 +57,10 @@ notifications_conv = ConversationHandler(
             CallbackQueryHandler(
                 receivers.recieve_notify_on_lab,
                 pattern='^' + f'{KEYS["NOTIFY_ON_LAB"]}\s\d' + '$'
+            ),
+            CallbackQueryHandler(
+                receivers.recieve_notify_on_tutorial,
+                pattern='^' + f'{KEYS["NOTIFY_ON_TUTORIAL"]}\s\d' + '$'
             ),
             CallbackQueryHandler(
                 receivers.recieve_notify_on_assignment,
@@ -75,6 +87,15 @@ notifications_conv = ConversationHandler(
             ),
             CallbackQueryHandler(send_file, pattern='^' + f'{user_constants.FILE} .+' + '$'),
             CallbackQueryHandler(send_all_lab_files, pattern='^' + f'{user_constants.LAB} \d+' + '$'),
+        ],
+
+        constants.NOTIFIED_TUTORIAL_OPTIONS: [
+            CallbackQueryHandler(
+                tutorial_notification_message,
+                pattern='^' + f'{constants.TUTORIAL_NOTIFICATION_MESSAGE} \d+' + '$'
+            ),
+            CallbackQueryHandler(send_file, pattern='^' + f'{user_constants.FILE} .+' + '$'),
+            CallbackQueryHandler(send_all_tutorial_files, pattern='^' + f'{user_constants.TUTORIAL} \d+' + '$'),
         ],
     },
     fallbacks=[],

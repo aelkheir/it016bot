@@ -17,6 +17,7 @@ en = {
     'lectures': 'lectures',
     'references': 'references',
     'labs': 'labs',
+    'tutorials': 'tutorials',
     'exams': 'exams',
     'assignments': 'assignments',
     'notifications': 'notifications',
@@ -40,6 +41,7 @@ en = {
 
     'lecture': 'lecture',
     'lab': 'lab',
+    'tutorial': 'tutorial',
     'assignment': 'assignment',
     'reference': 'reference',
     'exam': 'exam',
@@ -73,6 +75,7 @@ en = {
 
     'lecture_notification': 'lecture notifications',
     'lab_notification': 'lab notifications',
+    'tutorial_notification': 'tutorial notifications',
     'assignment_notification': 'assignment notifications',
     'disable_all': 'disable all',
 
@@ -80,5 +83,6 @@ en = {
 
     'notify_lecture_template': '*_+c+_* has a new `Lecture +n+`',
     'notify_lab_template': '*_+c+_* has a new `Lab +n+`',
+    'notify_tutorial_template': '*_+c+_* has a new `Tutorial +n+`',
     'notify_assignment_template': '*_+c+_* has a new `Assignment +n+`',
 }

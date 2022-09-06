@@ -17,6 +17,7 @@ ar = {
     'courses': 'المواد',
     'references': 'المراجع',
     'labs': 'اللابات',
+    'tutorials': 'التمارين',
     'exams': 'الامتحانات',
     'assignments': 'التساليم',
     'files': 'الملفات',
@@ -41,6 +42,7 @@ ar = {
 
     'lecture': 'محاضرة',
     'lab': 'لاب',
+    'tutorial': 'تمرين',
     'assignment': 'تسليم',
 
     'download': 'تحميل',
@@ -73,6 +75,7 @@ ar = {
 
     'lecture_notification': 'تنبيهات المحاضرات',
     'lab_notification': 'تنبيهات اللابات',
+    'tutorial_notification': 'تنبيهات التمارين',
     'assignment_notification': 'تنبيهات التساليم',
     'disable_all': 'الغاء تفعيل الكل',
     'labs_notifications_help': 'ارسل تنبيه عند نشر لاب جديد',
@@ -82,5 +85,6 @@ ar = {
 
     'notify_lecture_template': '*_+c+_* لديها  `محاضرة +n+`  جديدة',
     'notify_lab_template': '*_+c+_* لديها  `لاب +n+`  جديد',
+    'notify_tutorial_template': '*_+c+_* لديها  `تمرين +n+`  جديد',
     'notify_assignment_template': '*_+c+_* لديها  `تسليم +n+`  جديد',
 }

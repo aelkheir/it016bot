@@ -92,6 +92,48 @@ def set_labs_notification(update: Update, context: CallbackContext) -> int:
 
     return RECEIVE_ENTRY_NOTIFICATIONS
 
+def set_tutorials_notification(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    query = update.callback_query
+    query.answer()
+
+    user = user_required(update, context, session)
+    language = get_user_language(context.chat_data['language'])
+
+    user_setting = session.query(UserSetting) \
+      .filter(UserSetting.user_id==user.id, UserSetting.key==KEYS['NOTIFY_ON_TUTORIAL']) \
+      .one_or_none()
+
+    current_setting = json.loads(user_setting.value) if user_setting else True
+
+    option = language['turn_off'] if current_setting else language['turn_on']
+
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                f'{option.capitalize()}',
+                callback_data=f'{KEYS["NOTIFY_ON_TUTORIAL"]} {int(not current_setting)}'
+            ),
+        ],
+        [
+            back_to_notification_settings(language, user.language)
+        ]
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    message = f"{language['tutorial_notification']} {language['are']} *{language['enabled'] + '  🧿' if current_setting else language['disabled'] + '  🔘'}*"
+
+    query.message.edit_text(
+        f"{message}".capitalize(),
+        reply_markup=reply_markup,
+        parse_mode=constants.PARSEMODE_MARKDOWN_V2,
+    )
+
+    return RECEIVE_ENTRY_NOTIFICATIONS
+
+
 def set_assignment_notification(update: Update, context: CallbackContext) -> int:
     session = db.session
 
@@ -157,6 +199,7 @@ def disable_all_notifications(update: Update, context: CallbackContext):
       )
       notify_on_lecture.user = user
       session.add(notify_on_lecture)
+      has_changed = True
 
     notify_on_lab = session.query(UserSetting) \
       .filter(UserSetting.user_id==user.id, UserSetting.key==KEYS['NOTIFY_ON_LAB']) \
@@ -171,6 +214,22 @@ def disable_all_notifications(update: Update, context: CallbackContext):
       )
       notify_on_lab.user = user
       session.add(notify_on_lab)
+      has_changed = True
+
+    notify_on_tutorial = session.query(UserSetting) \
+      .filter(UserSetting.user_id==user.id, UserSetting.key==KEYS['NOTIFY_ON_TUTORIAL']) \
+      .one_or_none()
+    if notify_on_tutorial is not None and json.loads(notify_on_tutorial.value):
+      notify_on_tutorial.value = json.dumps(False) 
+      has_changed = True
+    elif notify_on_tutorial is None:
+      notify_on_tutorial = UserSetting(
+        key=KEYS['NOTIFY_ON_TUTORIAL'],
+        value=json.dumps(False)
+      )
+      notify_on_tutorial.user = user
+      session.add(notify_on_tutorial)
+      has_changed = True
     
     notify_on_assignment = session.query(UserSetting) \
       .filter(UserSetting.user_id==user.id, UserSetting.key==KEYS['NOTIFY_ON_ASSIGNMENT']) \
@@ -184,8 +243,8 @@ def disable_all_notifications(update: Update, context: CallbackContext):
         value=json.dumps(False)
       )
       notify_on_assignment.user = user
-
       session.add(notify_on_assignment)
+      has_changed = True
 
     query = update.callback_query
 

@@ -6,6 +6,7 @@ from flaskr.bot.admin.handlers.semesters.states import states as semesters_state
 from flaskr.bot.admin.handlers.courses.states import states as courses_states
 from flaskr.bot.admin.handlers.lectures.states import states as lectures_states
 from flaskr.bot.admin.handlers.labs.states import states as labs_states
+from flaskr.bot.admin.handlers.tutorials.states import states as tutorials_states
 from flaskr.bot.admin.handlers.assignments.states import states as assignments_states
 from flaskr.bot.admin.handlers.exams.states import states as exams_states
 from flaskr.bot.admin.handlers.references.states import states as references_states
@@ -22,6 +23,7 @@ admin_conv = ConversationHandler(
         **courses_states,
         **lectures_states,
         **labs_states,
+        **tutorials_states,
         **assignments_states,
         **exams_states,
         **references_states,

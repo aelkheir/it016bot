@@ -3,10 +3,10 @@ from flaskr.bot.utils.buttons import back_to_courses_button, back_to_semester
 from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
 import math
-from flaskr.models import Assignment, Course, Lab, Lecture
+from flaskr.models import Assignment, Course, Lab, Lecture, Tutorial
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import  ASSIGNMENTS, EXAMS, LABS, LECTURE, LECTURES, REFFERENCES, SHOW_GLOBAL_NOTE, STAGE_TWO
+from flaskr.bot.user.user_constants import  ASSIGNMENTS, EXAMS, LABS, LECTURE, LECTURES, REFFERENCES, SHOW_GLOBAL_NOTE, STAGE_TWO, TUTORIALS
 from flaskr import db
 
 
@@ -37,6 +37,9 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
     assignments = session.query(Assignment)\
         .filter(Assignment.course_id == course_id, Assignment.published==True).all()
 
+    tutorials = session.query(Tutorial)\
+        .filter(Tutorial.course_id == course_id, Tutorial.published==True).all()
+
     keyboard = []
 
     for row_index in range(0, math.ceil(len(lectures) / 3)):
@@ -57,24 +60,33 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
 
         keyboard.append(row)
 
-    refference_lab_row = []
-
     if len(course.refferences) > 0:
-        refference_lab_row.append(
+        keyboard.append([
             InlineKeyboardButton(
                 f"{language['references']} ({len(course.refferences)})".capitalize(),
-                callback_data=f'{course.id} {REFFERENCES}'),
+                callback_data=f'{course.id} {REFFERENCES}'
+            ),
+        ])
+
+    tutorial_lab_row = []
+
+    if len(tutorials) > 0:
+        tutorial_lab_row.append(
+            InlineKeyboardButton(
+                f"{language['tutorials']} ({len(tutorials)})".capitalize(),
+                callback_data=f'{course.id} {TUTORIALS}'
+            ),
         )
 
     if len(labs) > 0:
-        refference_lab_row.append(
+        tutorial_lab_row.append(
             InlineKeyboardButton(
                 f"{language['labs']} ({len(labs)})".capitalize(),
                 callback_data=f'{course.id} {LABS}'
         ))
 
-    if len(refference_lab_row) > 0:
-        keyboard.append(refference_lab_row)
+    if len(tutorial_lab_row) > 0:
+        keyboard.append(tutorial_lab_row)
 
 
     exam_assignment_row = []

@@ -1,5 +1,5 @@
 from flaskr.bot.notifications.notifications_constants import NOTIFICATIONS_SETTINGS
-from flaskr.bot.user.user_constants import ARCHIVE, ASSIGNMENTS, COURSE, LABS, SEMESTER, SUBJECT_LIST
+from flaskr.bot.user.user_constants import ARCHIVE, ASSIGNMENTS, COURSE, LABS, SEMESTER, SUBJECT_LIST, TUTORIALS
 from telegram import InlineKeyboardButton
 
 
@@ -35,6 +35,22 @@ def back_to_labs_button(language, user_language, course_id):
         ' '.join(text),
         callback_data=f"{course_id} {LABS}"
     )
+
+def back_to_tutorials_button(language, user_language, course_id):
+
+    ar_tutorials = language['tutorials'][1:]
+
+    text = [
+        back_icon, 
+        f"{language['back_to']}".capitalize() +
+        f"{' ' + language['tutorials'] if user_language == 'en' else ar_tutorials}".title(),
+    ]
+
+    return InlineKeyboardButton(
+        ' '.join(text),
+        callback_data=f"{course_id} {TUTORIALS}"
+    )
+
 
 def back_to_assignments_button(language, user_language, course_id):
 
