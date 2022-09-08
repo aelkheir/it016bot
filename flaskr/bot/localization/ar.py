@@ -23,6 +23,7 @@ ar = {
     'files': 'الملفات',
     'pages': 'صفحات',
     'number_of_pages': 'عدد الصفحات',
+    'album': 'البوم',
     'notifications': 'التنبيهات',
     'enabled': 'مفعلة',
     'disabled': 'ليست مفعلة',

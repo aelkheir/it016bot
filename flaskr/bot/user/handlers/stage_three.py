@@ -1,3 +1,4 @@
+import math
 from flaskr.bot.localization import ar
 from flaskr.bot.utils.buttons import back_to_assignments_button, back_to_labs_button, back_to_tutorials_button
 from flaskr.bot.user.user_constants import ASSIGNMENT, FILE, LAB, SHOW_GLOBAL_NOTE, STAGE_FOURE, TUTORIAL
@@ -437,16 +438,24 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
         .filter(Document.exam_id == exam_id)\
         .order_by(Document.id).all()
 
-    media_group = []
+    media_groups = []
+    group_index = -1
     for (i, photo) in enumerate(photos):
-        album_caption = f"{course.ar_name}\n{exam.name}\n{ar['number_of_pages']}: {len(photos)}"
+        if i % 10 == 0:
+            group_index += 1
+            media_groups.append([])
+        album_caption = None
+        if i % 10 == 0:
+            album_caption =f"{course.ar_name}\n{exam.name}\n"
+        if len(photos) > 10 and i % 10 == 0:
+            album_caption = album_caption +  f"{ar['album']} {group_index + 1}/{math.ceil(len(photos)/10)}\n"
         input_media = InputMediaPhoto(
             photo.file_id,
-            caption=album_caption if i == 0 else None
+            caption=album_caption
         )
-        media_group.append(input_media)
+        media_groups[group_index].append(input_media)
 
-    if media_group:
+    for media_group in media_groups:
         query.bot.sendMediaGroup(query.message.chat.id, media_group)
 
     for doc in documents:

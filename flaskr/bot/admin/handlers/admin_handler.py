@@ -36,8 +36,6 @@ def admin_handler(update: Update, context: CallbackContext) -> int:
         .filter(( Semester.id==current_semester.semester_id ) | ( Course.semester_id==None )) \
         .order_by(Course.semester_id.desc(), Course.id).all()
 
-    print(courses)
-
     reply_keyboard = []
 
     for course in courses:
