@@ -12,7 +12,8 @@ def send_all_lab_files(update: Update, context: CallbackContext) -> int:
     session = db.session
 
     query = update.callback_query
-    query.answer()
+    if query:
+        query.answer()
 
     user = user_required(update, context, session)
     user = session.query(User).filter(User.id==user.id).one()
@@ -63,7 +64,8 @@ def send_all_tutorial_files(update: Update, context: CallbackContext) -> int:
     session = db.session
 
     query = update.callback_query
-    query.answer()
+    if query:
+        query.answer()
 
     user = user_required(update, context, session)
     user = session.query(User).filter(User.id==user.id).one()

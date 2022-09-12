@@ -251,7 +251,8 @@ def send_all_lecture_files(update: Update, context: CallbackContext) -> int:
     session = db.session
 
     query = update.callback_query
-    query.answer()
+    if query:
+        query.answer()
 
     user = user_required(update, context, session)
     user = session.query(User).filter(User.id==user.id).one()
@@ -444,11 +445,12 @@ def send_course_exam(update: Update, context: CallbackContext) -> int:
         if i % 10 == 0:
             group_index += 1
             media_groups.append([])
-        album_caption = None
-        if i % 10 == 0:
+        album_caption = ''
+        if i % 10 == 0 and i < 10:
             album_caption =f"{course.ar_name}\n{exam.name}\n"
         if len(photos) > 10 and i % 10 == 0:
             album_caption = album_caption +  f"{ar['album']} {group_index + 1}/{math.ceil(len(photos)/10)}\n"
+        album_caption = album_caption if album_caption else None
         input_media = InputMediaPhoto(
             photo.file_id,
             caption=album_caption

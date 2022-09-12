@@ -7,9 +7,9 @@ from telegram.ext import  CallbackContext
 from telegram.utils.helpers import escape_markdown, create_deep_linked_url
 
 from flaskr import db
-from flaskr.bot.inlinequery.constants import LAB, LECTURE, REFERENCES
 from flaskr.bot.localization.en import en
 from flaskr.bot.localization.ar import ar
+from flaskr.bot.user.user_constants import ASSIGNMENT, EXAM, LAB, LECTURE, REFFERENCES, TUTORIAL
 from flaskr.bot.utils.get_current_semester import get_current_semester
 from flaskr.models import Course,  Semester
 
@@ -19,7 +19,6 @@ def get_all_courses(session, context: CallbackContext) -> None:
 
     current_semester = get_current_semester(session)
 
-
     courses =  session.query(Course) \
         .join(Semester, Semester.id == Course.semester_id) \
         .filter((Semester.id==current_semester.semester_id )) \
@@ -27,11 +26,13 @@ def get_all_courses(session, context: CallbackContext) -> None:
 
     results = []
 
-
     for course in courses:
         results.extend(get_lectures(course, context, 'keyboard'))
         results.extend(get_labs(course, context, 'keyboard'))
+        results.extend(get_tutorials(course, context, 'keyboard'))
         results.extend(get_references(course, context, 'keyboard'))
+        results.extend(get_assignments(course, context, 'keyboard'))
+        results.extend(get_exams(course, context, 'keyboard'))
     
     return results
 
@@ -53,7 +54,10 @@ def get_course(session, context: CallbackContext, query: str) -> None:
     for course in courses:
         results.extend(get_lectures(course, context, 'keyboard'))
         results.extend(get_labs(course, context, 'keyboard'))
+        results.extend(get_tutorials(course, context, 'keyboard'))
         results.extend(get_references(course, context, 'keyboard'))
+        results.extend(get_assignments(course, context, 'keyboard'))
+        results.extend(get_exams(course, context, 'keyboard'))
     
     return results
 
@@ -80,7 +84,10 @@ def insert_link(session, context: CallbackContext, match: Match[str]) -> None:
     for course in courses:
         results.extend(get_lectures(course, context, match.string, mode='text'))
         results.extend(get_labs(course, context, match.string, mode='text'))
+        results.extend(get_tutorials(course, context, match.string, mode='text'))
         results.extend(get_references(course, context, match.string, mode='text'))
+        results.extend(get_assignments(course, context, match.string, mode='text'))
+        results.extend(get_exams(course, context, match.string, mode='text'))
     
     return results
 
@@ -94,7 +101,7 @@ def get_lectures(
   ):
     results = []
 
-    course_name = course.en_name if mode == 'keyboard' else course.ar_name
+    course_name = course.en_name 
 
     if len(course_name.split(' ')) > 2:
       course_name = ' '.join(course_name.split(' ')[0:2]) + '...'
@@ -118,16 +125,16 @@ def get_lectures(
         reply_markup = InlineKeyboardMarkup(keyboard)
 
       # incase mode == 'keyboard'
-      title = f'{course_name} -> {en["lecture"].title()} {lecture.lecture_number}'
+      title = f'{course_name}: {en["lecture"].title()} {lecture.lecture_number}'
       description = f'{files_lenght} {"files" if files_lenght > 1 else "file"}'
       text = f'''*{escape_markdown(
-              f'{course.en_name} -> {en["lecture"].title()} {lecture.lecture_number}'
+              f'{course.en_name}: {en["lecture"].title()} {lecture.lecture_number}'
             )}*'''
 
       # incase mode == 'text'
       if mode == 'text' and message:
         title = f'Insert links into message'
-        description = f'{ar["lecture"]} {lecture.lecture_number} {course_name}'
+        description = f'{course_name} {en["lecture"]} {lecture.lecture_number}'
         text = f'''[{escape_markdown(
                 description
               )}]({url})'''
@@ -137,7 +144,7 @@ def get_lectures(
         InlineQueryResultArticle(
             id=str(uuid4()),
             title=title.title(),
-            description=description.title(),
+            description=description,
             input_message_content=InputTextMessageContent(
               text,
               parse_mode=ParseMode.MARKDOWN,
@@ -157,7 +164,7 @@ def get_labs(
   ):
     results = []
 
-    course_name = course.en_name if mode == 'keyboard' else course.ar_name
+    course_name = course.en_name 
 
     if len(course_name.split(' ')) > 2:
       course_name = ' '.join(course_name.split(' ')[0:2]) + '...'
@@ -174,7 +181,7 @@ def get_labs(
 
         keyboard.append([
             InlineKeyboardButton(
-              f'get {files_lenght} {"files" if files_lenght > 1 else "file"}'.title(),
+              f'{files_lenght} {"files" if files_lenght > 1 else "file"}'.title(),
               url=url,
               ),
         ])
@@ -182,7 +189,7 @@ def get_labs(
         reply_markup = InlineKeyboardMarkup(keyboard)
 
       # incase mode == 'keyboard'
-      title = f'{course_name} -> {en["lab"].title()} {lab.lab_number}'
+      title = f'{course_name}: {en["lab"].title()} {lab.lab_number}'
       description = f'{files_lenght} {"files" if files_lenght > 1 else "file"}'
       text = f'''*{escape_markdown(
                title
@@ -191,7 +198,7 @@ def get_labs(
       # incase mode == 'text'
       if mode == 'text' and message:
         title = f'Insert links into message'
-        description = f'{ar["lab"]} {lab.lab_number} {course_name}'
+        description = f'{course_name} {en["lab"]} {lab.lab_number}'
         text = f'''[{escape_markdown(
                 description
               )}]({url})'''
@@ -202,7 +209,7 @@ def get_labs(
         InlineQueryResultArticle(
             id=str(uuid4()),
             title=title.title(),
-            description=description.title(),
+            description=description,
             input_message_content=InputTextMessageContent(
               text,
               parse_mode=ParseMode.MARKDOWN,
@@ -214,8 +221,7 @@ def get_labs(
 
     return results
 
-
-def get_references(
+def get_tutorials(
   course,
   context: CallbackContext,
   message: str =None,
@@ -223,33 +229,31 @@ def get_references(
   ):
     results = []
 
-    course_name = course.en_name if mode == 'keyboard' else course.ar_name
+    course_name = course.en_name 
 
     if len(course_name.split(' ')) > 2:
       course_name = ' '.join(course_name.split(' ')[0:2]) + '...'
 
-    if course.refferences:
+    for tutorial in course.tutorials:
 
+      files_lenght = len(tutorial.documents) + len(tutorial.videos)
 
-      files_lenght = len(course.refferences)
-
-      url =  create_deep_linked_url(context.bot.username, f'{REFERENCES}-{course.id}')
+      url =  create_deep_linked_url(context.bot.username, f'{TUTORIAL}-{tutorial.id}')
 
       if mode == 'keyboard':
         keyboard = []
 
         keyboard.append([
             InlineKeyboardButton(
-              f'get {files_lenght} {"files" if files_lenght > 1 else "file"}'.title(),
+              f'{files_lenght} {"files" if files_lenght > 1 else "file"}'.title(),
               url=url,
               ),
         ])
 
         reply_markup = InlineKeyboardMarkup(keyboard)
 
-
       # incase mode == 'keyboard'
-      title = f'{course_name} -> {en["references"].title()}'
+      title = f'{course_name}: {en["tutorial"].title()} {tutorial.tutorial_number}'
       description = f'{files_lenght} {"files" if files_lenght > 1 else "file"}'
       text = f'''*{escape_markdown(
                title
@@ -258,7 +262,7 @@ def get_references(
       # incase mode == 'text'
       if mode == 'text' and message:
         title = f'Insert links into message'
-        description = f'{ar["references"][2:]} {course_name}'
+        description = f'{course_name} {en["tutorial"]} {tutorial.tutorial_number}'
         text = f'''[{escape_markdown(
                 description
               )}]({url})'''
@@ -269,7 +273,206 @@ def get_references(
         InlineQueryResultArticle(
             id=str(uuid4()),
             title=title.title(),
-            description=description.title(),
+            description=description,
+            input_message_content=InputTextMessageContent(
+              text,
+              parse_mode=ParseMode.MARKDOWN,
+              disable_web_page_preview=True,
+            ),
+            reply_markup= reply_markup if mode == 'keyboard' else None
+        ),
+      )
+
+    return results
+
+def get_references(
+  course,
+  context: CallbackContext,
+  message: str =None,
+  mode='keyboard'
+  ):
+    results = []
+
+    course_name = course.en_name 
+
+    if len(course_name.split(' ')) > 2:
+      course_name = ' '.join(course_name.split(' ')[0:2]) + '...'
+
+    if course.refferences:
+
+
+      files_lenght = len(course.refferences)
+
+      url =  create_deep_linked_url(context.bot.username, f'{REFFERENCES}-{course.id}')
+
+      if mode == 'keyboard':
+        keyboard = []
+
+        keyboard.append([
+            InlineKeyboardButton(
+              f'{files_lenght} {"files" if files_lenght > 1 else "file"}'.title(),
+              url=url,
+              ),
+        ])
+
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+
+      # incase mode == 'keyboard'
+      title = f'{course_name}: {en["references"].title()}'
+      description = f'{files_lenght} {"files" if files_lenght > 1 else "file"}'
+      text = f'''*{escape_markdown(
+               title
+             )}*'''
+
+      # incase mode == 'text'
+      if mode == 'text' and message:
+        title = f'Insert links into message'
+        description = f'{course_name} {en["references"]}'
+        text = f'''[{escape_markdown(
+                description
+              )}]({url})'''
+        text = insert_regex.sub(text, message)
+
+      results.append(
+        InlineQueryResultArticle(
+            id=str(uuid4()),
+            title=title.title(),
+            description=description,
+            input_message_content=InputTextMessageContent(
+              text,
+              parse_mode=ParseMode.MARKDOWN,
+              disable_web_page_preview=True,
+            ),
+            reply_markup=reply_markup if mode == 'keyboard' else None
+        ),
+      )
+
+    return results
+
+def get_assignments(
+  course,
+  context: CallbackContext,
+  message: str =None,
+  mode='keyboard'
+  ):
+    results = []
+
+    course_name = course.en_name 
+
+    if len(course_name.split(' ')) > 2:
+      course_name = ' '.join(course_name.split(' ')[0:2]) + '...'
+
+    for assignment in course.assignments:
+
+      files_lenght = len(assignment.documents)
+      files_lenght = files_lenght if files_lenght else len(assignment.photos)
+
+      url =  create_deep_linked_url(context.bot.username, f'{ASSIGNMENT}-{assignment.id}')
+
+      if mode == 'keyboard':
+        keyboard = []
+        keyboard.append([
+            InlineKeyboardButton(
+              f'{files_lenght} {"files" if files_lenght > 1 else "file"}'.title(),
+              url=url,
+              ),
+        ])
+
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+
+      # incase mode == 'keyboard'
+      title = f'{course_name}: {en["assignment"].title()} {assignment.assignment_number}'
+      description = f'{files_lenght} {"files" if files_lenght > 1 else "file"}'
+      text = f'''*{escape_markdown(
+               title
+             )}*'''
+
+      # incase mode == 'text'
+      if mode == 'text' and message:
+        title = f'Insert links into message'
+        description = f'{course_name} {en["assignment"]} {assignment.assignment_number}'
+        text = f'''[{escape_markdown(
+                description
+              )}]({url})'''
+        text = insert_regex.sub(text, message)
+
+      results.append(
+        InlineQueryResultArticle(
+            id=str(uuid4()),
+            title=title.title(),
+            description=description,
+            input_message_content=InputTextMessageContent(
+              text,
+              parse_mode=ParseMode.MARKDOWN,
+              disable_web_page_preview=True,
+            ),
+            reply_markup=reply_markup if mode == 'keyboard' else None
+        ),
+      )
+
+    return results
+
+def get_exams(
+  course,
+  context: CallbackContext,
+  message: str =None,
+  mode='keyboard'
+  ):
+    results = []
+
+    course_name = course.en_name 
+
+    if len(course_name.split(' ')) > 2:
+      course_name = ' '.join(course_name.split(' ')[0:2]) + '...'
+
+    for exam in course.exams:
+
+      files_lenght = len(exam.documents)
+      files_lenght = files_lenght if files_lenght else len(exam.photos)
+
+      url =  create_deep_linked_url(context.bot.username, f'{EXAM}-{exam.id}')
+
+      type_of_files = ''
+      if len(exam.documents):
+        type_of_files = 'files'
+      else:
+        type_of_files = 'pages'
+
+      if mode == 'keyboard':
+        keyboard = []
+        keyboard.append([
+            InlineKeyboardButton(
+              f'{files_lenght} {type_of_files[:] if files_lenght > 1 else type_of_files[:-1]}'.title(),
+              url=url,
+              ),
+        ])
+
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+
+      # incase mode == 'keyboard'
+      title = f'{course_name}: {exam.name}'
+      description = f'{files_lenght} {"files" if files_lenght > 1 else "file"}'
+      text = f'''*{escape_markdown(
+               title
+             )}*'''
+
+      # incase mode == 'text'
+      if mode == 'text' and message:
+        title = f'Insert links into message'
+        description = f'{exam.name} {course_name}'
+        text = f'''[{escape_markdown(
+                description
+              )}]({url})'''
+        text = insert_regex.sub(text, message)
+
+      results.append(
+        InlineQueryResultArticle(
+            id=str(uuid4()),
+            title=title.title(),
+            description=description,
             input_message_content=InputTextMessageContent(
               text,
               parse_mode=ParseMode.MARKDOWN,
