@@ -122,7 +122,7 @@ def get_lectures(
 
         keyboard.append([
             InlineKeyboardButton(
-              f'get {files_lenght} {"files" if files_lenght > 1 else "file"}'.title(),
+              f'{files_lenght} {"files" if files_lenght > 1 else "file"}'.title(),
               url=url,
               ),
         ])
