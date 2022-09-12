@@ -36,7 +36,6 @@ def inlinequery(update: Update, context: CallbackContext) -> None:
       auto_pagination=True,
       switch_pm_text='❓ Help',
       switch_pm_parameter=INLINE_HELP,
-      cache_time=1
       )
 
     session.close()

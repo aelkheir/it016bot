@@ -86,5 +86,5 @@ en = {
     'notify_tutorial_template': '*_+c+_* has a new `Tutorial +n+`',
     'notify_assignment_template': '*_+c+_* has a new `Assignment +n+`',
 
-    'inline_help_message': 'Use the \+\+ characters in your inline queries and it will be replaced with a link to the corresponding files from the bot\.\n\n*Example:*\n@it016bot Here are the files for \+`serch_key`\+\.\n\n*Becomes:*\nHere are the files for [Operating Systems lecture 3](https://t.me/IT016DevBot?start=LECTURE-1488)\.\n\nIt is only posible to filter by course name \(in Arabic or Engilsh\)'
+    'inline_help_message': 'Use the \+\+ characters in your inline queries and it will be replaced with a link to the corresponding files from the bot\.\n\n*Example:*\n@it016bot Here are the files for \+`serch_key`\+\.\n\n*Becomes:*\nHere are the files for [Operating Systems lecture 3](https://t.me/IT016Bot?start=LECTURE-1488)\.\n\nIt is only posible to filter by course name \(in Arabic or Engilsh\)'
 }

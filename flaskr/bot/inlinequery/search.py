@@ -11,7 +11,7 @@ from flaskr.bot.localization.en import en
 from flaskr.bot.localization.ar import ar
 from flaskr.bot.user.user_constants import ASSIGNMENT, EXAM, LAB, LECTURE, REFFERENCES, TUTORIAL
 from flaskr.bot.utils.get_current_semester import get_current_semester
-from flaskr.models import Course,  Semester
+from flaskr.models import Assignment, Course, Lab, Lecture,  Semester, Tutorial
 
 
 def get_all_courses(session, context: CallbackContext) -> None:
@@ -99,14 +99,19 @@ def get_lectures(
   message: str =None,
   mode='keyboard'
   ):
+    session = db.session()
     results = []
 
     course_name = course.en_name 
 
     if len(course_name.split(' ')) > 2:
-      course_name = ' '.join(course_name.split(' ')[0:2]) + '...'
+      course_name = ' '.join(course_name.split(' ')[0:2]) + '..'
 
-    for lecture in course.lectures:
+    lectures = session.query(Lecture) \
+      .filter(Lecture.course_id==course.id) \
+      .order_by(Lecture.id).all()
+
+    for lecture in lectures:
       files_lenght = len(lecture.documents) + len(lecture.videos)
 
       url =  create_deep_linked_url(context.bot.username, f'{LECTURE}-{lecture.id}')
@@ -162,16 +167,19 @@ def get_labs(
   message: str =None,
   mode='keyboard'
   ):
+    session = db.session()
     results = []
 
     course_name = course.en_name 
 
+    labs = session.query(Lab) \
+      .filter(Lab.course_id==course.id) \
+      .order_by(Lab.id).all()
+
     if len(course_name.split(' ')) > 2:
-      course_name = ' '.join(course_name.split(' ')[0:2]) + '...'
+      course_name = ' '.join(course_name.split(' ')[0:2]) + '..'
 
-    for lab in course.labs:
-
-
+    for lab in labs:
       files_lenght = len(lab.documents) + len(lab.videos)
 
       url =  create_deep_linked_url(context.bot.username, f'{LAB}-{lab.id}')
@@ -227,15 +235,19 @@ def get_tutorials(
   message: str =None,
   mode='keyboard'
   ):
+    session = db.session()
     results = []
 
     course_name = course.en_name 
 
     if len(course_name.split(' ')) > 2:
-      course_name = ' '.join(course_name.split(' ')[0:2]) + '...'
+      course_name = ' '.join(course_name.split(' ')[0:2]) + '..'
 
-    for tutorial in course.tutorials:
+    tutorials = session.query(Tutorial) \
+      .filter(Tutorial.course_id==course.id) \
+      .order_by(Tutorial.id).all()
 
+    for tutorial in tutorials:
       files_lenght = len(tutorial.documents) + len(tutorial.videos)
 
       url =  create_deep_linked_url(context.bot.username, f'{TUTORIAL}-{tutorial.id}')
@@ -296,7 +308,7 @@ def get_references(
     course_name = course.en_name 
 
     if len(course_name.split(' ')) > 2:
-      course_name = ' '.join(course_name.split(' ')[0:2]) + '...'
+      course_name = ' '.join(course_name.split(' ')[0:2]) + '..'
 
     if course.refferences:
 
@@ -356,25 +368,38 @@ def get_assignments(
   message: str =None,
   mode='keyboard'
   ):
+    session = db.session()
     results = []
 
     course_name = course.en_name 
 
     if len(course_name.split(' ')) > 2:
-      course_name = ' '.join(course_name.split(' ')[0:2]) + '...'
+      course_name = ' '.join(course_name.split(' ')[0:2]) + '..'
 
-    for assignment in course.assignments:
+    assignments = session.query(Assignment) \
+      .filter(Assignment.course_id==course.id) \
+      .order_by(Assignment.id).all()
+
+
+    for assignment in assignments:
 
       files_lenght = len(assignment.documents)
       files_lenght = files_lenght if files_lenght else len(assignment.photos)
 
       url =  create_deep_linked_url(context.bot.username, f'{ASSIGNMENT}-{assignment.id}')
 
+      type_of_files = ''
+      if len(assignment.documents):
+        type_of_files = 'files'
+      else:
+        type_of_files = 'pages'
+      type_of_files = type_of_files[:] if files_lenght > 1 else type_of_files[:-1]
+
       if mode == 'keyboard':
         keyboard = []
         keyboard.append([
             InlineKeyboardButton(
-              f'{files_lenght} {"files" if files_lenght > 1 else "file"}'.title(),
+              f'{files_lenght} {type_of_files}'.title(),
               url=url,
               ),
         ])
@@ -384,7 +409,7 @@ def get_assignments(
 
       # incase mode == 'keyboard'
       title = f'{course_name}: {en["assignment"].title()} {assignment.assignment_number}'
-      description = f'{files_lenght} {"files" if files_lenght > 1 else "file"}'
+      description = f'{files_lenght} {type_of_files}'
       text = f'''*{escape_markdown(
                title
              )}*'''
@@ -425,7 +450,7 @@ def get_exams(
     course_name = course.en_name 
 
     if len(course_name.split(' ')) > 2:
-      course_name = ' '.join(course_name.split(' ')[0:2]) + '...'
+      course_name = ' '.join(course_name.split(' ')[0:2]) + '..'
 
     for exam in course.exams:
 
@@ -439,12 +464,13 @@ def get_exams(
         type_of_files = 'files'
       else:
         type_of_files = 'pages'
+      type_of_files = type_of_files[:] if files_lenght > 1 else type_of_files[:-1]
 
       if mode == 'keyboard':
         keyboard = []
         keyboard.append([
             InlineKeyboardButton(
-              f'{files_lenght} {type_of_files[:] if files_lenght > 1 else type_of_files[:-1]}'.title(),
+              f'{files_lenght} {type_of_files}'.title(),
               url=url,
               ),
         ])
@@ -454,7 +480,7 @@ def get_exams(
 
       # incase mode == 'keyboard'
       title = f'{course_name}: {exam.name}'
-      description = f'{files_lenght} {"files" if files_lenght > 1 else "file"}'
+      description = f'{files_lenght} {type_of_files}'
       text = f'''*{escape_markdown(
                title
              )}*'''
