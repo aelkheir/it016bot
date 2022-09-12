@@ -49,7 +49,7 @@ def send_lecture(update: Update, context: CallbackContext) -> int:
         else lecture.course.en_name
 
     update.message.reply_text(
-        f"- {course_name.title()}: {language['lecture'].capitalize()} {lecture.lecture_number}"
+        f"- {course_name}: {language['lecture'].capitalize()} {lecture.lecture_number}"
     )
 
     for doc in lecture.documents:
@@ -100,7 +100,7 @@ def send_lab(update: Update, context: CallbackContext) -> int:
         else lab.course.en_name
 
     update.message.reply_text(
-        f"- {course_name.title()}: {language['lab'].capitalize()} {lab.lab_number}"
+        f"- {course_name}: {language['lab'].capitalize()} {lab.lab_number}"
     )
 
     for doc in lab.documents:
@@ -150,7 +150,7 @@ def send_tutorial(update: Update, context: CallbackContext) -> int:
         else tutorial.course.en_name
 
     update.message.reply_text(
-        f"- {course_name.title()}: {language['tutorial'].capitalize()} {tutorial.tutorial_number}"
+        f"- {course_name}: {language['tutorial'].capitalize()} {tutorial.tutorial_number}"
     )
 
     for doc in tutorial.documents:
@@ -202,7 +202,7 @@ def send_references(update: Update, context: CallbackContext) -> int:
         else course.en_name
 
     update.message.reply_text(
-        f"- {course_name.title()}: {language['references'].capitalize()}"
+        f"- {course_name}: {language['references'].capitalize()}"
     )
 
     for reference in course.refferences:
@@ -250,7 +250,7 @@ def send_assignment(update: Update, context: CallbackContext) -> int:
         media_group.append(input_media)
 
     update.message.reply_text(
-        f"- {course_name.title()}: {language['assignment'].capitalize()} {assignment.assignment_number}"
+        f"- {course_name}: {language['assignment'].capitalize()} {assignment.assignment_number}"
     )
 
     if media_group:
