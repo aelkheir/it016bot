@@ -69,8 +69,8 @@ def list_semesters(update: Update, context: CallbackContext) -> int:
 
     elif update.message:
       update.message.reply_text(
-        (f"{language['global_note']}" if show_note else '') \
-        + f'{language["archive"]}:'.capitalize(),
+        f'{language["archive"]}'.capitalize() \
+        + (f"{language['global_note']}" if show_note else ''), 
         reply_markup=reply_markup,
         parse_mode=constants.PARSEMODE_MARKDOWN_V2
       )
