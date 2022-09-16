@@ -1,3 +1,4 @@
+import functools
 from flaskr.bot.owner.handlers.announcement_options import send_announcement, view_announcement
 from flaskr.bot.owner.handlers.recieve_announcement import recieve_announcement
 from flaskr.bot.owner.handlers.type_announcement import type_announcement
@@ -47,8 +48,10 @@ owner_conv = ConversationHandler(
         ],
 
         constants.ANNOUNCEMENT_OPTIONS: [
-            MessageHandler(Filters.regex(f'عرض الاعلان'), view_announcement),
-            MessageHandler(Filters.regex(f'ارسال الاعلان'), send_announcement),
+            MessageHandler(Filters.regex(f'^عرض الاعلان$'), view_announcement),
+            MessageHandler(Filters.regex(f'^عرض الاعلان معلقا$'), functools.partial(view_announcement, pin=True)),
+            MessageHandler(Filters.regex(f'^ارسال الاعلان$'), send_announcement),
+            MessageHandler(Filters.regex(f'^ارسال الاعلان معلقا$'), functools.partial(send_announcement, pin=True)),
         ],
 
         constants.RECIEVE_NEW_ADMIN: [

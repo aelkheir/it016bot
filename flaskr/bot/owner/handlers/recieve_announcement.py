@@ -18,6 +18,7 @@ def recieve_announcement(update: Update, context: CallbackContext) -> int:
     reply_keyboard = []
 
     reply_keyboard.append(['عرض الاعلان', 'ارسال الاعلان'])
+    reply_keyboard.append(['عرض الاعلان معلقا', 'ارسال الاعلان معلقا'])
 
     markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
 

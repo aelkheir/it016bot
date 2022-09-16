@@ -132,16 +132,14 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
         else course.en_name
     course_name = course_name if course_name else course.ar_name
 
-    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
-
     if update.callback_query:
         query.edit_message_text(
-            text=f"{course_name}:" + (f"{language['global_note']}" if show_note else ''),
+            text=f"{course_name}:",
             reply_markup=reply_markup
         )
     elif update.message:
         update.message.reply_text(
-            f"{course_name}:" + (f"{language['global_note']}" if show_note else ''),
+            f"{course_name}:",
             reply_markup=reply_markup
         )
 

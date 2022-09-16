@@ -64,12 +64,9 @@ def list_lecture_files(update: Update, context: CallbackContext) -> int:
         back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
     ])
 
-    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
-
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{course_name}: {language['lecture'].capitalize()} {lecture.lecture_number}"
-        + (f"{language['global_note']}" if show_note else ''),
+        text=f"{course_name}: {language['lecture'].capitalize()} {lecture.lecture_number}",
         reply_markup=reply_markup
     )
 
@@ -160,12 +157,9 @@ def list_course_refferences(update: Update, context: CallbackContext) -> int:
         back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
     ])
 
-    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
-
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{course_name}: {language['references'].capitalize()}"
-        + (f"{language['global_note']}" if show_note else ''),
+        text=f"{course_name}: {language['references'].capitalize()}",
         reply_markup=reply_markup
     )
     return STAGE_THREE
@@ -214,23 +208,14 @@ def list_course_labs(update: Update, context: CallbackContext) -> int:
         keyboard.append(row)
 
 
-    # if len(course.labs) > 1:
-    #     keyboard.append([InlineKeyboardButton(
-    #         f"{language['download']} {language['all']} {language['labs']}".title(),
-    #         callback_data=f'{LABS} {course.id}'),
-    #     ])
-
     keyboard.append([
         back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
     ])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
-
     query.edit_message_text(
-        text=f"{course_name}: {language['labs'].capitalize()}"
-        + (f"{language['global_note']}" if show_note else ''),
+        text=f"{course_name}: {language['labs'].capitalize()}",
         reply_markup=reply_markup
     )
     return STAGE_THREE
@@ -283,11 +268,8 @@ def list_course_tutorials(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
-
     query.edit_message_text(
-        text=f"{course_name}: {language['tutorials'].capitalize()}"
-        + (f"{language['global_note']}" if show_note else ''),
+        text=f"{course_name}: {language['tutorials'].capitalize()}",
         reply_markup=reply_markup
     )
     return STAGE_THREE
@@ -342,11 +324,8 @@ def list_course_assignments(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
-
     query.edit_message_text(
-        text=f"{course_name}: {language['assignments'].capitalize()}"
-        + (f"{language['global_note']}" if show_note else ''),
+        text=f"{course_name}: {language['assignments'].capitalize()}",
         reply_markup=reply_markup
     )
     return STAGE_THREE
@@ -381,23 +360,14 @@ def list_course_exams(update: Update, context: CallbackContext) -> int:
             InlineKeyboardButton(f'{exam.name}', callback_data=f'{EXAM} {exam.id}')
         ])
 
-    # if len(course.exams) > 1:
-    #     keyboard.append([InlineKeyboardButton(
-    #         f"{language['download']} {language['all']} {language['exams']}".title(),
-    #         callback_data=f'{EXAMS} {course.id}'),
-    #     ])
-
     keyboard.append([
         back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
     ])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
-
     query.edit_message_text(
-        text=f"{course_name}: {language['exams'].capitalize()}"
-        + (f"{language['global_note']}" if show_note else ''),
+        text=f"{course_name}: {language['exams'].capitalize()}",
         reply_markup=reply_markup
     )
     return STAGE_THREE

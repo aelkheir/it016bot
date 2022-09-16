@@ -67,11 +67,8 @@ def list_lab_files(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
-
     query.edit_message_text(
-        text=f"{course_name}: {language['lab'].capitalize()} {lab.lab_number}"
-        + (f"{language['global_note']}" if show_note else ''),
+        text=f"{course_name}: {language['lab'].capitalize()} {lab.lab_number}",
         reply_markup=reply_markup
     )
 
@@ -133,11 +130,8 @@ def list_tutorial_files(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
-
     query.edit_message_text(
-        text=f"{course_name}: {language['tutorial'].capitalize()} {tutorial.tutorial_number}"
-        + (f"{language['global_note']}" if show_note else ''),
+        text=f"{course_name}: {language['tutorial'].capitalize()} {tutorial.tutorial_number}",
         reply_markup=reply_markup
     )
 

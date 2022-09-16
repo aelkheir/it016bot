@@ -5,9 +5,6 @@ from flaskr import db
 from telegram.ext import  CallbackContext
 from telegram import  Update, InputMediaVideo 
 
-
-
-
 def send_all_lab_files(update: Update, context: CallbackContext) -> int:
     session = db.session
 

@@ -6,8 +6,8 @@ import logging
 from flaskr.models import Course, Semester, User
 from flaskr import db
 from telegram.ext import CallbackContext
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import   COURSE, COURSE_OVERVIEW
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, constants
+from flaskr.bot.user.user_constants import   COURSE, COURSE_OVERVIEW, SHOW_GLOBAL_NOTE
 
 
 logger = logging.getLogger(__name__)
@@ -49,9 +49,13 @@ def start(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
+    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
+
     update.message.reply_text(
-        f'{language["courses"]}:'.capitalize(),
-        reply_markup=reply_markup
+        f'{language["courses"]}'.capitalize() \
+        +  (f"{language['global_note']}" if show_note else ''),
+        reply_markup=reply_markup,
+        parse_mode=constants.PARSEMODE_MARKDOWN_V2
     )
 
     session.commit()

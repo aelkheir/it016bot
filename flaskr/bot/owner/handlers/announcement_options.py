@@ -8,7 +8,7 @@ from flaskr import db
 
 
 
-def view_announcement(update: Update, context: CallbackContext) -> int:
+def view_announcement(update: Update, context: CallbackContext, pin=False) -> int:
     session = db.session
 
     if not is_owner(update, context, session):
@@ -16,12 +16,17 @@ def view_announcement(update: Update, context: CallbackContext) -> int:
 
     message_id = context.chat_data['announcement_message_id']
 
-    context.bot.copy_message(update.effective_message.chat_id, update.effective_message.chat_id, message_id)
+    message = context.bot.copy_message(update.effective_message.chat_id, update.effective_message.chat_id, message_id)
+
+    print('\n', message_id, '\n', pin)
+
+    if pin == True:
+        context.bot.pin_chat_message(update.effective_message.chat_id, message.message_id)
 
     return ANNOUNCEMENT_OPTIONS
 
 
-def send_announcement(update: Update, context: CallbackContext) -> int:
+def send_announcement(update: Update, context: CallbackContext, pin=False) -> int:
     session = db.session
 
     if not is_owner(update, context, session):
@@ -52,9 +57,6 @@ def send_announcement(update: Update, context: CallbackContext) -> int:
         if not user.chat_id:
             continue
 
-        if str(user.chat_id) == str(owner_chat_id):
-            continue
-
         is_last = index == len(users) - 1
 
         when = index * 2
@@ -68,6 +70,7 @@ def send_announcement(update: Update, context: CallbackContext) -> int:
                 owner_chat_id,
                 is_last,
                 user.subscribed,
+                pin
             ),
             name=JOB_NAME
         )
@@ -79,9 +82,12 @@ def send_announcement_job(context):
     owner_chat_id = context.job.context[2]
     is_last_user =  context.job.context[3]
     subscribed = context.job.context[4]
+    pin = context.job.context[5]
     
     if subscribed:
-        context.bot.copy_message(user_chat_id, owner_chat_id, message_id)
+        message = context.bot.copy_message(user_chat_id, owner_chat_id, message_id)
+        if pin == True:
+            context.bot.pin_chat_message(user_chat_id, message.message_id)
 
     if is_last_user:
         context.bot.send_message(

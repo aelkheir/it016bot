@@ -1,5 +1,5 @@
 # show global note - boolean
-SHOW_GLOBAL_NOTE = False
+SHOW_GLOBAL_NOTE = True
 
 # Navigation stages
 

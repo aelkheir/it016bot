@@ -6,8 +6,8 @@ import logging
 from flaskr.models import Course, Semester, User
 from flaskr import db
 from telegram.ext import CallbackContext
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import   COURSE, COURSE_OVERVIEW, SEMESTER, SEMESTER_LIST
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, constants
+from flaskr.bot.user.user_constants import   COURSE, COURSE_OVERVIEW, SEMESTER, SEMESTER_LIST, SHOW_GLOBAL_NOTE
 
 
 def list_semesters(update: Update, context: CallbackContext) -> int:
@@ -57,16 +57,22 @@ def list_semesters(update: Update, context: CallbackContext) -> int:
 
     reply_markup = InlineKeyboardMarkup(reply_keyboard)
 
+    show_note = SHOW_GLOBAL_NOTE
+
     if query:
         query.edit_message_text(
-        f'{language["archive"]}:'.capitalize(),
-        reply_markup=reply_markup
+        f'{language["archive"]}'.capitalize() \
+        + (f"{language['global_note']}" if show_note else ''), 
+        reply_markup=reply_markup,
+        parse_mode=constants.PARSEMODE_MARKDOWN_V2
         )
 
     elif update.message:
       update.message.reply_text(
-          f'{language["archive"]}:'.capitalize(),
-          reply_markup=reply_markup
+        (f"{language['global_note']}" if show_note else '') \
+        + f'{language["archive"]}:'.capitalize(),
+        reply_markup=reply_markup,
+        parse_mode=constants.PARSEMODE_MARKDOWN_V2
       )
 
     session.commit()

@@ -1,7 +1,7 @@
 
 en = {
 
-    'global_note': '\n\n⚠️ This content belongs to 015 and may become obselete',
+    'global_note': "\n\n_The bot will go down on November 28\. Till then, it will be kept updated\._",
 
     'of': 'of',
     'is': 'is',
