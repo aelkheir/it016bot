@@ -75,12 +75,9 @@ def list_notified_lecture_files(update: Update, context: CallbackContext) -> int
     message = re.sub(course_regex, course_name, template)
     message = '🔔  ' + re.sub(number_regex, f'{lecture.lecture_number}', message)
 
-    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
-
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{message}"
-        + (f"{language['global_note']}" if show_note else ''),
+        text=f"{message}",
         reply_markup=reply_markup,
         parse_mode=constants.PARSEMODE_MARKDOWN_V2
     )
@@ -148,12 +145,9 @@ def list_notified_lab_files(update: Update, context: CallbackContext) -> int:
     message = re.sub(course_regex, course_name, template)
     message = '🔔  ' + re.sub(number_regex, f'{lab.lab_number}', message)
 
-    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
-
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{message}"
-        + (f"{language['global_note']}" if show_note else ''),
+        text=f"{message}",
         reply_markup=reply_markup,
         parse_mode=constants.PARSEMODE_MARKDOWN_V2
     )
@@ -221,12 +215,9 @@ def list_notified_tutorial_files(update: Update, context: CallbackContext) -> in
     message = re.sub(course_regex, course_name, template)
     message = '🔔  ' + re.sub(number_regex, f'{tutorial.tutorial_number}', message)
 
-    show_note = SHOW_GLOBAL_NOTE and bool(course.semester.current)
-
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(
-        text=f"{message}"
-        + (f"{language['global_note']}" if show_note else ''),
+        text=f"{message}",
         reply_markup=reply_markup,
         parse_mode=constants.PARSEMODE_MARKDOWN_V2
     )
