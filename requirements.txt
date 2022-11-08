@@ -2,7 +2,7 @@ Flask
 
 gunicorn
 
-Flask-SQLAlchemy
+Flask-SQLAlchemy==2.5.1
 
 Flask-Migrate
 
