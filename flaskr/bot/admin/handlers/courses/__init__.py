@@ -38,6 +38,7 @@ def edit_course(
     reply_keyboard.append(['المحاضرات', 'المراجع']),
     reply_keyboard.append(['اللابات', 'التمارين']),
     reply_keyboard.append(['الامتحانات', 'التساليم'])
+    reply_keyboard.append(['الشيتات']),
     reply_keyboard.append(['تعديل الاسم', 'تعديل الرمز'])
     reply_keyboard.append(['حذف المادة', f'سمستر: {course_semester}'])
     if from_archive:

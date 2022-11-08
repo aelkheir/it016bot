@@ -6,7 +6,7 @@ import math
 from flaskr.models import Assignment, Course, Lab, Lecture, Tutorial
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import  ASSIGNMENTS, EXAMS, LABS, LECTURE, LECTURES, REFFERENCES, SHOW_GLOBAL_NOTE, STAGE_TWO, TUTORIALS
+from flaskr.bot.user.user_constants import  ASSIGNMENTS, EXAMS, LABS, LECTURE, LECTURES, REFFERENCES, SHEETS, SHOW_GLOBAL_NOTE, STAGE_TWO, TUTORIALS
 from flaskr import db
 
 
@@ -68,6 +68,13 @@ def course_overview(update: Update, context: CallbackContext, course_id=None, fr
             ),
         ])
 
+    if len(course.sheets) > 0:
+        keyboard.append([
+            InlineKeyboardButton(
+                f"{language['sheets']} ({len(course.sheets)})".capitalize(),
+                callback_data=f'{course.id} {SHEETS}'
+            ),
+        ])
     tutorial_lab_row = []
 
     if len(tutorials) > 0:

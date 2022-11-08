@@ -1,4 +1,5 @@
 from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, Filters
+from flaskr.bot.admin.admin_constants import COURSE_LIST
 from flaskr.bot.admin.handlers.edit_archive import edit_archive
 from flaskr.bot.utils.cancel_conversation import cancel_conversation
 from flaskr.bot.admin.handlers.admin_handler import admin_handler
@@ -10,6 +11,7 @@ from flaskr.bot.admin.handlers.tutorials.states import states as tutorials_state
 from flaskr.bot.admin.handlers.assignments.states import states as assignments_states
 from flaskr.bot.admin.handlers.exams.states import states as exams_states
 from flaskr.bot.admin.handlers.references.states import states as references_states
+from flaskr.bot.admin.handlers.sheets.states import states as sheets_states
 
 
 
@@ -27,6 +29,7 @@ admin_conv = ConversationHandler(
         **assignments_states,
         **exams_states,
         **references_states,
+        **sheets_states,
     },
     fallbacks=[MessageHandler(Filters.command, cancel_conversation)],
     persistent=True,

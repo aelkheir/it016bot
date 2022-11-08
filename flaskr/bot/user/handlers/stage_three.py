@@ -4,7 +4,7 @@ from flaskr.bot.utils.buttons import back_to_assignments_button, back_to_labs_bu
 from flaskr.bot.user.user_constants import ASSIGNMENT, FILE, LAB, SHOW_GLOBAL_NOTE, STAGE_FOURE, TUTORIAL
 from flaskr.bot.utils.get_user_language import get_user_language
 from flaskr.bot.utils.user_required import user_required
-from flaskr.models import  Assignment, Course, Document, Exam, Lab, Lecture, Photo, Refference, Tutorial, User,  Video, YoutubeLink
+from flaskr.models import  Assignment, Course, Document, Exam, Lab, Lecture, Photo, Refference, Sheet, Tutorial, User,  Video, YoutubeLink
 from flaskr import db
 from telegram.ext import  CallbackContext
 from telegram import  InputMediaVideo, InputMediaPhoto, Update, InlineKeyboardButton, InlineKeyboardMarkup 
@@ -315,6 +315,27 @@ def send_course_refference(update: Update, context: CallbackContext) -> int:
     session.close()
     return None
 
+def send_course_sheet(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    query = update.callback_query
+    query.answer()
+
+    user = user_required(update, context, session)
+    user = session.query(User).filter(User.id==user.id).one()
+
+    _, sheet_id = query.data.split(' ')
+
+    sheet = session.query(Sheet).filter(Sheet.id==sheet_id).one()
+
+    query.bot.sendDocument(query.message.chat.id, document=sheet.file_id)
+    user.download_count += 1
+
+        
+    session.commit()
+    session.close()
+    return None
+
 def send_all_course_refferences(update: Update, context: CallbackContext) -> int:
     session = db.session
 
@@ -346,6 +367,39 @@ def send_all_course_refferences(update: Update, context: CallbackContext) -> int
     session.commit()
     session.close()
     return None
+
+def send_all_course_sheets(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    query = update.callback_query
+    query.answer()
+
+    user = user_required(update, context, session)
+    user = session.query(User).filter(User.id==user.id).one()
+
+    language = get_user_language(context.chat_data['language'])
+
+    _, course_id = query.data.split(' ')
+
+    course = session.query(Course).filter(Course.id==course_id).one()
+
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
+
+    if len(course.sheets) > 0:
+        query.message.reply_text(
+        f"{course_name}: {language['sheets'].capitalize()}",
+        )
+        for sheet in course.sheets:
+            query.bot.sendDocument(query.message.chat.id, document=sheet.file_id)
+            user.download_count += 1
+
+    session.commit()
+    session.close()
+    return None
+
 
 def send_assignment(update: Update, context: CallbackContext) -> int:
     session = db.session

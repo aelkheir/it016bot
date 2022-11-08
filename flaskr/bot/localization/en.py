@@ -16,6 +16,7 @@ en = {
     'courses': 'courses',
     'lectures': 'lectures',
     'references': 'references',
+    'sheets': 'sheets',
     'labs': 'labs',
     'tutorials': 'tutorials',
     'exams': 'exams',

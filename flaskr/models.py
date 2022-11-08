@@ -128,7 +128,8 @@ class Course(db.Model):
     assignments = db.relationship("Assignment", back_populates = 'course', cascade="all, delete")
     refferences = db.relationship("Refference", back_populates = 'course', cascade="all, delete")
     exams = db.relationship("Exam", back_populates = 'course', cascade="all, delete")
-
+    sheets = db.relationship("Sheet", back_populates = 'course', cascade="all, delete")
+    
     def __repr__(self):
         return f"<Course(ar_name='{self.ar_name}', course_symbol='{self.course_symbol}')>"
 
@@ -280,6 +281,22 @@ class Refference(db.Model):
     course = db.relationship("Course", back_populates="refferences", cascade="save-update")
     def __repr__(self):
         return f"<Refference(course='{self.course.ar_name}', name='{self.name}')>"
+
+class Sheet(db.Model):
+    __tablename__ = 'sheets'
+
+    id = db.Column(db.Integer,  db.Sequence('user_id_seq'), primary_key=True )
+    name = db.Column(db.String(300), nullable=False)
+    file_id = db.Column(db.String(300))
+    file_unique_id = db.Column(db.String(300))
+
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
+    course = db.relationship("Course", back_populates="sheets", cascade="save-update")
+    def __repr__(self):
+        return f"<Sheets(course='{self.course.ar_name}', name='{self.name}')>"
+
+  
+
 
 class Exam(db.Model):
     __tablename__ = 'exams'

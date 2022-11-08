@@ -1,6 +1,6 @@
 from flaskr.bot.utils.is_admin import is_admin
 import re
-from flaskr.bot.admin.admin_constants import ASSIGNMENTS_LIST, CONFIRM_COURSE_DELETION, EXAMS_LIST, LABS_LIST, RECIEVE_COURSE_SEMESTER, RECIEVE_NAME_SYMBOL, LECTURES_LIST, REFFERENCES_LIST, TUTORIALS_LIST
+from flaskr.bot.admin.admin_constants import ASSIGNMENTS_LIST, CONFIRM_COURSE_DELETION, EXAMS_LIST, LABS_LIST, RECIEVE_COURSE_SEMESTER, RECIEVE_NAME_SYMBOL, LECTURES_LIST, REFFERENCES_LIST, SHEETS_LIST, TUTORIALS_LIST
 import math
 from flaskr import db
 from flaskr.models import Assignment, Course, Exam, Lab, Lecture, Semester, Tutorial
@@ -214,6 +214,38 @@ def list_refferences(update: Update, context: CallbackContext) -> int:
 
     session.close()
     return REFFERENCES_LIST
+
+def list_sheets(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    # delet from context
+    if 'file_name' in context.chat_data:
+        del context.chat_data['file_name']
+
+    if not is_admin(update, context, session):
+        return
+
+    # reads from context
+    course_id = context.chat_data['course_id']
+
+    course = session.query(Course).filter(Course.id==course_id).one()
+    reply_keyboard = []
+    
+    sheets = course.sheets
+
+    for sheet in sheets:
+        reply_keyboard.append([f'{sheet.name}'])
+
+    reply_keyboard.append(['رجوع', 'اضافة شيت'])
+    markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
+    update.message.reply_text(f'شيتات {course.ar_name}',
+            reply_markup=markup,
+    )
+
+    session.close()
+    return SHEETS_LIST
+
+
 
 
 def list_exams(update: Update, context: CallbackContext) -> int:

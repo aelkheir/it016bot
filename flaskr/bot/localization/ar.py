@@ -16,6 +16,7 @@ ar = {
     'lectures': 'المحاضرات',
     'courses': 'المواد',
     'references': 'المراجع',
+    "sheets":"الشيتات",
     'labs': 'اللابات',
     'tutorials': 'التمارين',
     'exams': 'الامتحانات',

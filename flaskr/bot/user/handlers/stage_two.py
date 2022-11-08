@@ -5,7 +5,7 @@ from flaskr.bot.utils.user_required import user_required
 from flaskr.models import Assignment, Course, Exam, Lab, Lecture, Tutorial, User
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from flaskr.bot.user.user_constants import  ASSIGNMENT, EXAM, EXAMS, FILE, LAB, LABS, LECTURE, REFFERENCES, REFFERENCE, SHOW_GLOBAL_NOTE, STAGE_THREE, TUTORIAL
+from flaskr.bot.user.user_constants import  ASSIGNMENT, EXAM, EXAMS, FILE, LAB, LABS, LECTURE, REFFERENCES, REFFERENCE, SHEET, SHEETS, SHOW_GLOBAL_NOTE, STAGE_THREE, TUTORIAL
 from flaskr import db
 
 back_icon ='»'
@@ -163,6 +163,50 @@ def list_course_refferences(update: Update, context: CallbackContext) -> int:
         reply_markup=reply_markup
     )
     return STAGE_THREE
+
+def list_course_sheets(update: Update, context: CallbackContext) -> int:
+    session = db.session
+
+    query = update.callback_query
+    query.answer()
+
+    user = user_required(update, context, session)
+    language = get_user_language(context.chat_data['language'])
+
+    course_id, _ = query.data.split(' ')
+
+    course = session.query(Course).filter(Course.id==course_id).one()
+
+    course_name = course.ar_name \
+        if user.language == 'ar' \
+        else course.en_name
+    course_name = course_name if course_name else course.ar_name
+
+    keyboard = []
+
+    for sheet in course.sheets:
+        keyboard.append([
+            InlineKeyboardButton(f'{sheet.name}', callback_data=f'{SHEET} {sheet.id}')
+        ])
+
+    if len(course.sheets) > 1:
+        keyboard.append([InlineKeyboardButton(
+            f"{language['download']} {language['all']} {language['sheets']}".title(),
+            callback_data=f'{SHEETS} {course.id}'),
+        ])
+
+    keyboard.append([
+        back_to_course_button(language, user.language, course.en_name, course.ar_name, course.id),
+    ])
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    query.edit_message_text(
+        text=f"{course_name}: {language['sheets'].capitalize()}",
+        reply_markup=reply_markup
+    )
+    return STAGE_THREE
+
+
 
 
 def list_course_labs(update: Update, context: CallbackContext) -> int:
